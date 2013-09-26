@@ -173,7 +173,7 @@ public class DeploymentConfig {
                 e = srcZipStream.getNextEntry();
                 continue;
             }
-            destZipStream.putNextEntry(e);
+            destZipStream.putNextEntry(createZipEntry(e));
             List<Task> taskList = taskMap.get(e.getName());
             if (taskList != null) {
                 applyZipEntry(e, taskList, srcZipStream, destZipStream);
@@ -187,6 +187,26 @@ public class DeploymentConfig {
             destZipStream.closeEntry();
         }
         destZipStream.finish();
+    }
+
+    /**
+     * Create a new ZipEntry preserving relevant fields.
+     * <p>
+     * Just reusing the original entry seems to produce a corrupt zip file
+     *
+     * @param e the ZipEntry to use
+     * @return a new ZipEntry based on e
+     */
+    private ZipEntry createZipEntry(ZipEntry e) {
+        ZipEntry result = new ZipEntry(e.getName());
+        result.setComment(e.getComment());
+        byte[] extra = e.getExtra();
+        if (extra != null) {
+            result.setExtra(extra.clone());
+        }
+        result.setTime(e.getTime());
+
+        return result;
     }
 
     /**
