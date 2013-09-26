@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployconf>
+  <properties path="/WEB-INF/classes/deploy.properties">
+    <property>
+      <name>ldap.server</name>
+      <description>Help text here</description>
+      <default>ldap://${hostname}/</default>
+      <value></value>
+    </property>
+  </properties>
+  <filter path="/WEB-INF/web.xml">
+    <token>
+      <regex>@LOG_DIR@</regex>
+      <description>Help text here</description>
+      <default>${pwd}/logs</default>
+      <value></value>
+    </token>
+  </filter>
+</deployconf>

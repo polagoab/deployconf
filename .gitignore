@@ -1,0 +1,6 @@
+dependency-reduced-pom.xml
+*.zip
+*.jar
+*.war
+target/
+.DS_Store
