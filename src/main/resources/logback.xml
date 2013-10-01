@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property scope="context" name="enableDebugMsg" value="(use the -d option to print stacktraces)" />
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>[%-5level]: %msg%n%property{enableDebugMsg}%n%nopex</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="STDERR" />
+  </root>
+
+</configuration>

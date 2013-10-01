@@ -43,6 +43,11 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
 /**
  * Main Runner class.
  */
@@ -61,7 +66,7 @@ public class DeployConfRunner {
      * Public Constructor.
      *
      * @param interactive determine if the program should be running in
-     * intercative mode or not
+     * interactive mode or not
      */
     public DeployConfRunner(boolean interactive) {
         this.interactive = interactive;
@@ -80,17 +85,23 @@ public class DeployConfRunner {
         options.addOption(help);
 
         Option version =
-            new Option("v", "version", false, "Display version information");
+            new Option("v", "version", false,
+                "Display version information and exit");
         options.addOption(version);
 
         Option interactive =
             new Option("i", "interactive", false, "Run in interactive mode");
         options.addOption(interactive);
 
+        Option debug =
+            new Option("d", "debug", false, "Print Debug Information");
+        options.addOption(debug);
+
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine cmd = parser.parse(options, args);
             ProjectProperties projectProperties = getProjectProperties();
+
             if (cmd.hasOption(version.getOpt())) {
                 System.out.print(projectProperties.getName());
                 System.out.print(" version ");
@@ -98,13 +109,33 @@ public class DeployConfRunner {
                 System.out.println(projectProperties.getCopyrightMessage());
                 System.exit(0);
             }
+
             if (cmd.hasOption(help.getOpt())) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp(projectProperties.getName()
-                    + "[OPTION]... <INPUT> <OUTPUT>",
+                    + " [OPTION]... <INPUT> <OUTPUT>",
                     projectProperties.getHelpHeader(), options, "");
                 System.exit(0);
             }
+
+            if (cmd.hasOption(debug.getOpt())) {
+                logger.info("Activating Debug Logging");
+                LoggerContext loggerContext =
+                    (LoggerContext) LoggerFactory.getILoggerFactory();
+
+                try {
+                    JoranConfigurator configurator = new JoranConfigurator();
+                    configurator.setContext(loggerContext);
+                    loggerContext.reset();
+                    configurator.doConfigure(Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResource("logback-debug.xml"));
+                } catch (JoranException e) {
+                    logger.warn("Error activating debug logging", e);
+                }
+                StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+            }
+
             DeployConfRunner instance =
                 new DeployConfRunner(cmd.hasOption(interactive.getOpt()));
             @SuppressWarnings("unchecked")
@@ -116,9 +147,10 @@ public class DeployConfRunner {
             }
             System.exit(instance.run(argList.get(0), argList.get(1)));
         } catch (ParseException e) {
-            System.err.println("Parse Error: " + e.getMessage());
+            logger.error("Command Line Parse Error: " + e.getMessage());
         } catch (Exception e) {
-            logger.error("Internal Error", e);
+            String msg = "Internal Error: " + e.toString();
+            logger.error(msg, e);
         }
     }
 
@@ -168,7 +200,7 @@ public class DeployConfRunner {
                 System.err.println("Template configuration " + "has changed.");
                 System.err.println("Edit '" + deploymentConfig
                     + "' and make sure that each "
-                    + "deployment property has a value");
+                    + "deployment property has a valid value");
                 save(config);
                 result = 2;
             }
