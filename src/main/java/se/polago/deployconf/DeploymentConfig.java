@@ -168,8 +168,8 @@ public class DeploymentConfig {
         Map<String, List<Task>> taskMap = getTaskMap();
         boolean entryWritten = false;
         while (e != null) {
-            logger.info("Processing Zip Entry: " + e);
             if (e.getName().equals(ignorePath)) {
+                logger.debug("Ignoring Zip Entry: " + e);
                 e = srcZipStream.getNextEntry();
                 continue;
             }
@@ -220,6 +220,8 @@ public class DeploymentConfig {
     private void copyZipEntry(ZipEntry e, ZipInputStream src,
         ZipOutputStream dest) throws IOException {
 
+        logger.debug("Copying Zip Entry: " + e);
+
         byte[] buf = new byte[BUF_SIZE];
         int i = src.read(buf);
         while (i != -1) {
@@ -240,6 +242,7 @@ public class DeploymentConfig {
     private void applyZipEntry(ZipEntry e, List<Task> taskList,
         ZipInputStream zipSrc, ZipOutputStream zipDest) throws Exception {
 
+        logger.info("Applying deployment config to Zip Entry: " + e);
         for (Task t : taskList) {
             t.apply(zipSrc, zipDest);
         }
