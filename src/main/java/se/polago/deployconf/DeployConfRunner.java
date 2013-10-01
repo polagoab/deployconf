@@ -97,6 +97,8 @@ public class DeployConfRunner {
             new Option("d", "debug", false, "Print Debug Information");
         options.addOption(debug);
 
+        boolean debugEnabled = false;
+
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine cmd = parser.parse(options, args);
@@ -120,6 +122,7 @@ public class DeployConfRunner {
 
             if (cmd.hasOption(debug.getOpt())) {
                 logger.info("Activating Debug Logging");
+                debugEnabled = true;
                 LoggerContext loggerContext =
                     (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -147,9 +150,12 @@ public class DeployConfRunner {
             }
             System.exit(instance.run(argList.get(0), argList.get(1)));
         } catch (ParseException e) {
-            logger.error("Command Line Parse Error: " + e.getMessage());
+            logger.error("Command Line Parse Error: " + e.getMessage(), e);
         } catch (Exception e) {
             String msg = "Internal Error: " + e.toString();
+            if (!debugEnabled) {
+                msg += "\n(use the -d option to print stacktraces)";
+            }
             logger.error(msg, e);
         }
     }
