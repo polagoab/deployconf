@@ -183,7 +183,7 @@ public class DeployConfRunnerTest {
         DeployConfRunner runner = new DeployConfRunner(false);
         DeploymentConfig config = new DeploymentConfig();
         assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX, runner
-            .getRepositoryConfigFile(config).getPath());
+            .getRepositoryConfigFile(config.getName()).getPath());
     }
 
     @Test
@@ -193,8 +193,8 @@ public class DeployConfRunnerTest {
         DeploymentConfig config = new DeploymentConfig();
         File expected = new File("test.xml");
         runner.setDeploymentConfig(expected);
-        assertEquals(expected.getPath(), runner
-            .getRepositoryConfigFile(config).getPath());
+        assertEquals(expected.getPath(),
+            runner.getRepositoryConfigFile(config.getName()).getPath());
     }
 
     @Test
@@ -211,7 +211,7 @@ public class DeployConfRunnerTest {
             File expected =
                 new File(repoDir, DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected.getPath(),
-                runner.getRepositoryConfigFile(config).getPath());
+                runner.getRepositoryConfigFile(config.getName()).getPath());
         } finally {
             repoDir.delete();
         }
@@ -224,7 +224,7 @@ public class DeployConfRunnerTest {
         String name = "test";
         config.setName(name);
         assertEquals(name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX,
-            runner.getRepositoryConfigFile(config).getPath());
+            runner.getRepositoryConfigFile(config.getName()).getPath());
     }
 
     @Test
@@ -236,8 +236,8 @@ public class DeployConfRunnerTest {
         config.setName(name);
         File expected = new File("test.xml");
         runner.setDeploymentConfig(expected);
-        assertEquals(expected.getPath(), runner
-            .getRepositoryConfigFile(config).getPath());
+        assertEquals(expected.getPath(),
+            runner.getRepositoryConfigFile(config.getName()).getPath());
     }
 
     @Test
@@ -257,7 +257,7 @@ public class DeployConfRunnerTest {
                 new File(repoDir, name + "-"
                     + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected.getPath(),
-                runner.getRepositoryConfigFile(config).getPath());
+                runner.getRepositoryConfigFile(config.getName()).getPath());
         } finally {
             repoDir.delete();
         }

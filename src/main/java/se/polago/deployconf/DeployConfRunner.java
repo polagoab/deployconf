@@ -189,7 +189,7 @@ public class DeployConfRunner {
             getDeploymentConfig(getInputStreamFromZipFile(new File(source),
                 deploymentTemplate));
         DeploymentConfig config = null;
-        File repoFile = getRepositoryConfigFile(template);
+        File repoFile = getRepositoryConfigFile(template.getName());
         if (repoFile.exists()) {
             logger.info("Loading Deployment Config from: "
                 + repoFile.getPath());
@@ -259,12 +259,11 @@ public class DeployConfRunner {
     /**
      * Gets the File to use for storing the DeploymentConfig.
      *
-     * @param config the DeploymentConfig to use
+     * @param name the DeploymentConfig name to use
      * @return the current value of the deploymentConfig property
      */
-    public File getRepositoryConfigFile(DeploymentConfig config) {
+    public File getRepositoryConfigFile(String name) {
         File result = getDeploymentConfig();
-        String name = config.getName();
 
         if (deploymentConfig != null) {
             result = deploymentConfig;
@@ -342,7 +341,7 @@ public class DeployConfRunner {
      */
     private void save(DeploymentConfig config) throws IOException {
         FileOutputStream os =
-            new FileOutputStream(getRepositoryConfigFile(config));
+            new FileOutputStream(getRepositoryConfigFile(config.getName()));
         config.save(os);
         os.close();
     }
