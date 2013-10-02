@@ -209,7 +209,7 @@ public class DeployConfRunner {
                 apply(config, source, destination);
             } else {
                 System.err.println("Template configuration " + "has changed.");
-                System.err.println("Edit '" + deploymentConfig
+                System.err.println("Edit '" + repoFile
                     + "' and make sure that each "
                     + "deployment property has a valid value");
                 save(config);
