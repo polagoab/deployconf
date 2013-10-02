@@ -50,7 +50,7 @@ public class DeployConfRunnerTest {
         File srcFile = File.createTempFile("input", ".zip");
         File destFile = File.createTempFile("output", ".zip");
         File configFile = File.createTempFile("config", ".xml");
-        runner.setDeploymentConfig(configFile);
+        runner.setDeploymentConfigFile(configFile);
         destFile.delete();
 
         try {
@@ -101,7 +101,7 @@ public class DeployConfRunnerTest {
         File srcFile = File.createTempFile("input", ".zip");
         File destFile = File.createTempFile("output", ".zip");
         File configFile = File.createTempFile("config", ".xml");
-        runner.setDeploymentConfig(configFile);
+        runner.setDeploymentConfigFile(configFile);
         configFile.delete();
         destFile.delete();
         assertFalse(configFile.exists());
@@ -179,26 +179,29 @@ public class DeployConfRunnerTest {
     }
 
     @Test
-    public void testRepoFileWithNoConfigNameAndNoRepo() throws Exception {
+    public void testDeploymentConfigFileWithNoConfigNameAndNoRepo()
+        throws Exception {
+
         DeployConfRunner runner = new DeployConfRunner(false);
         DeploymentConfig config = new DeploymentConfig();
         assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX, runner
-            .getRepositoryConfigFile(config.getName()).getPath());
+            .getDeploymentConfigFile(config.getName()).getPath());
     }
 
     @Test
-    public void testRepoFileWithNoConfigNameAndDeploymentConfigSet()
+    public void testDeploymentConfigFileWithNoConfigNameAndExplicitDeploymentConfig()
         throws Exception {
+
         DeployConfRunner runner = new DeployConfRunner(false);
         DeploymentConfig config = new DeploymentConfig();
         File expected = new File("test.xml");
-        runner.setDeploymentConfig(expected);
+        runner.setDeploymentConfigFile(expected);
         assertEquals(expected.getPath(),
-            runner.getRepositoryConfigFile(config.getName()).getPath());
+            runner.getDeploymentConfigFile(config.getName()).getPath());
     }
 
     @Test
-    public void testRepoFileWithNoConfigNameAndExistingRepoDir()
+    public void testDeploymentConfigFileWithNoConfigNameAndExistingRepoDir()
         throws Exception {
 
         DeployConfRunner runner = new DeployConfRunner(false);
@@ -211,33 +214,35 @@ public class DeployConfRunnerTest {
             File expected =
                 new File(repoDir, DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected.getPath(),
-                runner.getRepositoryConfigFile(config.getName()).getPath());
+                runner.getDeploymentConfigFile(config.getName()).getPath());
         } finally {
             repoDir.delete();
         }
     }
 
     @Test
-    public void testRepoFileWithConfigNameAndNoRepo() throws Exception {
+    public void testDeploymentConfigFileWithConfigNameAndNoRepo()
+        throws Exception {
+
         DeployConfRunner runner = new DeployConfRunner(false);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
         assertEquals(name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX,
-            runner.getRepositoryConfigFile(config.getName()).getPath());
+            runner.getDeploymentConfigFile(config.getName()).getPath());
     }
 
     @Test
-    public void testRepoFileWithConfigNameAndDeploymentConfigSet()
+    public void testDeploymentConfigFileWithConfigNameAndExplicitDeploymentConfigFile()
         throws Exception {
         DeployConfRunner runner = new DeployConfRunner(false);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
         File expected = new File("test.xml");
-        runner.setDeploymentConfig(expected);
+        runner.setDeploymentConfigFile(expected);
         assertEquals(expected.getPath(),
-            runner.getRepositoryConfigFile(config.getName()).getPath());
+            runner.getDeploymentConfigFile(config.getName()).getPath());
     }
 
     @Test
@@ -257,7 +262,7 @@ public class DeployConfRunnerTest {
                 new File(repoDir, name + "-"
                     + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected.getPath(),
-                runner.getRepositoryConfigFile(config.getName()).getPath());
+                runner.getDeploymentConfigFile(config.getName()).getPath());
         } finally {
             repoDir.delete();
         }

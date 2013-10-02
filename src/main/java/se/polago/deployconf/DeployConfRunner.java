@@ -56,15 +56,32 @@ public class DeployConfRunner {
     private static Logger logger = LoggerFactory
         .getLogger(DeployConfRunner.class);
 
+    /**
+     * The deployment config file suffix to use when creating deploymentConfig
+     * paths.
+     */
     protected static final String DEPLOYMENT_CONFIG_SUFFIX =
         "deployment-config.xml";
 
+    /**
+     * Determine if we should be running interactively.
+     */
     private final boolean interactive;
 
-    private String deploymentTemplate = "META-INF/deployment-template.xml";
+    /**
+     * The Zip Path to the deployment template.
+     */
+    private String deploymentTemplatePath = "META-INF/deployment-template.xml";
 
-    private File deploymentConfig = null;
+    /**
+     * The explicit deployment config file to use. This is normally null.
+     */
+    private File deploymentConfigFile = null;
 
+    /**
+     * The local repository for storing deployment config files. Null means
+     * current directory.
+     */
     private String repositoryDirectory = null;
 
     /**
@@ -187,9 +204,9 @@ public class DeployConfRunner {
         int result = 0;
         DeploymentConfig template =
             getDeploymentConfig(getInputStreamFromZipFile(new File(source),
-                deploymentTemplate));
+                deploymentTemplatePath));
         DeploymentConfig config = null;
-        File repoFile = getRepositoryConfigFile(template.getName());
+        File repoFile = getDeploymentConfigFile(template.getName());
         if (repoFile.exists()) {
             logger.info("Loading Deployment Config from: "
                 + repoFile.getPath());
@@ -221,52 +238,47 @@ public class DeployConfRunner {
     }
 
     /**
-     * Gets the deploymentTemplate property value.
+     * Gets the deploymentTemplatePath property value.
      *
-     * @return the current value of the deploymentTemplate property
+     * @return the current value of the deploymentTemplatePath property
      */
-    public String getDeploymentTemplate() {
-        return deploymentTemplate;
+    public String getDeploymentTemplatePath() {
+        return deploymentTemplatePath;
     }
 
     /**
-     * Sets the deploymentTemplate property.
+     * Sets the deploymentTemplatePath property.
      *
-     * @param deploymentTemplate the new property value
+     * @param deploymentTemplatePath the new property value
      */
-    public void setDeploymentTemplate(String deploymentTemplate) {
-        this.deploymentTemplate = deploymentTemplate;
+    public void setDeploymentTemplatePath(String deploymentTemplatePath) {
+        this.deploymentTemplatePath = deploymentTemplatePath;
     }
 
     /**
-     * Gets the deploymentConfig property value.
+     * Sets the deploymentConfigFile property.
      *
-     * @return the current value of the deploymentConfig property
+     * @param deploymentConfigFile the new property value
      */
-    public File getDeploymentConfig() {
-        return deploymentConfig;
-    }
-
-    /**
-     * Sets the deploymentConfig property.
-     *
-     * @param deploymentConfig the new property value
-     */
-    public void setDeploymentConfig(File deploymentConfig) {
-        this.deploymentConfig = deploymentConfig;
+    public void setDeploymentConfigFile(File deploymentConfigFile) {
+        this.deploymentConfigFile = deploymentConfigFile;
     }
 
     /**
      * Gets the File to use for storing the DeploymentConfig.
+     * <p>
+     * Unless an explicit deployment config File is set, the File is created in
+     * the configured repository and based on the config name. If no repository
+     * is set, the current working directory is used.
      *
      * @param name the DeploymentConfig name to use
      * @return the current value of the deploymentConfig property
      */
-    public File getRepositoryConfigFile(String name) {
-        File result = getDeploymentConfig();
+    public File getDeploymentConfigFile(String name) {
+        File result = deploymentConfigFile;
 
-        if (deploymentConfig != null) {
-            result = deploymentConfig;
+        if (deploymentConfigFile != null) {
+            result = deploymentConfigFile;
         } else {
             if (name != null) {
                 result =
@@ -321,7 +333,7 @@ public class DeployConfRunner {
         try {
             srcStream = new FileInputStream(sourceFile);
             destStream = new FileOutputStream(destFile);
-            config.apply(srcStream, destStream, getDeploymentTemplate());
+            config.apply(srcStream, destStream, getDeploymentTemplatePath());
         } finally {
             if (srcStream != null) {
                 srcStream.close();
@@ -341,7 +353,7 @@ public class DeployConfRunner {
      */
     private void save(DeploymentConfig config) throws IOException {
         FileOutputStream os =
-            new FileOutputStream(getRepositoryConfigFile(config.getName()));
+            new FileOutputStream(getDeploymentConfigFile(config.getName()));
         config.save(os);
         os.close();
     }
