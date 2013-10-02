@@ -121,6 +121,16 @@ public class DeployConfRunner {
 
         boolean debugEnabled = false;
 
+        Option repoDir =
+            new Option("r", "repo-dir", true,
+                "Repository directory to use for storing deployment configs");
+        options.addOption(repoDir);
+
+        Option configFile =
+            new Option("f", "deployment-config-file", true,
+                "File to use for storing the deployment config");
+        options.addOption(configFile);
+
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine cmd = parser.parse(options, args);
@@ -163,6 +173,21 @@ public class DeployConfRunner {
 
             DeployConfRunner instance =
                 new DeployConfRunner(cmd.hasOption(interactive.getOpt()));
+
+            if (cmd.hasOption(repoDir.getOpt())) {
+                String rd = cmd.getOptionValue(repoDir.getOpt());
+                logger.debug("Using repository directory: {}", rd);
+                instance.setRepositoryDirectory(rd);
+            } else {
+                logger.debug("Using current working directory as repository");
+            }
+
+            if (cmd.hasOption(configFile.getOpt())) {
+                String f = cmd.getOptionValue(configFile.getOpt());
+                logger.debug("Using explicit deployment file: {}", f);
+                instance.setDeploymentConfigFile(new File(f));
+            }
+
             @SuppressWarnings("unchecked")
             List<String> argList = cmd.getArgList();
             if (argList.size() != 2) {
