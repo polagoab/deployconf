@@ -69,7 +69,7 @@ public class DeployConfRunnerTest {
                 InputStream is =
                     getClass().getClassLoader().getResourceAsStream(
                         zipPrefix + r);
-                assertNotNull(is);
+                assertNotNull("Unable to load resource: " + zipPrefix + r, is);
                 os.addStream(is, r);
             }
 
@@ -118,7 +118,7 @@ public class DeployConfRunnerTest {
                 InputStream is =
                     getClass().getClassLoader().getResourceAsStream(
                         zipPrefix + r);
-                assertNotNull(is);
+                assertNotNull("Unable to load resource: " + zipPrefix + r, is);
                 os.addStream(is, r);
             }
 
