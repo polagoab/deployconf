@@ -69,6 +69,7 @@ public class DeploymentReaderTest {
         DeploymentConfig config = reader.parse();
         assertNotNull(config);
         assertTrue(config.isEmpty());
+        assertNull(config.getName());
     }
 
 
@@ -83,5 +84,7 @@ public class DeploymentReaderTest {
         DeploymentConfig config = reader.parse();
         assertNotNull(config);
         assertTrue(!config.isEmpty());
+        assertEquals("simple", config.getName());
     }
+
 }

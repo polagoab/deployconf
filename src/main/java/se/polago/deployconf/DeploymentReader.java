@@ -48,6 +48,8 @@ public class DeploymentReader {
     private static Logger logger = LoggerFactory
         .getLogger(DeploymentReader.class);
 
+    private static final String ATTR_NAME = "name";
+
     private final InputStream inputStream;
 
     private final Map<String, Class<? extends Task>> handlerMapping;
@@ -79,8 +81,14 @@ public class DeploymentReader {
     public DeploymentConfig parse() throws Exception {
         SAXBuilder builder = new SAXBuilder();
         Document d = builder.build(inputStream);
+        String name = d.getRootElement().getAttributeValue(ATTR_NAME);
         List<Element> tasks = d.getRootElement().getChildren();
         DeploymentConfig result = new DeploymentConfig();
+
+        if (name != null) {
+            result.setName(name);
+        }
+
         for (Element e : tasks) {
             Task t = getTaskFromElement(e);
             result.addTask(t);

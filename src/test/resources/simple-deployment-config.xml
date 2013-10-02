@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<deployconf>
+<deployconf name="simple">
   <properties path="/WEB-INF/classes/deploy.properties">
     <property>
       <name>ldap.server</name>

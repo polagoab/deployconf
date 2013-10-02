@@ -40,7 +40,9 @@ import se.polago.deployconf.task.Task;
  */
 public class DeploymentWriter {
 
-    private static final String ROOT = "deployconf";
+    protected static final String DOM_ROOT = "deployconf";
+
+    protected static final String ATTR_NAME = "name";
 
     private final OutputStream outputStream;
 
@@ -66,7 +68,11 @@ public class DeploymentWriter {
         format.setExpandEmptyElements(true);
         XMLOutputter outputter = new XMLOutputter(format);
 
-        Element root = new Element(ROOT);
+        Element root = new Element(DOM_ROOT);
+        String name = deploymentConfig.getName();
+        if (name != null) {
+            root.setAttribute(ATTR_NAME, name);
+        }
         Document document = new Document();
         document.setRootElement(root);
 

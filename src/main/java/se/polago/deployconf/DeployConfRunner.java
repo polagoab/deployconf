@@ -56,15 +56,20 @@ public class DeployConfRunner {
     private static Logger logger = LoggerFactory
         .getLogger(DeployConfRunner.class);
 
+    protected static final String DEPLOYMENT_CONFIG_SUFFIX =
+        "deployment-config.xml";
+
     private final boolean interactive;
 
     private String deploymentTemplate = "META-INF/deployment-template.xml";
 
-    private File deploymentConfig = new File("deployment-config.xml");
+    private File deploymentConfig = null;
+
+    private String repositoryDirectory = null;
 
     /**
      * Public Constructor.
-     *
+     * 
      * @param interactive determine if the program should be running in
      * interactive mode or not
      */
@@ -74,7 +79,7 @@ public class DeployConfRunner {
 
     /**
      * Main entry point.
-     *
+     * 
      * @param args the runtime program arguments
      */
     public static void main(String[] args) {
@@ -162,7 +167,7 @@ public class DeployConfRunner {
 
     /**
      * Gets the Project Properteis for this program.
-     *
+     * 
      * @return the Project Properteis for this program
      * @throws IOException indicating failure to load properties
      */
@@ -172,7 +177,7 @@ public class DeployConfRunner {
 
     /**
      * Run this program.
-     *
+     * 
      * @param source the input file
      * @param destination the destination file
      * @return the exit status
@@ -217,7 +222,7 @@ public class DeployConfRunner {
 
     /**
      * Gets the deploymentTemplate property value.
-     *
+     * 
      * @return the current value of the deploymentTemplate property
      */
     public String getDeploymentTemplate() {
@@ -226,7 +231,7 @@ public class DeployConfRunner {
 
     /**
      * Sets the deploymentTemplate property.
-     *
+     * 
      * @param deploymentTemplate the new property value
      */
     public void setDeploymentTemplate(String deploymentTemplate) {
@@ -235,7 +240,7 @@ public class DeployConfRunner {
 
     /**
      * Gets the deploymentConfig property value.
-     *
+     * 
      * @return the current value of the deploymentConfig property
      */
     public File getDeploymentConfig() {
@@ -244,7 +249,7 @@ public class DeployConfRunner {
 
     /**
      * Sets the deploymentConfig property.
-     *
+     * 
      * @param deploymentConfig the new property value
      */
     public void setDeploymentConfig(File deploymentConfig) {
@@ -252,9 +257,54 @@ public class DeployConfRunner {
     }
 
     /**
+     * Gets the File to use for storing the DeploymentConfig.
+     * 
+     * @param config the DeploymentConfig to use
+     * @return the current value of the deploymentConfig property
+     */
+    public File getRepositoryConfigFile(DeploymentConfig config) {
+        File result = getDeploymentConfig();
+        String name = config.getName();
+
+        if (deploymentConfig != null) {
+            result = deploymentConfig;
+        } else {
+            if (name != null) {
+                result =
+                    new File(getRepositoryDirectory(), name + "-"
+                        + DEPLOYMENT_CONFIG_SUFFIX);
+            } else {
+                result =
+                    new File(getRepositoryDirectory(),
+                        DEPLOYMENT_CONFIG_SUFFIX);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the repositoryDirectory property value.
+     * 
+     * @return the current value of the repositoryDirectory property
+     */
+    public String getRepositoryDirectory() {
+        return repositoryDirectory;
+    }
+
+    /**
+     * Sets the repositoryDirectory property.
+     * 
+     * @param repositoryDirectory the new property value
+     */
+    public void setRepositoryDirectory(String repositoryDirectory) {
+        this.repositoryDirectory = repositoryDirectory;
+    }
+
+    /**
      * Apply the given DeploymentConfig to the source and create the
      * destination.
-     *
+     * 
      * @param config the DeploymentConfig to apply
      * @param source the input file
      * @param destination the destination file
@@ -286,19 +336,20 @@ public class DeployConfRunner {
 
     /**
      * Save the DeploymentConfig to the configured persistent storage.
-     *
+     * 
      * @param config the DeploymentConfig to save
      * @throws IOException indicating IO error
      */
     private void save(DeploymentConfig config) throws IOException {
-        FileOutputStream os = new FileOutputStream(deploymentConfig);
+        FileOutputStream os =
+            new FileOutputStream(getRepositoryConfigFile(config));
         config.save(os);
         os.close();
     }
 
     /**
      * Gets a InputStream instance from a plain file.
-     *
+     * 
      * @param file the path to the file
      * @return InputStream representing the file
      * @throws IOException indicating IO error
@@ -310,7 +361,7 @@ public class DeployConfRunner {
 
     /**
      * Gets a InputStream for a path in a Zip Archive.
-     *
+     * 
      * @param file the Zip Archive to use
      * @param path the path to the file in the Zip Archive
      * @return InputStream representing the path
@@ -329,7 +380,7 @@ public class DeployConfRunner {
      * Gets a DeploymentConfig instance from a InputStream.
      * <p>
      * Note that the InputStream is closed after successful invocation.
-     *
+     * 
      * @param is the InpoutStream to use
      * @return a DeploymentConfig representation of the InputStream
      * @throws Exception indicating error
@@ -343,4 +394,5 @@ public class DeployConfRunner {
 
         return result;
     }
+
 }

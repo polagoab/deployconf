@@ -24,11 +24,13 @@
 
 package se.polago.deployconf;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 /**
@@ -37,7 +39,7 @@ import org.junit.Test;
 public class DeploymentWriterTest {
 
     @Test
-    public void testPersistEmptyConfig() throws IOException {
+    public void testPersistEmptyConfig() throws Exception {
         DeploymentConfig deploymentConfig = new DeploymentConfig();
         TestTask task = new TestTask();
         deploymentConfig.addTask(task);
@@ -46,7 +48,38 @@ public class DeploymentWriterTest {
         DeploymentWriter writer = new DeploymentWriter(os);
 
         writer.persist(deploymentConfig);
-        assertTrue(os.toString().contains(task.getSerializedName()));
+
+        ByteArrayInputStream is =
+            new ByteArrayInputStream(os.toByteArray().clone());
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+
+        assertEquals(DeploymentWriter.DOM_ROOT, d.getRootElement().getName());
+        assertNotNull(d.getRootElement().getChild(task.getSerializedName()));
+    }
+
+    @Test
+    public void testPersistEmptyConfigWithName() throws Exception {
+        DeploymentConfig deploymentConfig = new DeploymentConfig();
+        TestTask task = new TestTask();
+        deploymentConfig.addTask(task);
+        String name = "test";
+        deploymentConfig.setName(name);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        DeploymentWriter writer = new DeploymentWriter(os);
+
+        writer.persist(deploymentConfig);
+
+        ByteArrayInputStream is =
+            new ByteArrayInputStream(os.toByteArray().clone());
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+
+        assertEquals(DeploymentWriter.DOM_ROOT, d.getRootElement().getName());
+        assertEquals(name,
+            d.getRootElement().getAttributeValue(DeploymentWriter.ATTR_NAME));
+        assertNotNull(d.getRootElement().getChild(task.getSerializedName()));
     }
 
 }

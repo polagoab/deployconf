@@ -52,11 +52,31 @@ public class DeploymentConfig {
 
     private final List<Task> tasks;
 
+    private String name;
+
     /**
      * Public Constructor.
      */
     public DeploymentConfig() {
         tasks = new ArrayList<Task>();
+    }
+
+    /**
+     * Gets the name property value.
+     *
+     * @return the current value of the name property
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name property.
+     *
+     * @param name the new property value
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -89,6 +109,8 @@ public class DeploymentConfig {
      * value.
      */
     public boolean merge(DeploymentConfig template) {
+
+        setName(template.getName());
 
         // Remove all tasks that isn't available in the template since they are
         // not used anymore
