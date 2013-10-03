@@ -128,7 +128,7 @@ public class DeployConfRunner {
         boolean debugEnabled = false;
 
         Option repoDir =
-            new Option("r", "repo-dir", true,
+            new Option("r", "repo", true,
                 "Repository directory to use for storing deployment configs");
         options.addOption(repoDir);
 
