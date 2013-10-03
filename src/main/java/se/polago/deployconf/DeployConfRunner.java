@@ -255,7 +255,7 @@ public class DeployConfRunner {
                 save(config);
                 apply(config, source, destination);
             } else {
-                System.err.println("Template configuration " + "has changed.");
+                System.err.println("Deployment Configuration is incomplete");
                 System.err.println("Edit '" + repoFile
                     + "' and make sure that each "
                     + "deployment property has a valid value");
