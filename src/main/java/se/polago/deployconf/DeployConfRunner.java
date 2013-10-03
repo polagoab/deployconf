@@ -85,6 +85,12 @@ public class DeployConfRunner {
     private String repositoryDirectory = null;
 
     /**
+     * The Environment Variable used to set the local repository for storing
+     * config files. This may be overridden by command line options.
+     */
+    private static final String ENV_DEPLOYCONF_REPO = "DEPLOYCONF_REPO";
+
+    /**
      * Public Constructor.
      *
      * @param interactive determine if the program should be running in
@@ -132,6 +138,7 @@ public class DeployConfRunner {
         options.addOption(configFile);
 
         CommandLineParser parser = new GnuParser();
+
         try {
             CommandLine cmd = parser.parse(options, args);
             ProjectProperties projectProperties = getProjectProperties();
@@ -174,10 +181,18 @@ public class DeployConfRunner {
             DeployConfRunner instance =
                 new DeployConfRunner(cmd.hasOption(interactive.getOpt()));
 
+            String envRepoDir =
+                instance.getRepositoryDirectoryFromEnvironment();
+
             if (cmd.hasOption(repoDir.getOpt())) {
                 String rd = cmd.getOptionValue(repoDir.getOpt());
                 logger.debug("Using repository directory: {}", rd);
                 instance.setRepositoryDirectory(rd);
+            } else if (envRepoDir != null) {
+                logger.debug(
+                    "Using repository directory from environment {}: {}",
+                    ENV_DEPLOYCONF_REPO, envRepoDir);
+                instance.setRepositoryDirectory(envRepoDir);
             } else {
                 logger.debug("Using current working directory as repository");
             }
@@ -205,16 +220,6 @@ public class DeployConfRunner {
             }
             logger.error(msg, e);
         }
-    }
-
-    /**
-     * Gets the Project Properteis for this program.
-     *
-     * @return the Project Properteis for this program
-     * @throws IOException indicating failure to load properties
-     */
-    private static ProjectProperties getProjectProperties() throws IOException {
-        return ProjectProperties.instance();
     }
 
     /**
@@ -335,6 +340,25 @@ public class DeployConfRunner {
      */
     public void setRepositoryDirectory(String repositoryDirectory) {
         this.repositoryDirectory = repositoryDirectory;
+    }
+
+    /**
+     * Gets the repository directory from the Environment, if possible.
+     *
+     * @return a repository directory or null indicating not set
+     */
+    protected String getRepositoryDirectoryFromEnvironment() {
+        return System.getenv(ENV_DEPLOYCONF_REPO);
+    }
+
+    /**
+     * Gets the Project Properties for this program.
+     *
+     * @return the Project Properteis for this program
+     * @throws IOException indicating failure to load properties
+     */
+    private static ProjectProperties getProjectProperties() throws IOException {
+        return ProjectProperties.instance();
     }
 
     /**
