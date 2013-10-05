@@ -57,6 +57,18 @@ public class DeployConfRunner {
         .getLogger(DeployConfRunner.class);
 
     /**
+     * The Environment Variable used to set the local repository for storing
+     * config files. This may be overridden by command line options.
+     */
+    private static final String ENV_DEPLOYCONF_REPO = "DEPLOYCONF_REPO";
+
+    /**
+     * The default deployment template path to use.
+     */
+    private static final String DEFAULT_TEMPLATE_PATH =
+        "META-INF/deployment-template.xml";
+
+    /**
      * The deployment config file suffix to use when creating deploymentConfig
      * paths.
      */
@@ -71,7 +83,7 @@ public class DeployConfRunner {
     /**
      * The Zip Path to the deployment template.
      */
-    private String deploymentTemplatePath = "META-INF/deployment-template.xml";
+    private String deploymentTemplatePath = DEFAULT_TEMPLATE_PATH;
 
     /**
      * The explicit deployment config file to use. This is normally null.
@@ -83,12 +95,6 @@ public class DeployConfRunner {
      * current directory.
      */
     private String repositoryDirectory = null;
-
-    /**
-     * The Environment Variable used to set the local repository for storing
-     * config files. This may be overridden by command line options.
-     */
-    private static final String ENV_DEPLOYCONF_REPO = "DEPLOYCONF_REPO";
 
     /**
      * Public Constructor.
@@ -136,6 +142,13 @@ public class DeployConfRunner {
             new Option("f", "deployment-config-file", true,
                 "File to use for storing the deployment config");
         options.addOption(configFile);
+
+        Option templatePath =
+            new Option("t", "deployment-template-path", true,
+                "Path to use for locating the deployment template in the "
+                    + "<INPUT> file. Default is '" + DEFAULT_TEMPLATE_PATH
+                    + "'");
+        options.addOption(templatePath);
 
         CommandLineParser parser = new GnuParser();
 
@@ -201,6 +214,12 @@ public class DeployConfRunner {
                 String f = cmd.getOptionValue(configFile.getOpt());
                 logger.debug("Using explicit deployment file: {}", f);
                 instance.setDeploymentConfigFile(new File(f));
+            }
+
+            if (cmd.hasOption(templatePath.getOpt())) {
+                String path = cmd.getOptionValue(templatePath.getOpt());
+                logger.debug("Using deployment template path: {}", path);
+                instance.setDeploymentTemplatePath(path);
             }
 
             @SuppressWarnings("unchecked")
@@ -432,7 +451,11 @@ public class DeployConfRunner {
 
         ZipFile zipFile = new ZipFile(file);
         ZipEntry entry = zipFile.getEntry(path);
-
+        if (entry == null) {
+            throw new IllegalArgumentException(
+                "No deployment template file found in file '" + file.getPath()
+                    + "': " + path);
+        }
         return zipFile.getInputStream(entry);
     }
 
