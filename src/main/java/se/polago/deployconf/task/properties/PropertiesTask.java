@@ -25,6 +25,7 @@
 package se.polago.deployconf.task.properties;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -32,13 +33,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jdom2.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import se.polago.deployconf.InteractiveConfigurer;
 import se.polago.deployconf.task.AbstractTask;
 
 /**
  * Deployment Task for creating properties in a file.
  */
 public class PropertiesTask extends AbstractTask {
+
+    private static Logger logger = LoggerFactory
+        .getLogger(PropertiesTask.class);
 
     /**
      * Task element name in config file.
@@ -133,8 +140,20 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively() {
-        return false;
+    public boolean configureInteractively() throws Exception {
+        boolean result = true;
+        InteractiveConfigurer configurer = newInteractiveConfigurer();
+
+        for (Property p : properties) {
+            if (p.getValue() == null || p.getValue().length() == 0) {
+                result = configurePropertyInteractively(p, configurer);
+                if (result == false) {
+                    return result;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -198,6 +217,34 @@ public class PropertiesTask extends AbstractTask {
             result =
                 getPath().equals(otherTask.getPath())
                     && getProperties().equals(otherTask.getProperties());
+        }
+
+        return result;
+    }
+
+    /**
+     * Configure a Property by asking the user.
+     *
+     * @param p the Property to configure
+     * @param configurer the InteractiveConfigurer to use
+     * @return true if the property was configured
+     * @throws IOException indicating IO failure
+     */
+    private boolean configurePropertyInteractively(Property p,
+        InteractiveConfigurer configurer) throws IOException {
+
+        boolean result = false;
+
+        logger.debug("Configure interactively: {}", p.getName());
+
+        String value =
+            configurer.configure(p.getName(), p.getDescription(),
+                p.getDefaultValue());
+        logger.debug("Configure interactively result for '{}': {}",
+            p.getName(), value);
+        if (value != null) {
+            p.setValue(value);
+            result = true;
         }
 
         return result;

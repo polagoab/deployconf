@@ -37,6 +37,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 
+import se.polago.deployconf.InteractiveConfigurer;
+import se.polago.deployconf.TestInteractiveConfigurer;
+
 /**
  * Tests the {@link PropertiesTask} class.
  */
@@ -144,24 +147,73 @@ public class PropertiesTaskTest {
         assertEquals("\ntest-property=test-value\n", out.toString());
     }
 
-    /*
     @Test
-    public void testApplyAndExpandProperty() throws Exception {
-        PropertiesTask task = new PropertiesTask();
-        Property p1 = new Property("test-property", null, null, "test-value");
-        Property p2 =
-            new Property("test-another-property", null, null,
-                "${test-property}");
+    public void testIncompleteInteractiveConfigure() throws Exception {
+        final TestInteractiveConfigurer configurer =
+            new TestInteractiveConfigurer();
+
+        PropertiesTask task = new PropertiesTask() {
+            @Override
+            protected InteractiveConfigurer newInteractiveConfigurer() {
+                return configurer;
+            }
+
+        };
+
+        Property p =
+            new Property("test-property", "test-description", "default-value",
+                null);
         HashSet<Property> list = new HashSet<Property>();
-        list.add(p1);
-        list.add(p2);
+        list.add(p);
         task.setProperties(list);
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out);
-        assertEquals(
-            "\ntest-property=test-value\n\ntest-another-property=test-value\n",
-            out.toString());
+        boolean result = task.configureInteractively();
+
+        assertFalse(result);
+        assertTrue(configurer.isCalled);
+        assertNull(p.getValue());
     }
-    */
+
+    @Test
+    public void testCompletedInteractiveConfigure() throws Exception {
+        String expected = "interactive-value";
+
+        final TestInteractiveConfigurer configurer =
+            new TestInteractiveConfigurer();
+
+        configurer.value = expected;
+
+        PropertiesTask task = new PropertiesTask() {
+            @Override
+            protected InteractiveConfigurer newInteractiveConfigurer() {
+                return configurer;
+            }
+
+        };
+
+        Property p =
+            new Property("test-property", "test-description", "default-value",
+                null);
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+
+        boolean result = task.configureInteractively();
+
+        assertTrue(result);
+        assertTrue(configurer.isCalled);
+        assertEquals(expected, p.getValue());
+    }
+
+    /*
+     * @Test public void testApplyAndExpandProperty() throws Exception {
+     * PropertiesTask task = new PropertiesTask(); Property p1 = new
+     * Property("test-property", null, null, "test-value"); Property p2 = new
+     * Property("test-another-property", null, null, "${test-property}");
+     * HashSet<Property> list = new HashSet<Property>(); list.add(p1);
+     * list.add(p2); task.setProperties(list); ByteArrayOutputStream out = new
+     * ByteArrayOutputStream(); task.apply(null, out); assertEquals(
+     * "\ntest-property=test-value\n\ntest-another-property=test-value\n",
+     * out.toString()); }
+     */
 }

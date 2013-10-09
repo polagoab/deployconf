@@ -26,6 +26,7 @@ package se.polago.deployconf.task.filter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -35,13 +36,18 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.jdom2.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import se.polago.deployconf.InteractiveConfigurer;
 import se.polago.deployconf.task.AbstractTask;
 
 /**
  * Deployment Task for filtering tokens in a file.
  */
 public class FilterTask extends AbstractTask {
+
+    private static Logger logger = LoggerFactory.getLogger(FilterTask.class);
 
     /**
      * Task element name in config file.
@@ -152,8 +158,20 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively() {
-        return false;
+    public boolean configureInteractively() throws Exception {
+        boolean result = true;
+        InteractiveConfigurer configurer = newInteractiveConfigurer();
+
+        for (FilterToken t : tokens) {
+            if (t.getValue() == null || t.getValue().length() == 0) {
+                result = configureTokenInteractively(t, configurer);
+                if (result == false) {
+                    return result;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -229,6 +247,34 @@ public class FilterTask extends AbstractTask {
         }
 
         return line;
+    }
+
+    /**
+     * Configure a FilterToken by asking the user.
+     *
+     * @param t the FilterToken to configure
+     * @param configurer the InteractiveConfigurer to use
+     * @return true if the token was configured
+     * @throws IOException indicating IO failure
+     */
+    private boolean configureTokenInteractively(FilterToken t,
+        InteractiveConfigurer configurer) throws IOException {
+
+        boolean result = false;
+
+        logger.debug("Configure interactively: {}", t.getRegex().toString());
+
+        String value =
+            configurer.configure(t.getRegex().toString(), t.getDescription(),
+                t.getDefaultValue());
+        logger.debug("Configure interactively result for '{}': {}", t
+            .getRegex().toString(), value);
+        if (value != null) {
+            t.setValue(value);
+            result = true;
+        }
+
+        return result;
     }
 
 }

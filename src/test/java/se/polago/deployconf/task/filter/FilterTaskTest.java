@@ -38,6 +38,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 
+import se.polago.deployconf.InteractiveConfigurer;
+import se.polago.deployconf.TestInteractiveConfigurer;
+
 /**
  * Tests the {@link FilterTask} class.
  */
@@ -133,5 +136,63 @@ public class FilterTaskTest {
         task.apply(in, out);
 
         assertEquals("test-value\n", out.toString());
+    }
+
+    @Test
+    public void testIncompleteInteractiveConfigure() throws Exception {
+        final TestInteractiveConfigurer configurer =
+            new TestInteractiveConfigurer();
+
+        FilterTask task = new FilterTask() {
+            @Override
+            protected InteractiveConfigurer newInteractiveConfigurer() {
+                return configurer;
+            }
+
+        };
+
+        FilterToken p =
+            new FilterToken("test-regex", "test-description", "default-value",
+                null);
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(p);
+        task.setTokens(list);
+
+        boolean result = task.configureInteractively();
+
+        assertFalse(result);
+        assertTrue(configurer.isCalled);
+        assertNull(p.getValue());
+    }
+
+    @Test
+    public void testCompletedInteractiveConfigure() throws Exception {
+        String expected = "interactive-value";
+
+        final TestInteractiveConfigurer configurer =
+            new TestInteractiveConfigurer();
+
+        configurer.value = expected;
+
+        FilterTask task = new FilterTask() {
+            @Override
+            protected InteractiveConfigurer newInteractiveConfigurer() {
+                return configurer;
+            }
+
+        };
+
+        FilterToken p =
+            new FilterToken("test-regex", "test-description", "default-value",
+                null);
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(p);
+        task.setTokens(list);
+
+        boolean result = task.configureInteractively();
+
+        assertTrue(result);
+        assertTrue(configurer.isCalled);
+        assertEquals(expected, p.getValue());
     }
 }

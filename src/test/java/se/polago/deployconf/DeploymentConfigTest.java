@@ -97,7 +97,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testSuccessfulInteractiveMerge() {
+    public void testSuccessfulInteractiveMerge() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
         TestTask task = new TestTask();
@@ -108,7 +108,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testUnsuccessfulInteractiveMerge() {
+    public void testUnsuccessfulInteractiveMerge() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
         TestTask task = new TestTask();

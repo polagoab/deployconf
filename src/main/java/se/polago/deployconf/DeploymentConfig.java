@@ -86,8 +86,10 @@ public class DeploymentConfig {
      *
      * @return true if the user successfully configured all non-configured
      * Tasks
+     * @throws Exception indicating processing failure
      */
-    public boolean interactiveMerge() {
+    public boolean interactiveMerge() throws Exception {
+        logger.debug("Configure all Tasks interactively");
         boolean result = true;
         for (Task t : tasks) {
             if (!t.isConfigured()) {
