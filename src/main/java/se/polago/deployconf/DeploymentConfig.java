@@ -27,6 +27,7 @@ package se.polago.deployconf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,13 +86,17 @@ public class DeploymentConfig {
      * For each non-configured Task, ask the user to configure the task.
      *
      * @param configurer the IntercativeConfigurer to use
-     * @return true if the user successfully configured all non-configured Tasks
+     * @return true if the user successfully configured all non-configured
+     * Tasks
      * @throws Exception indicating processing failure
      */
     public boolean interactiveMerge(InteractiveConfigurer configurer)
         throws Exception {
-        logger.debug("Configure all Tasks interactively");
+        logger.debug("Configure Tasks interactively");
         boolean result = true;
+
+        printIntercativePreamble(configurer.getWriter());
+
         for (Task t : tasks) {
             if (!t.isConfigured()) {
                 boolean tr = t.configureInteractively(configurer);
@@ -102,6 +107,17 @@ public class DeploymentConfig {
         }
 
         return result;
+    }
+
+    /**
+     * Print a preamble to prepare the user to configure interactively.
+     *
+     * @param writer the PrintWriter to use
+     */
+    private void printIntercativePreamble(PrintWriter writer) {
+        writer.println();
+        writer.println("One or more configuration properties needs a value");
+        writer.println();
     }
 
     /**

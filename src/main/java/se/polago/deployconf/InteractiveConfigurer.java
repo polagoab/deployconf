@@ -25,6 +25,7 @@
 package se.polago.deployconf;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Interactive Configurer that ask the user for the value.
@@ -44,4 +45,10 @@ public interface InteractiveConfigurer {
     String configure(String name, String description, String defaultValue)
         throws IOException;
 
+    /**
+     * Gets the PrintWriter to use when interacting with a user.
+     *
+     * @return a PrintWriter instance
+     */
+    PrintWriter getWriter();
 }

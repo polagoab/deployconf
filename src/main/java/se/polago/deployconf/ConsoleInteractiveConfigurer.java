@@ -25,6 +25,7 @@
 package se.polago.deployconf;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import jline.console.ConsoleReader;
 
@@ -35,6 +36,8 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
 
     private final ConsoleReader reader;
 
+    private final PrintWriter writer;
+
     /**
      * Public Constructor.
      *
@@ -43,10 +46,12 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
     public ConsoleInteractiveConfigurer() throws IOException {
         reader = new ConsoleReader();
         reader.setBellEnabled(false);
+        writer = new PrintWriter(System.out, true);
     }
 
     /**
      * {@inheritDoc}
+     *
      * @throws IOException
      */
     @Override
@@ -55,9 +60,9 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
 
         String value = null;
 
-        System.out.println();
-        System.out.println(description);
-        System.out.println();
+        writer.println();
+        writer.println(description);
+        writer.println();
 
         StringBuilder prompt = new StringBuilder(name);
         if (defaultValue != null) {
@@ -74,13 +79,21 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
         }
 
         if (value != null) {
-            System.out.println();
-            System.out.print("==> '");
-            System.out.print(value);
-            System.out.println("'");
-            System.out.println();
+            writer.println();
+            writer.print("==> '");
+            writer.print(value);
+            writer.println("'");
+            writer.println();
         }
         return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PrintWriter getWriter() {
+        return writer;
     }
 
 }

@@ -24,12 +24,16 @@
 
 package se.polago.deployconf;
 
+import java.io.PrintWriter;
+
 /**
  *
  */
 public class TestInteractiveConfigurer implements InteractiveConfigurer {
 
     public String value = null;
+
+    public PrintWriter writer = new PrintWriter(System.out);
 
     public boolean isCalled;
 
@@ -42,6 +46,14 @@ public class TestInteractiveConfigurer implements InteractiveConfigurer {
 
         isCalled = true;
         return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PrintWriter getWriter() {
+        return writer;
     }
 
 }
