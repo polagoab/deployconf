@@ -140,9 +140,10 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively() throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer)
+        throws Exception {
+
         boolean result = true;
-        InteractiveConfigurer configurer = newInteractiveConfigurer();
 
         for (Property p : properties) {
             if (p.getValue() == null || p.getValue().length() == 0) {

@@ -38,7 +38,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 
-import se.polago.deployconf.InteractiveConfigurer;
 import se.polago.deployconf.TestInteractiveConfigurer;
 
 /**
@@ -105,16 +104,16 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
         task.setPath("test-path");
         FilterToken t =
-            new FilterToken("test-regex", "test-description", "test-default-value",
-                "test-value");
+            new FilterToken("test-regex", "test-description",
+                "test-default-value", "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
         task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">" +
-            "<token><regex>test-regex</regex>"
+        assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">"
+            + "<token><regex>test-regex</regex>"
             + "<description>test-description</description>"
             + "<default>test-default-value</default><value>test-value</value>"
             + "</token></filter>", outputter.outputString(node));
@@ -123,8 +122,7 @@ public class FilterTaskTest {
     @Test
     public void testApply() throws Exception {
         FilterTask task = new FilterTask();
-        FilterToken t =
-            new FilterToken("d..a", null, null, "value");
+        FilterToken t = new FilterToken("d..a", null, null, "value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
@@ -140,16 +138,9 @@ public class FilterTaskTest {
 
     @Test
     public void testIncompleteInteractiveConfigure() throws Exception {
-        final TestInteractiveConfigurer configurer =
-            new TestInteractiveConfigurer();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        FilterTask task = new FilterTask() {
-            @Override
-            protected InteractiveConfigurer newInteractiveConfigurer() {
-                return configurer;
-            }
-
-        };
+        FilterTask task = new FilterTask();
 
         FilterToken p =
             new FilterToken("test-regex", "test-description", "default-value",
@@ -158,7 +149,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively();
+        boolean result = task.configureInteractively(configurer);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -169,18 +160,11 @@ public class FilterTaskTest {
     public void testCompletedInteractiveConfigure() throws Exception {
         String expected = "interactive-value";
 
-        final TestInteractiveConfigurer configurer =
-            new TestInteractiveConfigurer();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
         configurer.value = expected;
 
-        FilterTask task = new FilterTask() {
-            @Override
-            protected InteractiveConfigurer newInteractiveConfigurer() {
-                return configurer;
-            }
-
-        };
+        FilterTask task = new FilterTask();
 
         FilterToken p =
             new FilterToken("test-regex", "test-description", "default-value",
@@ -189,7 +173,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively();
+        boolean result = task.configureInteractively(configurer);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);

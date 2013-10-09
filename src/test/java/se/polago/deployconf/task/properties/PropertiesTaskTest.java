@@ -37,7 +37,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 
-import se.polago.deployconf.InteractiveConfigurer;
 import se.polago.deployconf.TestInteractiveConfigurer;
 
 /**
@@ -149,16 +148,9 @@ public class PropertiesTaskTest {
 
     @Test
     public void testIncompleteInteractiveConfigure() throws Exception {
-        final TestInteractiveConfigurer configurer =
-            new TestInteractiveConfigurer();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        PropertiesTask task = new PropertiesTask() {
-            @Override
-            protected InteractiveConfigurer newInteractiveConfigurer() {
-                return configurer;
-            }
-
-        };
+        PropertiesTask task = new PropertiesTask();
 
         Property p =
             new Property("test-property", "test-description", "default-value",
@@ -167,7 +159,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively();
+        boolean result = task.configureInteractively(configurer);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -178,18 +170,11 @@ public class PropertiesTaskTest {
     public void testCompletedInteractiveConfigure() throws Exception {
         String expected = "interactive-value";
 
-        final TestInteractiveConfigurer configurer =
-            new TestInteractiveConfigurer();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
         configurer.value = expected;
 
-        PropertiesTask task = new PropertiesTask() {
-            @Override
-            protected InteractiveConfigurer newInteractiveConfigurer() {
-                return configurer;
-            }
-
-        };
+        PropertiesTask task = new PropertiesTask();
 
         Property p =
             new Property("test-property", "test-description", "default-value",
@@ -198,7 +183,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively();
+        boolean result = task.configureInteractively(configurer);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);

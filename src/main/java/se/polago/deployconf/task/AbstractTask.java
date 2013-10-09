@@ -24,12 +24,7 @@
 
 package se.polago.deployconf.task;
 
-import java.io.IOException;
-
 import org.jdom2.Element;
-
-import se.polago.deployconf.ConsoleInteractiveConfigurer;
-import se.polago.deployconf.InteractiveConfigurer;
 
 /**
  * Common implementation of a deployment Task.
@@ -99,16 +94,5 @@ public abstract class AbstractTask implements Task {
         }
 
         return result;
-    }
-
-    /**
-     * Create a InteractiveConfigurer instance.
-     *
-     * @return a InteractiveConfigurer instance.
-     * @throws IOException indicating failure
-     */
-    protected InteractiveConfigurer newInteractiveConfigurer()
-        throws IOException {
-        return new ConsoleInteractiveConfigurer();
     }
 }

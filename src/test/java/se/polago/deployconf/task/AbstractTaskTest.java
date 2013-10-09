@@ -35,6 +35,8 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
+import se.polago.deployconf.InteractiveConfigurer;
+
 /**
  * Tests the {@link AbstractTask} class.
  */
@@ -48,7 +50,7 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public boolean configureInteractively() {
+        public boolean configureInteractively(InteractiveConfigurer configurer) {
             return true;
         }
 

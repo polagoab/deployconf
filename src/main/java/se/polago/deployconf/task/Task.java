@@ -5,6 +5,8 @@ import java.io.OutputStream;
 
 import org.jdom2.Element;
 
+import se.polago.deployconf.InteractiveConfigurer;
+
 /**
  * Describes a deployment task.
  */
@@ -41,10 +43,12 @@ public interface Task {
     /**
      * Configure the task by asking the user for inputs.
      *
+     * @param configurer the InteractiveConfigurer to use
      * @return true if the task was configured
      * @throws Exception indicating processing failure
      */
-    boolean configureInteractively() throws Exception;
+    boolean configureInteractively(InteractiveConfigurer configurer)
+        throws Exception;
 
     /**
      * Serialize this Task to a JDOM Element.

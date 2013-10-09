@@ -84,16 +84,17 @@ public class DeploymentConfig {
      * <p>
      * For each non-configured Task, ask the user to configure the task.
      *
-     * @return true if the user successfully configured all non-configured
-     * Tasks
+     * @param configurer the IntercativeConfigurer to use
+     * @return true if the user successfully configured all non-configured Tasks
      * @throws Exception indicating processing failure
      */
-    public boolean interactiveMerge() throws Exception {
+    public boolean interactiveMerge(InteractiveConfigurer configurer)
+        throws Exception {
         logger.debug("Configure all Tasks interactively");
         boolean result = true;
         for (Task t : tasks) {
             if (!t.isConfigured()) {
-                boolean tr = t.configureInteractively();
+                boolean tr = t.configureInteractively(configurer);
                 if (tr == false) {
                     result = false;
                 }

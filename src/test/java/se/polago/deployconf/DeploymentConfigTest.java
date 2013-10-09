@@ -100,21 +100,23 @@ public class DeploymentConfigTest {
     public void testSuccessfulInteractiveMerge() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
         TestTask task = new TestTask();
         task.interactive = true;
         template.addTask(task);
         assertFalse(config.merge(template));
-        assertTrue(config.interactiveMerge());
+        assertTrue(config.interactiveMerge(configurer));
     }
 
     @Test
     public void testUnsuccessfulInteractiveMerge() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
         TestTask task = new TestTask();
         template.addTask(task);
         assertFalse(config.merge(template));
-        assertFalse(config.interactiveMerge());
+        assertFalse(config.interactiveMerge(configurer));
     }
 
     @Test

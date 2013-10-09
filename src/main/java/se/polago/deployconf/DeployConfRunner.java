@@ -270,7 +270,8 @@ public class DeployConfRunner {
             apply(config, source, destination);
         } else {
             // Needs manual merge
-            if (interactive && config.interactiveMerge()) {
+            if (interactive
+                && config.interactiveMerge(newInteractiveConfigurer())) {
                 save(config);
                 apply(config, source, destination);
             } else {
@@ -359,6 +360,17 @@ public class DeployConfRunner {
      */
     public void setRepositoryDirectory(String repositoryDirectory) {
         this.repositoryDirectory = repositoryDirectory;
+    }
+
+    /**
+     * Create a InteractiveConfigurer instance.
+     *
+     * @return a InteractiveConfigurer instance.
+     * @throws IOException indicating failure
+     */
+    protected InteractiveConfigurer newInteractiveConfigurer()
+        throws IOException {
+        return new ConsoleInteractiveConfigurer();
     }
 
     /**

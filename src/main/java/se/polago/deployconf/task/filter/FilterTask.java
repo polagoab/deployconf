@@ -158,9 +158,10 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively() throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer)
+        throws Exception {
+
         boolean result = true;
-        InteractiveConfigurer configurer = newInteractiveConfigurer();
 
         for (FilterToken t : tokens) {
             if (t.getValue() == null || t.getValue().length() == 0) {
