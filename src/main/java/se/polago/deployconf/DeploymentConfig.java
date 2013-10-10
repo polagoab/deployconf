@@ -86,20 +86,29 @@ public class DeploymentConfig {
      * For each non-configured Task, ask the user to configure the task.
      *
      * @param configurer the IntercativeConfigurer to use
+     * @param forceInteractive if true, all tasks will be considered not
+     * configured
      * @return true if the user successfully configured all non-configured
      * Tasks
      * @throws Exception indicating processing failure
      */
-    public boolean interactiveMerge(InteractiveConfigurer configurer)
-        throws Exception {
-        logger.debug("Configure Tasks interactively");
+    public boolean interactiveMerge(InteractiveConfigurer configurer,
+        boolean forceInteractive) throws Exception {
+
+        if (forceInteractive) {
+            logger.debug("Configure all Tasks interactively");
+        } else {
+            logger.debug("Configure Tasks interactively");
+        }
+
         boolean result = true;
 
         printIntercativePreamble(configurer.getWriter());
 
         for (Task t : tasks) {
-            if (!t.isConfigured()) {
-                boolean tr = t.configureInteractively(configurer);
+            if (forceInteractive || !t.isConfigured()) {
+                boolean tr =
+                    t.configureInteractively(configurer, forceInteractive);
                 if (tr == false) {
                     result = false;
                 }

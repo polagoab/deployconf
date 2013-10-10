@@ -140,13 +140,13 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer)
-        throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer,
+        boolean force) throws Exception {
 
         boolean result = true;
 
         for (Property p : properties) {
-            if (p.getValue() == null || p.getValue().length() == 0) {
+            if (force || p.getValue() == null || p.getValue().length() == 0) {
                 result = configurePropertyInteractively(p, configurer);
                 if (result == false) {
                     return result;
@@ -238,11 +238,18 @@ public class PropertiesTask extends AbstractTask {
 
         logger.debug("Configure interactively: {}", p.getName());
 
+        String defaultValue = p.getValue();
+        if (defaultValue == null) {
+            defaultValue = p.getDefaultValue();
+        }
+
         String value =
-            configurer.configure(p.getName(), p.getDescription(),
-                p.getDefaultValue());
+            configurer
+                .configure(p.getName(), p.getDescription(), defaultValue);
+
         logger.debug("Configure interactively result for '{}': {}",
             p.getName(), value);
+
         if (value != null) {
             p.setValue(value);
             result = true;

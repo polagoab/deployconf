@@ -159,7 +159,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer);
+        boolean result = task.configureInteractively(configurer, false);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -183,22 +183,34 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer);
+        boolean result = task.configureInteractively(configurer, false);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
         assertEquals(expected, p.getValue());
     }
 
-    /*
-     * @Test public void testApplyAndExpandProperty() throws Exception {
-     * PropertiesTask task = new PropertiesTask(); Property p1 = new
-     * Property("test-property", null, null, "test-value"); Property p2 = new
-     * Property("test-another-property", null, null, "${test-property}");
-     * HashSet<Property> list = new HashSet<Property>(); list.add(p1);
-     * list.add(p2); task.setProperties(list); ByteArrayOutputStream out = new
-     * ByteArrayOutputStream(); task.apply(null, out); assertEquals(
-     * "\ntest-property=test-value\n\ntest-another-property=test-value\n",
-     * out.toString()); }
-     */
+    @Test
+    public void testForceInteractiveConfigure() throws Exception {
+        String expected = "interactive-value";
+
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
+
+        configurer.value = expected;
+
+        PropertiesTask task = new PropertiesTask();
+
+        Property p =
+            new Property("test-property", "test-description", "default-value",
+                "test-value");
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+
+        boolean result = task.configureInteractively(configurer, true);
+
+        assertTrue(result);
+        assertTrue(configurer.isCalled);
+        assertEquals(expected, p.getValue());
+    }
 }

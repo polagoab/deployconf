@@ -105,7 +105,8 @@ public class DeploymentConfigTest {
         task.interactive = true;
         template.addTask(task);
         assertFalse(config.merge(template));
-        assertTrue(config.interactiveMerge(configurer));
+        assertTrue(config.interactiveMerge(configurer, false));
+        assertTrue(task.isconfigureInteractivelyCalled);
     }
 
     @Test
@@ -116,7 +117,23 @@ public class DeploymentConfigTest {
         TestTask task = new TestTask();
         template.addTask(task);
         assertFalse(config.merge(template));
-        assertFalse(config.interactiveMerge(configurer));
+        assertFalse(config.interactiveMerge(configurer, false));
+        assertTrue(task.isconfigureInteractivelyCalled);
+    }
+
+    @Test
+    public void testSuccessfulForceInteractiveMerge() throws Exception {
+        DeploymentConfig config = new DeploymentConfig();
+        DeploymentConfig template = new DeploymentConfig();
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
+        TestTask task = new TestTask();
+        task.interactive = true;
+        task.configured = true;
+        template.addTask(task);
+        assertTrue(config.merge(template));
+        assertTrue(config.interactiveMerge(configurer, true));
+        assertTrue(task.isconfigureInteractivelyCalled);
+
     }
 
     @Test

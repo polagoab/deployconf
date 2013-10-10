@@ -57,6 +57,18 @@ public class DeployConfRunner {
         .getLogger(DeployConfRunner.class);
 
     /**
+     * Available RunModes.
+     */
+    enum RunMode {
+        // Never prompt the user
+        NON_INTERACTIVE,
+        // Prompt the user for non-configured tasks
+        INTERACTIVE,
+        // Prompt the user for all tasks
+        FORCE_INTERACTIVE
+    };
+
+    /**
      * The Environment Variable used to set the local repository for storing
      * config files. This may be overridden by command line options.
      */
@@ -76,9 +88,9 @@ public class DeployConfRunner {
         "deployment-config.xml";
 
     /**
-     * Determine if we should be running interactively.
+     * The RunMode to use.
      */
-    private final boolean interactive;
+    private final RunMode runMode;
 
     /**
      * The Zip Path to the deployment template.
@@ -99,11 +111,10 @@ public class DeployConfRunner {
     /**
      * Public Constructor.
      *
-     * @param interactive determine if the program should be running in
-     * interactive mode or not
+     * @param runMode how the program should interact with the user
      */
-    public DeployConfRunner(boolean interactive) {
-        this.interactive = interactive;
+    public DeployConfRunner(RunMode runMode) {
+        this.runMode = runMode;
     }
 
     /**
@@ -126,6 +137,11 @@ public class DeployConfRunner {
         Option interactive =
             new Option("i", "interactive", false, "Run in interactive mode");
         options.addOption(interactive);
+
+        Option forceInteractive =
+            new Option("I", "force-interactive", false,
+                "Run in interactive mode and configure all tasks");
+        options.addOption(forceInteractive);
 
         Option debug =
             new Option("d", "debug", false, "Print Debug Information");
@@ -191,8 +207,14 @@ public class DeployConfRunner {
                 StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
             }
 
-            DeployConfRunner instance =
-                new DeployConfRunner(cmd.hasOption(interactive.getOpt()));
+            RunMode mode = RunMode.NON_INTERACTIVE;
+            if (cmd.hasOption(forceInteractive.getOpt())) {
+                mode = RunMode.FORCE_INTERACTIVE;
+            } else if (cmd.hasOption(interactive.getOpt())) {
+                mode = RunMode.INTERACTIVE;
+            }
+
+            DeployConfRunner instance = new DeployConfRunner(mode);
 
             String envRepoDir =
                 instance.getRepositoryDirectoryFromEnvironment();
@@ -266,12 +288,18 @@ public class DeployConfRunner {
             config = new DeploymentConfig();
         }
 
-        if (config.merge(template)) {
+        logger.debug("Running in mode: {}", runMode);
+
+        if (config.merge(template) && !(runMode == RunMode.FORCE_INTERACTIVE)) {
             apply(config, source, destination);
         } else {
             // Needs manual merge
+            boolean interactive =
+                runMode == RunMode.INTERACTIVE
+                    || runMode == RunMode.FORCE_INTERACTIVE;
             if (interactive
-                && config.interactiveMerge(newInteractiveConfigurer())) {
+                && config.interactiveMerge(newInteractiveConfigurer(),
+                    runMode == RunMode.FORCE_INTERACTIVE)) {
                 save(config);
                 apply(config, source, destination);
             } else {

@@ -48,6 +48,8 @@ class TestTask implements Task {
 
     String serializedName = "test-task";
 
+    boolean isconfigureInteractivelyCalled;
+
     @Override
     public String getPath() {
         return path;
@@ -64,7 +66,9 @@ class TestTask implements Task {
     }
 
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer) {
+    public boolean configureInteractively(InteractiveConfigurer configurer,
+        boolean force) {
+        isconfigureInteractivelyCalled = true;
         return interactive;
     }
 

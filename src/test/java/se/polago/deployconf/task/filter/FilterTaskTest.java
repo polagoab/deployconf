@@ -149,7 +149,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer);
+        boolean result = task.configureInteractively(configurer, false);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -173,7 +173,31 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer);
+        boolean result = task.configureInteractively(configurer, false);
+
+        assertTrue(result);
+        assertTrue(configurer.isCalled);
+        assertEquals(expected, p.getValue());
+    }
+
+    @Test
+    public void testForceInteractiveConfigure() throws Exception {
+        String expected = "interactive-value";
+
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
+
+        configurer.value = expected;
+
+        FilterTask task = new FilterTask();
+
+        FilterToken p =
+            new FilterToken("test-regex", "test-description", "default-value",
+                "test-value");
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(p);
+        task.setTokens(list);
+
+        boolean result = task.configureInteractively(configurer, true);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);

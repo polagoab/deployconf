@@ -44,11 +44,12 @@ public interface Task {
      * Configure the task by asking the user for inputs.
      *
      * @param configurer the InteractiveConfigurer to use
+     * @param force if true, the Task is always configured
      * @return true if the task was configured
      * @throws Exception indicating processing failure
      */
-    boolean configureInteractively(InteractiveConfigurer configurer)
-        throws Exception;
+    boolean configureInteractively(InteractiveConfigurer configurer,
+        boolean force) throws Exception;
 
     /**
      * Serialize this Task to a JDOM Element.

@@ -158,13 +158,13 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer)
-        throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer,
+        boolean force) throws Exception {
 
         boolean result = true;
 
         for (FilterToken t : tokens) {
-            if (t.getValue() == null || t.getValue().length() == 0) {
+            if (force || t.getValue() == null || t.getValue().length() == 0) {
                 result = configureTokenInteractively(t, configurer);
                 if (result == false) {
                     return result;
@@ -265,9 +265,14 @@ public class FilterTask extends AbstractTask {
 
         logger.debug("Configure interactively: {}", t.getRegex().toString());
 
+        String defaultValue = t.getValue();
+        if (defaultValue == null) {
+            defaultValue = t.getDefaultValue();
+        }
+
         String value =
             configurer.configure(t.getRegex().toString(), t.getDescription(),
-                t.getDefaultValue());
+                defaultValue);
         logger.debug("Configure interactively result for '{}': {}", t
             .getRegex().toString(), value);
         if (value != null) {

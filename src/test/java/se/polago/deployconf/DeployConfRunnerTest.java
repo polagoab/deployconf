@@ -39,6 +39,8 @@ import java.util.zip.ZipFile;
 
 import org.junit.Test;
 
+import se.polago.deployconf.DeployConfRunner.RunMode;
+
 /**
  * Tests the {@link DeployConfRunner} class.
  */
@@ -46,7 +48,8 @@ public class DeployConfRunnerTest {
 
     @Test
     public void testRunWithIdenticalDeploymentConfig() throws Exception {
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         File srcFile = File.createTempFile("input", ".zip");
         File destFile = File.createTempFile("output", ".zip");
         File configFile = File.createTempFile("config", ".xml");
@@ -97,7 +100,8 @@ public class DeployConfRunnerTest {
 
     @Test
     public void testRunWithoutExistingDeploymentConfig() throws Exception {
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         File srcFile = File.createTempFile("input", ".zip");
         File destFile = File.createTempFile("output", ".zip");
         File configFile = File.createTempFile("config", ".xml");
@@ -182,7 +186,8 @@ public class DeployConfRunnerTest {
     public void testDeploymentConfigFileWithNoConfigNameAndNoRepo()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX, runner
             .getDeploymentConfigFile(config.getName()).getPath());
@@ -192,7 +197,8 @@ public class DeployConfRunnerTest {
     public void testDeploymentConfigFileWithNoConfigNameAndExplicitDeploymentConfig()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         File expected = new File("test.xml");
         runner.setDeploymentConfigFile(expected);
@@ -204,7 +210,8 @@ public class DeployConfRunnerTest {
     public void testDeploymentConfigFileWithNoConfigNameAndExistingRepoDir()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         File repoDir = File.createTempFile("repodir", ".d");
         repoDir.delete();
@@ -224,7 +231,8 @@ public class DeployConfRunnerTest {
     public void testDeploymentConfigFileWithConfigNameAndNoRepo()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
@@ -235,7 +243,7 @@ public class DeployConfRunnerTest {
     @Test
     public void testDeploymentConfigFileWithConfigNameAndExplicitDeploymentConfigFile()
         throws Exception {
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
@@ -249,7 +257,7 @@ public class DeployConfRunnerTest {
     public void testRepoFileWithConfigNameAndExistingRepoDir()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(false);
+        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);

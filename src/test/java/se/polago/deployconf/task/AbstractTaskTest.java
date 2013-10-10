@@ -50,7 +50,8 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public boolean configureInteractively(InteractiveConfigurer configurer) {
+        public boolean configureInteractively(
+            InteractiveConfigurer configurer, boolean force) {
             return true;
         }
 
