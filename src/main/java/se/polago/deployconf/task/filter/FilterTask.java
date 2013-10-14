@@ -54,6 +54,8 @@ public class FilterTask extends AbstractTask {
      */
     public static final String DOM_ELEMENT_TASK = "filter";
 
+    private static final String DOM_ELEMENT_NAME = "name";
+
     private static final String DOM_ELEMENT_REGEX = "regex";
 
     private static final String DOM_ELEMENT_TOKEN = "token";
@@ -84,7 +86,8 @@ public class FilterTask extends AbstractTask {
         }
         for (Element e : root.getChildren()) {
             FilterToken t =
-                new FilterToken(e.getChildText(DOM_ELEMENT_REGEX),
+                new FilterToken(e.getChildText(DOM_ELEMENT_NAME),
+                    e.getChildText(DOM_ELEMENT_REGEX),
                     e.getChildText(DOM_ELEMENT_DESCRIPTION),
                     e.getChildText(DOM_ELEMENT_DEFAULT),
                     e.getChildText(DOM_ELEMENT_VALUE));
@@ -101,6 +104,7 @@ public class FilterTask extends AbstractTask {
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN, null);
+            e.addContent(createJDOMElement(DOM_ELEMENT_NAME, t.getName()));
             e.addContent(createJDOMElement(DOM_ELEMENT_REGEX, t.getRegex()
                 .toString()));
             e.addContent(createJDOMElement(DOM_ELEMENT_DESCRIPTION,
@@ -271,10 +275,10 @@ public class FilterTask extends AbstractTask {
         }
 
         String value =
-            configurer.configure(t.getRegex().toString(), t.getDescription(),
-                defaultValue);
-        logger.debug("Configure interactively result for '{}': {}", t
-            .getRegex().toString(), value);
+            configurer
+                .configure(t.getName(), t.getDescription(), defaultValue);
+        logger.debug("Configure interactively result for '{}({})': {}",
+            t.getName(), t.getRegex().toString(), value);
         if (value != null) {
             t.setValue(value);
             result = true;

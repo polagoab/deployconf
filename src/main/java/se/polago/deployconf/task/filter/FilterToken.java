@@ -30,6 +30,9 @@ import java.util.regex.Pattern;
  * A single Token in a Filter Task.
  */
 public class FilterToken {
+
+    private String name;
+
     private Pattern regex;
 
     private String description;
@@ -41,17 +44,38 @@ public class FilterToken {
     /**
      * Public Constructor.
      *
+     * @param name the name of this token
      * @param regex the token Pattern
      * @param description the token description
      * @param defaultValue the token default value
      * @param value the token value
      */
-    public FilterToken(String regex, String description, String defaultValue,
-        String value) {
+    public FilterToken(String name, String regex, String description,
+        String defaultValue, String value) {
+
+        this.name = name;
         this.regex = Pattern.compile(regex);
         this.description = description;
         this.defaultValue = defaultValue;
         this.value = value;
+    }
+
+    /**
+     * Gets the name property value.
+     *
+     * @return the current value of the name property
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name property.
+     *
+     * @param name the new property value
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

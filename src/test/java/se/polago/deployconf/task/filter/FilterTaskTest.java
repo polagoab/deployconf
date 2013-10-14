@@ -72,7 +72,8 @@ public class FilterTaskTest {
     public void testIsConfigured() throws Exception {
         FilterTask task = new FilterTask();
         FilterToken t =
-            new FilterToken("test-token", null, null, "test-value");
+            new FilterToken("test-name", "test-token", null, null,
+                "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
@@ -82,7 +83,8 @@ public class FilterTaskTest {
     @Test
     public void testIsNotConfiguredUsingNullValue() throws Exception {
         FilterTask task = new FilterTask();
-        FilterToken t = new FilterToken("test-token", null, null, null);
+        FilterToken t =
+            new FilterToken("test-name", "test-token", null, null, null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
@@ -92,7 +94,8 @@ public class FilterTaskTest {
     @Test
     public void testIsNotConfiguredUsingEmptyValue() throws Exception {
         FilterTask task = new FilterTask();
-        FilterToken t = new FilterToken("test-token", null, null, "");
+        FilterToken t =
+            new FilterToken("test-name", "test-token", null, null, "");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
@@ -104,7 +107,7 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
         task.setPath("test-path");
         FilterToken t =
-            new FilterToken("test-regex", "test-description",
+            new FilterToken("test-name", "test-regex", "test-description",
                 "test-default-value", "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -113,7 +116,7 @@ public class FilterTaskTest {
         task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">"
-            + "<token><regex>test-regex</regex>"
+            + "<token><name>test-name</name><regex>test-regex</regex>"
             + "<description>test-description</description>"
             + "<default>test-default-value</default><value>test-value</value>"
             + "</token></filter>", outputter.outputString(node));
@@ -122,7 +125,8 @@ public class FilterTaskTest {
     @Test
     public void testApply() throws Exception {
         FilterTask task = new FilterTask();
-        FilterToken t = new FilterToken("d..a", null, null, "value");
+        FilterToken t =
+            new FilterToken("test-name", "d..a", null, null, "value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
         task.setTokens(list);
@@ -143,8 +147,8 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
 
         FilterToken p =
-            new FilterToken("test-regex", "test-description", "default-value",
-                null);
+            new FilterToken("test-name", "test-regex", "test-description",
+                "default-value", null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);
@@ -167,8 +171,8 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
 
         FilterToken p =
-            new FilterToken("test-regex", "test-description", "default-value",
-                null);
+            new FilterToken("test-name", "test-regex", "test-description",
+                "default-value", null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);
@@ -191,8 +195,8 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
 
         FilterToken p =
-            new FilterToken("test-regex", "test-description", "default-value",
-                "test-value");
+            new FilterToken("test-name", "test-regex", "test-description",
+                "default-value", "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);

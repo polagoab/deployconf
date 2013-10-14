@@ -10,6 +10,7 @@
   </properties>
   <filter path="logging.xml" encoding="UTF-8">
     <token>
+      <name>LogDir</name>
       <regex>@LOGDIR@</regex>
       <description>Log Directory</description>
       <default>${pwd}/logs</default>
