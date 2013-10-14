@@ -46,7 +46,7 @@ import se.polago.deployconf.TestInteractiveConfigurer;
 public class FilterTaskTest {
 
     @Test
-    public void testConfigure() throws Exception {
+    public void testDeserialize() throws Exception {
         InputStream is =
             getClass().getClassLoader().getResourceAsStream(
                 "simple-deployment-config.xml");
@@ -59,7 +59,7 @@ public class FilterTaskTest {
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
                 FilterTask task = new FilterTask();
-                task.configure(e);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());

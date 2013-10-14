@@ -71,7 +71,7 @@ public class AbstractTaskTest {
     };
 
     @Test
-    public void testConfigure() throws Exception {
+    public void testDeserialize() throws Exception {
         InputStream is =
             getClass().getClassLoader().getResourceAsStream(
                 "simple-deployment-config.xml");
@@ -82,7 +82,7 @@ public class AbstractTaskTest {
         List<Element> tasks = d.getRootElement().getChildren();
 
         TestAbstractTask task = new TestAbstractTask();
-        task.configure(tasks.get(0));
+        task.deserialize(tasks.get(0));
         assertNotNull(task.getPath());
     }
 

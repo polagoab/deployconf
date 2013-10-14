@@ -27,11 +27,11 @@ public interface Task {
     String getSerializedName();
 
     /**
-     * Configure the task from a list of JDOM Elements.
+     * Load the task from a list of JDOM Elements.
      *
      * @param node the JDOM Element to use for configuring this instance
      */
-    void configure(Element node);
+    void deserialize(Element node);
 
     /**
      * Determine if the Task is completely configured.

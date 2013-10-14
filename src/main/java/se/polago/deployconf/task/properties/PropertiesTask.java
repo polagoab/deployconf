@@ -73,8 +73,8 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void configure(Element node) {
-        super.configure(node);
+    public void deserialize(Element node) {
+        super.deserialize(node);
         for (Element e : node.getChildren()) {
             Property p =
                 new Property(e.getChildText(DOM_ELEMENT_NAME),

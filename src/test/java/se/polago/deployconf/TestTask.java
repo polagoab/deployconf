@@ -56,7 +56,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void configure(Element root) {
+    public void deserialize(Element root) {
         configured = true;
     }
 

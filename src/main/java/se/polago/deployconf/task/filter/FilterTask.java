@@ -78,8 +78,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void configure(Element root) {
-        super.configure(root);
+    public void deserialize(Element root) {
+        super.deserialize(root);
         String enc = root.getAttributeValue(ATTRIBUTE_ENCODING);
         if (enc != null) {
             encoding = enc;

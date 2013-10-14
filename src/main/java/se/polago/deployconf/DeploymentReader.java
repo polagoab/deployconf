@@ -110,7 +110,7 @@ public class DeploymentReader {
                 "No Task Handler found for element: " + e.getName());
         }
         Task t = cls.newInstance();
-        t.configure(e);
+        t.deserialize(e);
 
         return t;
     }

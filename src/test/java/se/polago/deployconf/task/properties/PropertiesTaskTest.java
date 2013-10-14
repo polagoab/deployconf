@@ -45,7 +45,7 @@ import se.polago.deployconf.TestInteractiveConfigurer;
 public class PropertiesTaskTest {
 
     @Test
-    public void testConfigure() throws Exception {
+    public void testDeserialize() throws Exception {
         InputStream is =
             getClass().getClassLoader().getResourceAsStream(
                 "simple-deployment-config.xml");
@@ -58,7 +58,7 @@ public class PropertiesTaskTest {
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
                 PropertiesTask task = new PropertiesTask();
-                task.configure(e);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());

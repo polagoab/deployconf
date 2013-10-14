@@ -64,7 +64,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void configure(Element root) {
+    public void deserialize(Element root) {
         String attribute = root.getAttributeValue(PATH);
         if (attribute == null) {
             throw new IllegalStateException("path attribute is required");
