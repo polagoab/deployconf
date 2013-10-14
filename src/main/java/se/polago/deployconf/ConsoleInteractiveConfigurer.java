@@ -71,19 +71,21 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
             prompt.append("]");
         }
         prompt.append("=");
-        value = reader.readLine(prompt.toString());
-        if (value == null || value.trim().length() == 0) {
-            value = defaultValue;
-        } else {
-            value = value.trim();
-        }
+        while (value == null || value.length() == 0) {
+            value = reader.readLine(prompt.toString());
+            if (value == null || value.trim().length() == 0) {
+                value = defaultValue;
+            } else {
+                value = value.trim();
+            }
 
-        if (value != null) {
-            writer.println();
-            writer.print("==> '");
-            writer.print(value);
-            writer.println("'");
-            writer.println();
+            if (value != null && value.length() > 0) {
+                writer.println();
+                writer.print("==> '");
+                writer.print(value);
+                writer.println("'");
+                writer.println();
+            }
         }
         return value;
     }
