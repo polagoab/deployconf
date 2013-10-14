@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jdom2.Element;
@@ -66,7 +66,7 @@ public class PropertiesTask extends AbstractTask {
      */
     public PropertiesTask() {
         super();
-        properties = new HashSet<Property>();
+        properties = new LinkedHashSet<Property>();
     }
 
     /**
