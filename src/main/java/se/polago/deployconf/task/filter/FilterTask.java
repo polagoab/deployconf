@@ -85,12 +85,26 @@ public class FilterTask extends AbstractTask {
             encoding = enc;
         }
         for (Element e : root.getChildren()) {
+            String name = e.getChildText(DOM_ELEMENT_NAME);
+            if (name == null) {
+                throw new IllegalStateException(
+                    "Filter name element does not exists");
+            }
+            String regex = e.getChildText(DOM_ELEMENT_REGEX);
+            if (regex == null) {
+                throw new IllegalStateException(
+                    "Filter regex element does not exists");
+            }
+            String description = e.getChildText(DOM_ELEMENT_DESCRIPTION);
+            if (description == null) {
+                throw new IllegalStateException(
+                    "Filter description element does not exists");
+            }
+            String defaultValue = e.getChildText(DOM_ELEMENT_DEFAULT);
+            String value = e.getChildText(DOM_ELEMENT_VALUE);
+
             FilterToken t =
-                new FilterToken(e.getChildText(DOM_ELEMENT_NAME),
-                    e.getChildText(DOM_ELEMENT_REGEX),
-                    e.getChildText(DOM_ELEMENT_DESCRIPTION),
-                    e.getChildText(DOM_ELEMENT_DEFAULT),
-                    e.getChildText(DOM_ELEMENT_VALUE));
+                new FilterToken(name, regex, description, defaultValue, value);
             tokens.add(t);
         }
     }

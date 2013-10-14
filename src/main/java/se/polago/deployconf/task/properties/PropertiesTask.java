@@ -76,11 +76,20 @@ public class PropertiesTask extends AbstractTask {
     public void deserialize(Element node) {
         super.deserialize(node);
         for (Element e : node.getChildren()) {
-            Property p =
-                new Property(e.getChildText(DOM_ELEMENT_NAME),
-                    e.getChildText(DOM_ELEMENT_DESCRIPTION),
-                    e.getChildText(DOM_ELEMENT_DEFAULT),
-                    e.getChildText(DOM_ELEMENT_VALUE));
+            String name = e.getChildText(DOM_ELEMENT_NAME);
+            if (name == null) {
+                throw new IllegalStateException(
+                    "Property name element does not exists");
+            }
+            String description = e.getChildText(DOM_ELEMENT_DESCRIPTION);
+            if (description == null) {
+                throw new IllegalStateException(
+                    "Property description element does not exists");
+            }
+            String defaultValue = e.getChildText(DOM_ELEMENT_DEFAULT);
+            String value = e.getChildText(DOM_ELEMENT_VALUE);
+
+            Property p = new Property(name, description, defaultValue, value);
             properties.add(p);
         }
     }
