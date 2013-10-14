@@ -284,7 +284,7 @@ public class FilterTask extends AbstractTask {
         logger.debug("Configure interactively: {}", t.getRegex().toString());
 
         String defaultValue = t.getValue();
-        if (defaultValue == null) {
+        if (defaultValue == null || defaultValue.length() == 0) {
             defaultValue = t.getDefaultValue();
         }
 

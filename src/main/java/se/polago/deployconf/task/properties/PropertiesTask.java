@@ -248,7 +248,7 @@ public class PropertiesTask extends AbstractTask {
         logger.debug("Configure interactively: {}", p.getName());
 
         String defaultValue = p.getValue();
-        if (defaultValue == null) {
+        if (defaultValue == null || defaultValue.length() == 0) {
             defaultValue = p.getDefaultValue();
         }
 
