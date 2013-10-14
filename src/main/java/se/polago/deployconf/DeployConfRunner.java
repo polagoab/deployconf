@@ -279,7 +279,7 @@ public class DeployConfRunner {
         DeploymentConfig config = null;
         File repoFile = getDeploymentConfigFile(template.getName());
         if (repoFile.exists()) {
-            logger.info("Loading Deployment Config from: "
+            logger.info("Loading Deployment Configuration from: "
                 + repoFile.getPath());
             config = getDeploymentConfig(getInputStreamFromFile(repoFile));
         } else {
@@ -460,8 +460,10 @@ public class DeployConfRunner {
      * @throws IOException indicating IO error
      */
     private void save(DeploymentConfig config) throws IOException {
-        FileOutputStream os =
-            new FileOutputStream(getDeploymentConfigFile(config.getName()));
+        File file = getDeploymentConfigFile(config.getName());
+        logger.info("Saving Deployment Configuration to '" + file.getPath()
+            + "'");
+        FileOutputStream os = new FileOutputStream(file);
         config.save(os);
         os.close();
     }
