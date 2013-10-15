@@ -303,11 +303,11 @@ public class DeployConfRunner {
                 save(config);
                 apply(config, source, destination);
             } else {
+                save(config);
                 System.err.println("Deployment Configuration is incomplete");
                 System.err.println("Edit '" + repoFile
                     + "' and make sure that each "
                     + "deployment property has a valid value");
-                save(config);
                 result = 2;
             }
         }
