@@ -117,7 +117,7 @@ public class FilterTaskTest {
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">"
             + "<token><name>test-name</name><regex>test-regex</regex>"
-            + "<description>test-description</description>"
+            + "<description><![CDATA[test-description]]></description>"
             + "<default>test-default-value</default><value>test-value</value>"
             + "</token></filter>", outputter.outputString(node));
     }

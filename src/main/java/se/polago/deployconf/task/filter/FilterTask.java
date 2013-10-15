@@ -85,23 +85,23 @@ public class FilterTask extends AbstractTask {
             encoding = enc;
         }
         for (Element e : root.getChildren()) {
-            String name = e.getChildText(DOM_ELEMENT_NAME);
-            if (name == null) {
+            String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
+            if (name.length() == 0) {
                 throw new IllegalStateException(
                     "Filter name element does not exists");
             }
-            String regex = e.getChildText(DOM_ELEMENT_REGEX);
-            if (regex == null) {
+            String regex = e.getChildTextTrim(DOM_ELEMENT_REGEX);
+            if (regex.length() == 0) {
                 throw new IllegalStateException(
                     "Filter regex element does not exists");
             }
-            String description = e.getChildText(DOM_ELEMENT_DESCRIPTION);
-            if (description == null) {
+            String description = e.getChildTextTrim(DOM_ELEMENT_DESCRIPTION);
+            if (description.length() == 0) {
                 throw new IllegalStateException(
                     "Filter description element does not exists");
             }
-            String defaultValue = e.getChildText(DOM_ELEMENT_DEFAULT);
-            String value = e.getChildText(DOM_ELEMENT_VALUE);
+            String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
+            String value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
 
             FilterToken t =
                 new FilterToken(name, regex, description, defaultValue, value);
@@ -117,15 +117,15 @@ public class FilterTask extends AbstractTask {
         super.serialize(node);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
-            Element e = createJDOMElement(DOM_ELEMENT_TOKEN, null);
-            e.addContent(createJDOMElement(DOM_ELEMENT_NAME, t.getName()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_REGEX, t.getRegex()
+            Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, t.getName()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex()
                 .toString()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_DESCRIPTION,
+            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION,
                 t.getDescription()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_DEFAULT,
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 t.getDefaultValue()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_VALUE, t.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
 
             node.addContent(e);
         }

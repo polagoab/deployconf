@@ -24,7 +24,9 @@
 
 package se.polago.deployconf.task;
 
+import org.jdom2.CDATA;
 import org.jdom2.Element;
+import org.jdom2.Text;
 
 /**
  * Common implementation of a deployment Task.
@@ -81,16 +83,45 @@ public abstract class AbstractTask implements Task {
     }
 
     /**
-     * Create a JDOM Element with the given name and possibly text.
+     * Create a JDOM Element with the given name.
+     *
+     * @param name the element name
+     * @return a JDOM Element instance
+     */
+    protected Element createJDOMElement(String name) {
+        Element result = new Element(name);
+
+        return result;
+    }
+
+    /**
+     * Create a JDOM Text Element with the given name and possibly text.
      *
      * @param name the element name
      * @param text the element text or null
      * @return a JDOM Element instance
      */
-    protected Element createJDOMElement(String name, String text) {
+    protected Element createJDOMTextElement(String name, String text) {
         Element result = new Element(name);
         if (text != null) {
-            result.setText(text);
+            result.setContent(new Text(text));
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Create a JDOM CDATA Element with the given name and possibly text.
+     *
+     * @param name the element name
+     * @param text the element text or null
+     * @return a JDOM Element instance
+     */
+    protected Element createJDOMCDATAElement(String name, String text) {
+        Element result = new Element(name);
+        if (text != null) {
+            result.addContent(new CDATA(text));
         }
 
         return result;

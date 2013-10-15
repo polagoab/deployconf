@@ -76,19 +76,18 @@ public class PropertiesTask extends AbstractTask {
     public void deserialize(Element node) {
         super.deserialize(node);
         for (Element e : node.getChildren()) {
-            String name = e.getChildText(DOM_ELEMENT_NAME);
-            if (name == null) {
+            String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
+            if (name.length() == 0) {
                 throw new IllegalStateException(
                     "Property name element does not exists");
             }
-            String description = e.getChildText(DOM_ELEMENT_DESCRIPTION);
-            if (description == null) {
+            String description = e.getChildTextTrim(DOM_ELEMENT_DESCRIPTION);
+            if (description.length() == 0) {
                 throw new IllegalStateException(
                     "Property description element does not exists");
             }
-            String defaultValue = e.getChildText(DOM_ELEMENT_DEFAULT);
+            String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
             String value = e.getChildText(DOM_ELEMENT_VALUE);
-
             Property p = new Property(name, description, defaultValue, value);
             properties.add(p);
         }
@@ -101,13 +100,13 @@ public class PropertiesTask extends AbstractTask {
     public void serialize(Element node) {
         super.serialize(node);
         for (Property p : properties) {
-            Element e = createJDOMElement(DOM_ELEMENT_PROPERTY, null);
-            e.addContent(createJDOMElement(DOM_ELEMENT_NAME, p.getName()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_DESCRIPTION,
+            Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
+            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION,
                 p.getDescription()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_DEFAULT,
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 p.getDefaultValue()));
-            e.addContent(createJDOMElement(DOM_ELEMENT_VALUE, p.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
 
             node.addContent(e);
         }
@@ -190,9 +189,12 @@ public class PropertiesTask extends AbstractTask {
             if (description != null) {
                 writer.append("#");
                 writer.newLine();
-                writer.append("# ");
-                writer.append(description);
-                writer.newLine();
+                String[] lines = description.split("[\\r\\n]+");
+                for (String line : lines) {
+                    writer.append("# ");
+                    writer.append(line.trim());
+                    writer.newLine();
+                }
                 writer.append("#");
                 writer.newLine();
             }

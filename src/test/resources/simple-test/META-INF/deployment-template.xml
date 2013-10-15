@@ -3,7 +3,8 @@
   <properties path="deploy.properties">
     <property>
       <name>config.dir</name>
-      <description>Config Directory</description>
+      <description><![CDATA[Description line 1
+        Description line 2]]></description>
       <default>/etc</default>
       <value></value>
     </property>
@@ -12,7 +13,7 @@
     <token>
       <name>LogDir</name>
       <regex>@LOGDIR@</regex>
-      <description>Log Directory</description>
+      <description><![CDATA[Log Directory]]></description>
       <default>${pwd}/logs</default>
       <value></value>
     </token>

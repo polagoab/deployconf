@@ -112,9 +112,10 @@ public class PropertiesTaskTest {
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">"
             + "<property><name>test-name</name>"
-            + "<description>test-description</description>"
+            + "<description><![CDATA[test-description]]></description>"
             + "<default>test-default-value</default><value>test-value</value>"
-            + "</property></properties>", outputter.outputString(node));
+            + "</property></properties>", outputter.outputString(node)
+            .replaceAll("[\\n\\r]*", ""));
     }
 
     @Test
