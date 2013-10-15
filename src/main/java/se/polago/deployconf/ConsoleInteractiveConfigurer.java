@@ -61,7 +61,7 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
         String value = null;
 
         writer.println();
-        writer.println(description);
+        writer.println(description.replaceAll("([\\r\\n])+\\s+", "\1"));
         writer.println();
 
         StringBuilder prompt = new StringBuilder(name);
