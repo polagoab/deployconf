@@ -125,7 +125,8 @@ public class FilterTask extends AbstractTask {
                 t.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 t.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
+                t.getValue()));
 
             node.addContent(e);
         }
