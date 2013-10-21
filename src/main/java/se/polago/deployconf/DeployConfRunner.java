@@ -195,35 +195,9 @@ public class DeployConfRunner {
             if (cmd.hasOption(debug.getOpt())) {
                 logger.info("Activating Debug Logging");
                 debugEnabled = true;
-                LoggerContext loggerContext =
-                    (LoggerContext) LoggerFactory.getILoggerFactory();
-
-                try {
-                    JoranConfigurator configurator = new JoranConfigurator();
-                    configurator.setContext(loggerContext);
-                    loggerContext.reset();
-                    configurator.doConfigure(Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResource("logback-debug.xml"));
-                } catch (JoranException e) {
-                    logger.warn("Error activating debug logging", e);
-                }
-                StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+                setLogConfig("logback-debug.xml");
             } else if (cmd.hasOption(quiet.getOpt())) {
-                LoggerContext loggerContext =
-                    (LoggerContext) LoggerFactory.getILoggerFactory();
-
-                try {
-                    JoranConfigurator configurator = new JoranConfigurator();
-                    configurator.setContext(loggerContext);
-                    loggerContext.reset();
-                    configurator.doConfigure(Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResource("logback-quiet.xml"));
-                } catch (JoranException e) {
-                    logger.warn("Error activating quiet logging", e);
-                }
-                StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+                setLogConfig("logback-quiet.xml");
             }
 
             RunMode mode = RunMode.NON_INTERACTIVE;
@@ -280,6 +254,27 @@ public class DeployConfRunner {
             }
             logger.error(msg, e);
         }
+    }
+
+    /**
+     * Sets the log configuration to use.
+     *
+     * @param config the log configuration to use
+     */
+    private static void setLogConfig(String config) {
+        LoggerContext loggerContext =
+            (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(loggerContext);
+            loggerContext.reset();
+            configurator.doConfigure(Thread.currentThread()
+                .getContextClassLoader().getResource(config));
+        } catch (JoranException e) {
+            logger.warn("Error setting log config: " + config, e);
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
     }
 
     /**
