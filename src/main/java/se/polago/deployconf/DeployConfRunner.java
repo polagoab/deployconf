@@ -143,6 +143,10 @@ public class DeployConfRunner {
                 "Run in interactive mode and configure all tasks");
         options.addOption(forceInteractive);
 
+        Option quiet =
+            new Option("q", "quiet", false, "Suppress most messages");
+        options.addOption(quiet);
+
         Option debug =
             new Option("d", "debug", false, "Print Debug Information");
         options.addOption(debug);
@@ -203,6 +207,21 @@ public class DeployConfRunner {
                         .getResource("logback-debug.xml"));
                 } catch (JoranException e) {
                     logger.warn("Error activating debug logging", e);
+                }
+                StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+            } else if (cmd.hasOption(quiet.getOpt())) {
+                LoggerContext loggerContext =
+                    (LoggerContext) LoggerFactory.getILoggerFactory();
+
+                try {
+                    JoranConfigurator configurator = new JoranConfigurator();
+                    configurator.setContext(loggerContext);
+                    loggerContext.reset();
+                    configurator.doConfigure(Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResource("logback-quiet.xml"));
+                } catch (JoranException e) {
+                    logger.warn("Error activating quiet logging", e);
                 }
                 StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
             }
