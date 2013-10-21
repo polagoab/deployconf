@@ -305,6 +305,9 @@ public class DeployConfRunner {
             } else {
                 save(config);
                 System.err.println("Deployment Configuration is incomplete");
+                System.err.println("Rerun in interactive mode "
+                    + "by using the '-i' option");
+                System.err.println(" or");
                 System.err.println("Edit '" + repoFile
                     + "' and make sure that each "
                     + "deployment property has a valid value");
