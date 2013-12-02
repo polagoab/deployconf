@@ -27,6 +27,14 @@
     <maven>3.1</maven>
   </prerequisites>
 
+  <licenses>
+    <license>
+      <name>The MIT License (MIT)</name>
+      <url>http://http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <organization>
     <name>Polago AB</name>
     <url>http://www.polago.se/</url>
