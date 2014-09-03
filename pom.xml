@@ -14,7 +14,7 @@
   <properties>
     <jdkVersion>1.7</jdkVersion>
     <mavenVersion>3.0</mavenVersion>
-    <surefireVersion>2.16</surefireVersion>
+    <surefireVersion>2.17</surefireVersion>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <copyrightYear>2013-2014</copyrightYear>
     <copyrightMessage>Copyright (C) ${copyrightYear} Polago AB</copyrightMessage>
@@ -121,7 +121,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
         <configuration>
           <archive>
             <manifest>
@@ -138,13 +138,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.8.2</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.5.2</version>
       </plugin>
 
       <plugin>
@@ -168,13 +168,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.10</version>
+        <version>2.12.1</version>
         <configuration>
           <configLocation>${basedir}/etc/checkstyle.xml</configLocation>
           <propertyExpansion>basedir=${basedir}</propertyExpansion>
@@ -207,7 +207,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.2</version>
         <executions>
           <execution>
             <goals>
