@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>se.polago.deployconf</groupId>
+  <groupId>org.polago.deployconf</groupId>
   <artifactId>deployconf</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -12,13 +12,13 @@
   </description>
 
   <properties>
-    <jdkVersion>1.6</jdkVersion>
+    <jdkVersion>1.7</jdkVersion>
     <mavenVersion>3.0</mavenVersion>
     <surefireVersion>2.16</surefireVersion>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-    <copyrightYear>2013</copyrightYear>
+    <copyrightYear>2013-2014</copyrightYear>
     <copyrightMessage>Copyright (C) ${copyrightYear} Polago AB</copyrightMessage>
-    <mainClass>se.polago.deployconf.DeployConfRunner</mainClass>
+    <mainClass>org.polago.deployconf.DeployConfRunner</mainClass>
   </properties>
 
   <inceptionYear>2013</inceptionYear>
@@ -37,7 +37,7 @@
 
   <organization>
     <name>Polago AB</name>
-    <url>http://www.polago.se/</url>
+    <url>http://www.polago.com/</url>
   </organization>
 
   <dependencies>
