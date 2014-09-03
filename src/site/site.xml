@@ -33,8 +33,9 @@
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html" />
-      <item name="Usage" href="usage.html" />
-      <item name="Deployment Descriptor" href="descriptor.html" />
+      <item name="Developer Usage" href="developer-usage.html" />
+      <item name="Deployer Usage" href="deployer-usage.html" />
+      <item name="Deployment Descriptor Reference" href="descriptor-reference.html" />
     </menu>
 
     <menu ref="reports" />
