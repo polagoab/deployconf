@@ -237,7 +237,7 @@ public class DeployConfRunner {
             } else {
                 String rd = getDefaultRepository();
                 instance.setRepositoryDirectory(rd);
-                logger.debug("Using default repository:{}", rd);
+                logger.debug("Using default repository directory: {}", rd);
             }
             Path repo =
                 FileSystems.getDefault().getPath(
