@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -131,7 +131,7 @@ public class DeploymentConfig {
     /**
      * Merge the template configuration into this instance.
      *
-     * @param template the tempplate configuration to merge
+     * @param template the template configuration to merge
      * @return true if the merge was successful, ie all configurations has a
      * value.
      */
