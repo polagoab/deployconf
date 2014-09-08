@@ -239,6 +239,16 @@ public class DeployConfRunner {
                 instance.setRepositoryDirectory(rd);
                 logger.debug("Using default repository:{}", rd);
             }
+            Path repo =
+                FileSystems.getDefault().getPath(
+                    instance.getRepositoryDirectory());
+            if (!Files.exists(repo)) {
+                Files.createDirectories(repo);
+            } else if (!Files.isDirectory(repo)) {
+                logger.error("Specified repository is not a directory: {}",
+                    repo);
+                System.exit(1);
+            }
 
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
