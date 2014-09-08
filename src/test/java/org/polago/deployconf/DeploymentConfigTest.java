@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -35,7 +35,6 @@ import java.io.OutputStream;
 import java.util.zip.ZipFile;
 
 import org.junit.Test;
-import org.polago.deployconf.DeploymentConfig;
 
 /**
  * Tests the {@link DeploymentConfig} class.
@@ -177,6 +176,7 @@ public class DeploymentConfigTest {
             assertTrue(task.applied);
             ZipFile destZipFile = new ZipFile(destFile);
             assertNotNull(destZipFile.getEntry(zipPath));
+            destZipFile.close();
         } finally {
             srcFile.delete();
             destFile.delete();
@@ -208,6 +208,7 @@ public class DeploymentConfigTest {
             assertFalse(task.applied);
             ZipFile destZipFile = new ZipFile(destFile);
             assertNotNull(destZipFile.getEntry(zipPath));
+            destZipFile.close();
         } finally {
             srcFile.delete();
             destFile.delete();
@@ -244,6 +245,7 @@ public class DeploymentConfigTest {
             assertFalse(task.applied);
             ZipFile destZipFile = new ZipFile(destFile);
             assertNull(destZipFile.getEntry(zipPath));
+            destZipFile.close();
         } finally {
             srcFile.delete();
             destFile.delete();
