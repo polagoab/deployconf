@@ -75,6 +75,12 @@ public class DeployConfRunner {
     private static final String ENV_DEPLOYCONF_REPO = "DEPLOYCONF_REPO";
 
     /**
+     * The default local repository relative the user's HOME directory for
+     * storing config files. This may be overridden by command line options.
+     */
+    private static final String DEFAULT_DEPLOYCONF_REPO = "/.deployconf_repo";
+
+    /**
      * The default deployment template path to use.
      */
     private static final String DEFAULT_TEMPLATE_PATH =
@@ -222,7 +228,9 @@ public class DeployConfRunner {
                     ENV_DEPLOYCONF_REPO, envRepoDir);
                 instance.setRepositoryDirectory(envRepoDir);
             } else {
-                logger.debug("Using current working directory as repository");
+                String rd = getDefaultRepository();
+                instance.setRepositoryDirectory(rd);
+                logger.debug("Using default repository:{}", rd);
             }
 
             if (cmd.hasOption(configFile.getOpt())) {
@@ -254,6 +262,15 @@ public class DeployConfRunner {
             }
             logger.error(msg, e);
         }
+    }
+
+    /**
+     * Gets the default repository directory based on the users home directory.
+     *
+     * @return the default repository for the user
+     */
+    private static String getDefaultRepository() {
+        return System.getProperty("user.home") + DEFAULT_DEPLOYCONF_REPO;
     }
 
     /**
