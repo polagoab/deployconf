@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -26,20 +26,19 @@ package org.polago.deployconf;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.junit.Test;
-import org.polago.deployconf.DeployConfRunner;
-import org.polago.deployconf.DeploymentConfig;
 import org.polago.deployconf.DeployConfRunner.RunMode;
 
 /**
@@ -51,19 +50,20 @@ public class DeployConfRunnerTest {
     public void testRunWithIdenticalDeploymentConfig() throws Exception {
         DeployConfRunner runner =
             new DeployConfRunner(RunMode.NON_INTERACTIVE);
-        File srcFile = File.createTempFile("input", ".zip");
-        File destFile = File.createTempFile("output", ".zip");
-        File configFile = File.createTempFile("config", ".xml");
-        runner.setDeploymentConfigFile(configFile);
-        destFile.delete();
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
+        Path configFile = Files.createTempFile("config", ".xml");
+        runner.setDeploymentConfigPath(configFile);
+        Files.delete(destFile);
+        Files.delete(configFile);
 
         try {
-            copyStream(
+            Files.copy(
                 getClass().getClassLoader().getResourceAsStream(
                     "simple-test-expected/deployment-config.xml"), configFile);
 
             TestZipOutputStream os =
-                new TestZipOutputStream(new FileOutputStream(srcFile));
+                new TestZipOutputStream(Files.newOutputStream(srcFile));
             String zipPrefix = "simple-test/";
             String zipExpectedPrefix = "simple-test-expected/";
             String[] zipFiles =
@@ -78,11 +78,11 @@ public class DeployConfRunnerTest {
             }
 
             os.close();
-            int status = runner.run(srcFile.getPath(), destFile.getPath());
+            int status = runner.run(srcFile.toString(), destFile.toString());
             assertEquals(0, status);
-            assertTrue(destFile.exists());
+            assertTrue(Files.exists(destFile));
 
-            ZipFile zipDest = new ZipFile(destFile);
+            ZipFile zipDest = new ZipFile(destFile.toString());
             for (String r : Arrays.copyOf(zipFiles, zipFiles.length - 1)) {
                 InputStream is =
                     getClass().getClassLoader().getResourceAsStream(
@@ -92,10 +92,10 @@ public class DeployConfRunnerTest {
                     zipDest.getInputStream(new ZipEntry(r)));
             }
             assertNull(zipDest.getEntry(zipFiles[3]));
+            zipDest.close();
         } finally {
-            srcFile.delete();
-            destFile.delete();
-            configFile.delete();
+            Files.delete(srcFile);
+            Files.delete(configFile);
         }
     }
 
@@ -103,17 +103,17 @@ public class DeployConfRunnerTest {
     public void testRunWithoutExistingDeploymentConfig() throws Exception {
         DeployConfRunner runner =
             new DeployConfRunner(RunMode.NON_INTERACTIVE);
-        File srcFile = File.createTempFile("input", ".zip");
-        File destFile = File.createTempFile("output", ".zip");
-        File configFile = File.createTempFile("config", ".xml");
-        runner.setDeploymentConfigFile(configFile);
-        configFile.delete();
-        destFile.delete();
-        assertFalse(configFile.exists());
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
+        Path configFile = Files.createTempFile("config", ".xml");
+        runner.setDeploymentConfigPath(configFile);
+        Files.delete(configFile);
+        Files.delete(destFile);
+        assertFalse(Files.exists(configFile));
 
         try {
             TestZipOutputStream os =
-                new TestZipOutputStream(new FileOutputStream(srcFile));
+                new TestZipOutputStream(Files.newOutputStream(srcFile));
             String zipPrefix = "simple-test/";
             String zipExpectedPrefix = "simple-test-expected/";
             String[] zipFiles =
@@ -128,20 +128,19 @@ public class DeployConfRunnerTest {
             }
 
             os.close();
-            int status = runner.run(srcFile.getPath(), destFile.getPath());
+            int status = runner.run(srcFile.toString(), destFile.toString());
             assertEquals(2, status);
-            assertFalse(destFile.exists());
-            assertTrue(configFile.exists());
-            InputStream destConfigStream = new FileInputStream(configFile);
+            assertFalse(Files.exists(destFile));
+            assertTrue(Files.exists(configFile));
+            InputStream destConfigStream = Files.newInputStream(configFile);
             InputStream srcConfigStream =
                 getClass().getClassLoader().getResourceAsStream(
                     zipPrefix + zipFiles[3]);
             assertEqualStreamContent(zipExpectedPrefix + zipFiles[3],
                 srcConfigStream, destConfigStream);
         } finally {
-            srcFile.delete();
-            destFile.delete();
-            configFile.delete();
+            Files.delete(srcFile);
+            Files.delete(configFile);
         }
     }
 
@@ -168,21 +167,6 @@ public class DeployConfRunnerTest {
         assertEquals(msg, w1.getBuffer().toString(), w2.getBuffer().toString());
     }
 
-    private void copyStream(InputStream stream, File configFile)
-        throws IOException {
-        FileOutputStream out = new FileOutputStream(configFile);
-        try {
-            byte[] buf = new byte[1024];
-            int i = stream.read(buf);
-            while (i != -1) {
-                out.write(buf, 0, i);
-                i = stream.read(buf);
-            }
-        } finally {
-            out.close();
-        }
-    }
-
     @Test
     public void testDeploymentConfigFileWithNoConfigNameAndNoRepo()
         throws Exception {
@@ -191,7 +175,7 @@ public class DeployConfRunnerTest {
             new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX, runner
-            .getDeploymentConfigFile(config.getName()).getPath());
+            .getDeploymentConfigPath(config.getName()).toString());
     }
 
     @Test
@@ -201,10 +185,11 @@ public class DeployConfRunnerTest {
         DeployConfRunner runner =
             new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
-        File expected = new File("test.xml");
-        runner.setDeploymentConfigFile(expected);
-        assertEquals(expected.getPath(),
-            runner.getDeploymentConfigFile(config.getName()).getPath());
+        FileSystem fs = FileSystems.getDefault();
+        Path expected = fs.getPath("test.xml");
+        runner.setDeploymentConfigPath(expected);
+        assertEquals(expected,
+            runner.getDeploymentConfigPath(config.getName()));
     }
 
     @Test
@@ -214,17 +199,16 @@ public class DeployConfRunnerTest {
         DeployConfRunner runner =
             new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
-        File repoDir = File.createTempFile("repodir", ".d");
-        repoDir.delete();
-        repoDir.mkdir();
+        Path repoDir = Files.createTempDirectory("repodir");
         try {
-            runner.setRepositoryDirectory(repoDir.getPath());
-            File expected =
-                new File(repoDir, DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
-            assertEquals(expected.getPath(),
-                runner.getDeploymentConfigFile(config.getName()).getPath());
+            runner.setRepositoryDirectory(repoDir.toString());
+            Path expected =
+                repoDir.resolve(FileSystems.getDefault().getPath(
+                    DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX));
+            assertEquals(expected,
+                runner.getDeploymentConfigPath(config.getName()));
         } finally {
-            repoDir.delete();
+            Files.delete(repoDir);
         }
     }
 
@@ -237,43 +221,45 @@ public class DeployConfRunnerTest {
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
-        assertEquals(name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX,
-            runner.getDeploymentConfigFile(config.getName()).getPath());
+        assertEquals(
+            FileSystems.getDefault().getPath(
+                name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX),
+            runner.getDeploymentConfigPath(config.getName()));
     }
 
     @Test
     public void testDeploymentConfigFileWithConfigNameAndExplicitDeploymentConfigFile()
         throws Exception {
-        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
-        File expected = new File("test.xml");
-        runner.setDeploymentConfigFile(expected);
-        assertEquals(expected.getPath(),
-            runner.getDeploymentConfigFile(config.getName()).getPath());
+        Path expected = FileSystems.getDefault().getPath("test.xml");
+        runner.setDeploymentConfigPath(expected);
+        assertEquals(expected,
+            runner.getDeploymentConfigPath(config.getName()));
     }
 
     @Test
     public void testRepoFileWithConfigNameAndExistingRepoDir()
         throws Exception {
 
-        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
+        DeployConfRunner runner =
+            new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
         String name = "test";
         config.setName(name);
-        File repoDir = File.createTempFile("repodir", ".d");
-        repoDir.delete();
-        repoDir.mkdir();
+        Path repoDir = Files.createTempDirectory("repodir");
         try {
-            runner.setRepositoryDirectory(repoDir.getPath());
-            File expected =
-                new File(repoDir, name + "-"
-                    + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
-            assertEquals(expected.getPath(),
-                runner.getDeploymentConfigFile(config.getName()).getPath());
+            runner.setRepositoryDirectory(repoDir.toString());
+            Path expected =
+                FileSystems.getDefault().getPath(repoDir.toString(),
+                    name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
+            assertEquals(expected,
+                runner.getDeploymentConfigPath(config.getName()));
         } finally {
-            repoDir.delete();
+            Files.delete(repoDir);
         }
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -24,11 +24,18 @@
 
 package org.polago.deployconf;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -106,7 +113,7 @@ public class DeployConfRunner {
     /**
      * The explicit deployment config file to use. This is normally null.
      */
-    private File deploymentConfigFile = null;
+    private Path deploymentConfigFile = null;
 
     /**
      * The local repository for storing deployment config files. Null means
@@ -236,7 +243,8 @@ public class DeployConfRunner {
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
                 logger.debug("Using explicit deployment file: {}", f);
-                instance.setDeploymentConfigFile(new File(f));
+                instance.setDeploymentConfigPath(FileSystems.getDefault()
+                    .getPath(f));
             }
 
             if (cmd.hasOption(templatePath.getOpt())) {
@@ -304,18 +312,14 @@ public class DeployConfRunner {
      */
     public int run(String source, String destination) throws Exception {
         int result = 0;
-        DeploymentConfig template =
-            getDeploymentConfig(getInputStreamFromZipFile(new File(source),
-                deploymentTemplatePath));
+        DeploymentConfig template = getDeploymentConfigFromZip(source);
         DeploymentConfig config = null;
-        File repoFile = getDeploymentConfigFile(template.getName());
-        if (repoFile.exists()) {
-            logger.info("Loading Deployment Configuration from: "
-                + repoFile.getPath());
-            config = getDeploymentConfig(getInputStreamFromFile(repoFile));
+        Path repoFile = getDeploymentConfigPath(template.getName());
+        if (Files.exists(repoFile)) {
+            logger.info("Loading Deployment Configuration from: " + repoFile);
+            config = getDeploymentConfigFromPath(repoFile);
         } else {
-            logger.info("Creating new Deployment Config: "
-                + repoFile.getPath());
+            logger.info("Creating new Deployment Config: " + repoFile);
             config = new DeploymentConfig();
         }
 
@@ -370,14 +374,14 @@ public class DeployConfRunner {
     /**
      * Sets the deploymentConfigFile property.
      *
-     * @param deploymentConfigFile the new property value
+     * @param deploymentConfigPath the new property value
      */
-    public void setDeploymentConfigFile(File deploymentConfigFile) {
-        this.deploymentConfigFile = deploymentConfigFile;
+    public void setDeploymentConfigPath(Path deploymentConfigPath) {
+        this.deploymentConfigFile = deploymentConfigPath;
     }
 
     /**
-     * Gets the File to use for storing the DeploymentConfig.
+     * Gets the Path to use for storing the DeploymentConfig.
      * <p>
      * Unless an explicit deployment config File is set, the File is created in
      * the configured repository and based on the config name. If no repository
@@ -386,20 +390,21 @@ public class DeployConfRunner {
      * @param name the DeploymentConfig name to use
      * @return the current value of the deploymentConfig property
      */
-    public File getDeploymentConfigFile(String name) {
-        File result = deploymentConfigFile;
-
+    public Path getDeploymentConfigPath(String name) {
+        Path result = deploymentConfigFile;
+        String dir = getRepositoryDirectory();
+        if (dir == null) {
+            dir = "";
+        }
         if (deploymentConfigFile != null) {
             result = deploymentConfigFile;
         } else {
+            FileSystem fs = FileSystems.getDefault();
             if (name != null) {
                 result =
-                    new File(getRepositoryDirectory(), name + "-"
-                        + DEPLOYMENT_CONFIG_SUFFIX);
+                    fs.getPath(dir, name + "-" + DEPLOYMENT_CONFIG_SUFFIX);
             } else {
-                result =
-                    new File(getRepositoryDirectory(),
-                        DEPLOYMENT_CONFIG_SUFFIX);
+                result = fs.getPath(dir, DEPLOYMENT_CONFIG_SUFFIX);
             }
         }
 
@@ -466,15 +471,16 @@ public class DeployConfRunner {
     private void apply(DeploymentConfig config, String source,
         String destination) throws Exception {
 
-        File sourceFile = new File(source);
-        File destFile = new File(destination);
+        FileSystem fs = FileSystems.getDefault();
+        Path sourceFile = fs.getPath(source);
+        Path destFile = fs.getPath(destination);
 
-        FileInputStream srcStream = null;
-        FileOutputStream destStream = null;
+        InputStream srcStream = null;
+        OutputStream destStream = null;
 
         try {
-            srcStream = new FileInputStream(sourceFile);
-            destStream = new FileOutputStream(destFile);
+            srcStream = Files.newInputStream(sourceFile);
+            destStream = Files.newOutputStream(destFile);
             config.apply(srcStream, destStream, getDeploymentTemplatePath());
         } finally {
             if (srcStream != null) {
@@ -494,64 +500,59 @@ public class DeployConfRunner {
      * @throws IOException indicating IO error
      */
     private void save(DeploymentConfig config) throws IOException {
-        File file = getDeploymentConfigFile(config.getName());
-        logger.info("Saving Deployment Configuration to '" + file.getPath()
-            + "'");
-        FileOutputStream os = new FileOutputStream(file);
+        Path file = getDeploymentConfigPath(config.getName());
+        logger.info("Saving Deployment Configuration to '" + file + "'");
+        FileOutputStream os = new FileOutputStream(file.toFile());
         config.save(os);
         os.close();
     }
 
     /**
-     * Gets a InputStream instance from a plain file.
+     * Gets a DeploymentConfig instance from a Zip file.
      *
-     * @param file the path to the file
-     * @return InputStream representing the file
-     * @throws IOException indicating IO error
-     */
-    private InputStream getInputStreamFromFile(File file) throws IOException {
-
-        return new FileInputStream(file);
-    }
-
-    /**
-     * Gets a InputStream for a path in a Zip Archive.
-     *
-     * @param file the Zip Archive to use
-     * @param path the path to the file in the Zip Archive
-     * @return InputStream representing the path
-     * @throws IOException indicating IO error
-     */
-    private InputStream getInputStreamFromZipFile(File file, String path)
-        throws IOException {
-
-        ZipFile zipFile = new ZipFile(file);
-        ZipEntry entry = zipFile.getEntry(path);
-        if (entry == null) {
-            throw new IllegalArgumentException(
-                "No deployment template file found in file '" + file.getPath()
-                    + "': " + path);
-        }
-        return zipFile.getInputStream(entry);
-    }
-
-    /**
-     * Gets a DeploymentConfig instance from a InputStream.
-     * <p>
-     * Note that the InputStream is closed after successful invocation.
-     *
-     * @param is the InpoutStream to use
-     * @return a DeploymentConfig representation of the InputStream
+     * @param source the ZipFile to use
+     * @return a DeploymentConfig representation of the ReadableByteChannel
      * @throws Exception indicating error
      */
-    private DeploymentConfig getDeploymentConfig(InputStream is)
+    private DeploymentConfig getDeploymentConfigFromZip(String source)
         throws Exception {
+
+        ZipFile zipFile = new ZipFile(source);
+        ZipEntry entry = zipFile.getEntry(deploymentTemplatePath);
+        if (entry == null) {
+            zipFile.close();
+            throw new IllegalArgumentException(
+                "No deployment template file found in file '" + source + "': "
+                    + deploymentTemplatePath);
+        }
+        InputStream is = zipFile.getInputStream(entry);
 
         DeploymentReader reader = new DeploymentReader(is);
         DeploymentConfig result = reader.parse();
         is.close();
+        zipFile.close();
 
         return result;
     }
 
+    /**
+     * Gets a DeploymentConfig instance from a Path.
+     *
+     * @param path the file to use
+     * @return a DeploymentConfig representation of the ReadableByteChannel
+     * @throws Exception indicating error
+     */
+    private DeploymentConfig getDeploymentConfigFromPath(Path path)
+        throws Exception {
+
+        ReadableByteChannel ch =
+            FileChannel.open(path, StandardOpenOption.READ);
+        InputStream is = Channels.newInputStream(ch);
+
+        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentConfig result = reader.parse();
+        ch.close();
+
+        return result;
+    }
 }

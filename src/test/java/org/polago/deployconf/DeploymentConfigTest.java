@@ -26,12 +26,11 @@ package org.polago.deployconf;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipFile;
 
 import org.junit.Test;
@@ -141,13 +140,13 @@ public class DeploymentConfigTest {
         DeploymentConfig config = new DeploymentConfig();
         TestTask task = new TestTask();
         config.addTask(task);
-        File file = File.createTempFile("test", ".xml");
+        Path file = Files.createTempFile("test", ".xml");
         try {
-            OutputStream os = new FileOutputStream(file);
+            OutputStream os = Files.newOutputStream(file);
             config.save(os);
-            assertTrue(file.length() > 0);
+            assertTrue(Files.size(file) > 0);
         } finally {
-            file.delete();
+            Files.delete(file);
         }
     }
 
@@ -158,28 +157,28 @@ public class DeploymentConfigTest {
         String zipPath = "deploy.properties";
         task.path = zipPath;
         config.addTask(task);
-        File srcFile = File.createTempFile("input", ".zip");
-        File destFile = File.createTempFile("output", ".zip");
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
 
         try {
             TestZipOutputStream os =
-                new TestZipOutputStream(new FileOutputStream(srcFile));
+                new TestZipOutputStream(Files.newOutputStream(srcFile));
             InputStream is =
                 getClass().getClassLoader().getResourceAsStream(
                     "simple-test/" + zipPath);
             assertNotNull(is);
             os.addStream(is, zipPath);
             os.close();
-            InputStream src = new FileInputStream(srcFile);
-            FileOutputStream dest = new FileOutputStream(destFile);
+            InputStream src = Files.newInputStream(srcFile);
+            OutputStream dest = Files.newOutputStream(destFile);
             config.apply(src, dest, null);
             assertTrue(task.applied);
-            ZipFile destZipFile = new ZipFile(destFile);
+            ZipFile destZipFile = new ZipFile(destFile.toFile());
             assertNotNull(destZipFile.getEntry(zipPath));
             destZipFile.close();
         } finally {
-            srcFile.delete();
-            destFile.delete();
+            Files.delete(srcFile);
+            Files.delete(destFile);
         }
     }
 
@@ -190,28 +189,28 @@ public class DeploymentConfigTest {
         String zipPath = "deploy.properties";
         task.path = "nodeploy.properties";
         config.addTask(task);
-        File srcFile = File.createTempFile("input", ".zip");
-        File destFile = File.createTempFile("output", ".zip");
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
 
         try {
             TestZipOutputStream os =
-                new TestZipOutputStream(new FileOutputStream(srcFile));
+                new TestZipOutputStream(Files.newOutputStream(srcFile));
             InputStream is =
                 getClass().getClassLoader().getResourceAsStream(
                     "simple-test/" + zipPath);
             assertNotNull(is);
             os.addStream(is, zipPath);
             os.close();
-            InputStream src = new FileInputStream(srcFile);
-            FileOutputStream dest = new FileOutputStream(destFile);
+            InputStream src = Files.newInputStream(srcFile);
+            OutputStream dest = Files.newOutputStream(destFile);
             config.apply(src, dest, null);
             assertFalse(task.applied);
-            ZipFile destZipFile = new ZipFile(destFile);
+            ZipFile destZipFile = new ZipFile(destFile.toFile());
             assertNotNull(destZipFile.getEntry(zipPath));
             destZipFile.close();
         } finally {
-            srcFile.delete();
-            destFile.delete();
+            Files.delete(srcFile);
+            Files.delete(destFile);
         }
     }
 
@@ -223,12 +222,12 @@ public class DeploymentConfigTest {
         String ignorePath = "logging.xml";
         task.path = "nodeploy.properties";
         config.addTask(task);
-        File srcFile = File.createTempFile("input", ".zip");
-        File destFile = File.createTempFile("output", ".zip");
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
 
         try {
             TestZipOutputStream os =
-                new TestZipOutputStream(new FileOutputStream(srcFile));
+                new TestZipOutputStream(Files.newOutputStream(srcFile));
             InputStream is =
                 getClass().getClassLoader().getResourceAsStream(
                     "simple-test/" + zipPath);
@@ -239,16 +238,16 @@ public class DeploymentConfigTest {
                     "simple-test/" + ignorePath);
             os.addStream(is, ignorePath);
             os.close();
-            InputStream src = new FileInputStream(srcFile);
-            FileOutputStream dest = new FileOutputStream(destFile);
+            InputStream src = Files.newInputStream(srcFile);
+            OutputStream dest = Files.newOutputStream(destFile);
             config.apply(src, dest, zipPath);
             assertFalse(task.applied);
-            ZipFile destZipFile = new ZipFile(destFile);
+            ZipFile destZipFile = new ZipFile(destFile.toFile());
             assertNull(destZipFile.getEntry(zipPath));
             destZipFile.close();
         } finally {
-            srcFile.delete();
-            destFile.delete();
+            Files.delete(srcFile);
+            Files.delete(destFile);
         }
     }
 
