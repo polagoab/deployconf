@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -35,7 +35,6 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import org.polago.deployconf.InteractiveConfigurer;
-import org.polago.deployconf.task.AbstractTask;
 
 /**
  * Tests the {@link AbstractTask} class.
@@ -43,6 +42,11 @@ import org.polago.deployconf.task.AbstractTask;
 public class AbstractTaskTest {
 
     class TestAbstractTask extends AbstractTask {
+
+        @Override
+        public void merge(Task other) {
+
+        }
 
         @Override
         public boolean isConfigured() {

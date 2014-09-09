@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -110,7 +110,6 @@ public abstract class AbstractTask implements Task {
         return result;
     }
 
-
     /**
      * Create a JDOM CDATA Element with the given name and possibly text.
      *
@@ -122,6 +121,28 @@ public abstract class AbstractTask implements Task {
         Element result = new Element(name);
         if (text != null) {
             result.addContent(new CDATA(text));
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return getPath().hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object other) {
+        boolean result = false;
+        if (other instanceof AbstractTask) {
+            AbstractTask otherTask = (AbstractTask) other;
+            result = getPath().equals(otherTask.getPath());
         }
 
         return result;

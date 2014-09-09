@@ -147,6 +147,8 @@ public class DeploymentConfig {
         for (Task t : template.tasks) {
             if (!tasks.contains(t)) {
                 tasks.add(t);
+            } else {
+                mergeTask(t);
             }
         }
 
@@ -158,6 +160,20 @@ public class DeploymentConfig {
         }
 
         return true;
+    }
+
+    /**
+     * Merge a single Task with corresponding Task in this instance.
+     *
+     * @param task the Task to merge
+     */
+    private void mergeTask(Task task) {
+        for (Task t : tasks) {
+            if (t.equals(task)) {
+                t.merge(task);
+                return;
+            }
+        }
     }
 
     /**

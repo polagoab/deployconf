@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -35,6 +35,7 @@ import java.util.Set;
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.task.AbstractTask;
+import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,8 +106,7 @@ public class PropertiesTask extends AbstractTask {
                 p.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 p.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
-                p.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
 
             node.addContent(e);
         }
@@ -128,6 +128,32 @@ public class PropertiesTask extends AbstractTask {
      */
     void setProperties(Set<Property> properties) {
         this.properties = properties;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void merge(Task other) {
+        if (other instanceof PropertiesTask) {
+            PropertiesTask opt = (PropertiesTask) other;
+            properties.retainAll(opt.getProperties());
+
+            for (Property op : opt.getProperties()) {
+                boolean exists = false;
+                for (Property p : properties) {
+                    if (p.equals(op)) {
+                        exists = true;
+                        p.setDescription(op.getDescription());
+                        p.setDefaultValue(op.getDefaultValue());
+                        break;
+                    }
+                }
+                if (!exists) {
+                    properties.add(op);
+                }
+            }
+        }
     }
 
     /**
@@ -204,34 +230,6 @@ public class PropertiesTask extends AbstractTask {
             writer.newLine();
         }
         writer.flush();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        int result = getPath().hashCode();
-        for (Property t : getProperties()) {
-            result += t.hashCode();
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object other) {
-        boolean result = false;
-        if (other instanceof PropertiesTask) {
-            PropertiesTask otherTask = (PropertiesTask) other;
-            result =
-                getPath().equals(otherTask.getPath())
-                    && getProperties().equals(otherTask.getProperties());
-        }
-
-        return result;
     }
 
     /**

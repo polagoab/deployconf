@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -37,8 +37,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 import org.polago.deployconf.TestInteractiveConfigurer;
-import org.polago.deployconf.task.properties.PropertiesTask;
-import org.polago.deployconf.task.properties.Property;
 
 /**
  * Tests the {@link PropertiesTask} class.
@@ -96,6 +94,87 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         assertFalse(task.isConfigured());
+    }
+
+    @Test
+    public void testMergeWithNewProperty() throws Exception {
+        String path = "test-path";
+        PropertiesTask task1 = new PropertiesTask();
+        task1.setPath(path);
+        Property p1 =
+            new Property("test-property", "test-descr", "test-default", null);
+        HashSet<Property> list1 = new HashSet<Property>();
+        list1.add(p1);
+        task1.setProperties(list1);
+
+        PropertiesTask task2 = new PropertiesTask();
+        task2.setPath(path);
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(task1.getProperties(), task2.getProperties());
+    }
+
+    @Test
+    public void testMergeWithSameProperty() throws Exception {
+        String path = "test-path";
+        PropertiesTask task1 = new PropertiesTask();
+        task1.setPath(path);
+        Property p1 =
+            new Property("test-property", "test1-descr", "test1-default", null);
+        HashSet<Property> list1 = new HashSet<Property>();
+        list1.add(p1);
+        task1.setProperties(list1);
+
+        PropertiesTask task2 = new PropertiesTask();
+        task2.setPath(path);
+        Property p2 =
+            new Property("test-property", "test2-descr", "test2-default",
+                "test-value");
+        HashSet<Property> list2 = new HashSet<Property>();
+        list2.add(p2);
+        task2.setProperties(list2);
+
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(1, task2.getProperties().size());
+        Property p = task2.getProperties().iterator().next();
+        assertEquals("test-property", p.getName());
+        assertEquals("test1-descr", p.getDescription());
+        assertEquals("test1-default", p.getDefaultValue());
+        assertEquals("test-value", p.getValue());
+    }
+
+    @Test
+    public void testMergeWithReplacingProperty() throws Exception {
+        String path = "test-path";
+        PropertiesTask task1 = new PropertiesTask();
+        task1.setPath(path);
+        Property p1 =
+            new Property("test1-property", "test1-descr", "test1-default", null);
+        HashSet<Property> list1 = new HashSet<Property>();
+        list1.add(p1);
+        task1.setProperties(list1);
+
+        PropertiesTask task2 = new PropertiesTask();
+        task2.setPath(path);
+        Property p2 =
+            new Property("test2-property", "test2-descr", "test2-default",
+                "test-value");
+        HashSet<Property> list2 = new HashSet<Property>();
+        list2.add(p2);
+        task2.setProperties(list2);
+
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(1, task2.getProperties().size());
+        Property p = task2.getProperties().iterator().next();
+        assertEquals("test1-property", p.getName());
+        assertEquals("test1-descr", p.getDescription());
+        assertEquals("test1-default", p.getDefaultValue());
+        assertNull(p.getValue());
     }
 
     @Test

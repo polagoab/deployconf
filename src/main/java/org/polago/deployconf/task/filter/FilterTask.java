@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -38,6 +38,7 @@ import java.util.regex.Matcher;
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.task.AbstractTask;
+import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,8 +125,7 @@ public class FilterTask extends AbstractTask {
                 t.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 t.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
-                t.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
 
             node.addContent(e);
         }
@@ -156,6 +156,33 @@ public class FilterTask extends AbstractTask {
      */
     private String getEncoding() {
         return encoding;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void merge(Task other) {
+        if (other instanceof FilterTask) {
+            FilterTask oft = (FilterTask) other;
+            tokens.retainAll(oft.getTokens());
+
+            for (FilterToken ot : oft.getTokens()) {
+                boolean exists = false;
+                for (FilterToken t : tokens) {
+                    if (t.equals(ot)) {
+                        exists = true;
+                        t.setRegex(ot.getRegex());
+                        t.setDescription(ot.getDescription());
+                        t.setDefaultValue(ot.getDefaultValue());
+                        break;
+                    }
+                }
+                if (!exists) {
+                    tokens.add(ot);
+                }
+            }
+        }
     }
 
     /**
@@ -223,34 +250,6 @@ public class FilterTask extends AbstractTask {
             writer.newLine();
         }
         writer.flush();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        int result = getPath().hashCode();
-        for (FilterToken t : getTokens()) {
-            result += t.hashCode();
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object other) {
-        boolean result = false;
-        if (other instanceof FilterTask) {
-            FilterTask otherTask = (FilterTask) other;
-            result =
-                getPath().equals(otherTask.getPath())
-                    && getTokens().equals(otherTask.getTokens());
-        }
-
-        return result;
     }
 
     /**

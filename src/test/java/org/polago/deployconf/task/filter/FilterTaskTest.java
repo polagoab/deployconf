@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -38,8 +38,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 import org.polago.deployconf.TestInteractiveConfigurer;
-import org.polago.deployconf.task.filter.FilterTask;
-import org.polago.deployconf.task.filter.FilterToken;
 
 /**
  * Tests the {@link FilterTask} class.
@@ -101,6 +99,92 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         assertFalse(task.isConfigured());
+    }
+
+    @Test
+    public void testMergeWithNewFilterToken() throws Exception {
+        String path = "test-path";
+        FilterTask task1 = new FilterTask();
+        task1.setPath(path);
+        FilterToken t1 =
+            new FilterToken("test-token", "test-regex", "test-descr",
+                "test-default", null);
+        HashSet<FilterToken> list1 = new HashSet<FilterToken>();
+        list1.add(t1);
+        task1.setTokens(list1);
+
+        FilterTask task2 = new FilterTask();
+        task2.setPath(path);
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(task1.getTokens(), task2.getTokens());
+    }
+
+    @Test
+    public void testMergeWithSameFilterToken() throws Exception {
+        String path = "test-path";
+        FilterTask task1 = new FilterTask();
+        task1.setPath(path);
+        FilterToken t1 =
+            new FilterToken("test-token", "test1-regex", "test1-descr",
+                "test1-default", null);
+        HashSet<FilterToken> list1 = new HashSet<FilterToken>();
+        list1.add(t1);
+        task1.setTokens(list1);
+
+        FilterTask task2 = new FilterTask();
+        task2.setPath(path);
+        FilterToken t2 =
+            new FilterToken("test-token", "test2-regex", "test2-descr",
+                "test2-default", "test-value");
+        HashSet<FilterToken> list2 = new HashSet<FilterToken>();
+        list2.add(t2);
+        task2.setTokens(list2);
+
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(1, task2.getTokens().size());
+        FilterToken t = task2.getTokens().iterator().next();
+        assertEquals("test-token", t.getName());
+        assertEquals("test1-regex", t.getRegex().toString());
+        assertEquals("test1-descr", t.getDescription());
+        assertEquals("test1-default", t.getDefaultValue());
+        assertEquals("test-value", t.getValue());
+    }
+
+    @Test
+    public void testMergeWithReplacingFilterToken() throws Exception {
+        String path = "test-path";
+        FilterTask task1 = new FilterTask();
+        task1.setPath(path);
+        FilterToken t1 =
+            new FilterToken("test1-token", "test1-regex", "test1-descr",
+                "test1-default", null);
+        HashSet<FilterToken> list1 = new HashSet<FilterToken>();
+        list1.add(t1);
+        task1.setTokens(list1);
+
+        FilterTask task2 = new FilterTask();
+        task2.setPath(path);
+        FilterToken t2 =
+            new FilterToken("test2-token", "test2-regex", "test2-descr",
+                "test2-default", "test-value");
+        HashSet<FilterToken> list2 = new HashSet<FilterToken>();
+        list2.add(t2);
+        task2.setTokens(list2);
+
+        task2.merge(task1);
+
+        assertEquals(task1, task2); // compare paths
+        assertEquals(1, task2.getTokens().size());
+        FilterToken t = task2.getTokens().iterator().next();
+        assertEquals("test1-token", t.getName());
+        assertEquals("test1-regex", t.getRegex().toString());
+        assertEquals("test1-descr", t.getDescription());
+        assertEquals("test1-default", t.getDefaultValue());
+        assertNull(t.getValue());
     }
 
     @Test

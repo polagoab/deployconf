@@ -47,6 +47,7 @@ public class DeploymentConfigTest {
         TestTask task = new TestTask();
         template.addTask(task);
         assertFalse(config.merge(template));
+        assertFalse(task.merged);
         assertEquals(1, config.getTasks().size());
         assertEquals(task, config.getTasks().get(0));
     }
@@ -62,6 +63,26 @@ public class DeploymentConfigTest {
         template.addTask(task);
 
         assertTrue(config.merge(template));
+        assertTrue(task.merged);
+        assertEquals(1, config.getTasks().size());
+        assertEquals(task, config.getTasks().get(0));
+    }
+
+    @Test
+    public void testMergeConfigAndTemplateWithEqualTasks() {
+        DeploymentConfig config = new DeploymentConfig();
+        DeploymentConfig template = new DeploymentConfig();
+        TestTask task = new TestTask();
+        task.configured = true;
+
+        TestTask task2 = new TestTask();
+        task2.configured = false;
+
+        config.addTask(task);
+        template.addTask(task2);
+
+        assertTrue(config.merge(template));
+        assertTrue(task.merged);
         assertEquals(1, config.getTasks().size());
         assertEquals(task, config.getTasks().get(0));
     }
@@ -76,6 +97,7 @@ public class DeploymentConfigTest {
         template.addTask(task);
 
         assertFalse(config.merge(template));
+        assertTrue(task.merged);
         assertEquals(1, config.getTasks().size());
         assertEquals(task, config.getTasks().get(0));
     }
@@ -91,6 +113,7 @@ public class DeploymentConfigTest {
         template.addTask(task);
 
         assertFalse(config.merge(template));
+        assertFalse(task.merged);
         assertEquals(1, config.getTasks().size());
         assertEquals(task, config.getTasks().get(0));
     }

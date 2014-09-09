@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2014 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jdom2.Element;
-import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.task.Task;
 
 /**
@@ -40,7 +39,7 @@ class TestTask implements Task {
 
     boolean interactive;
 
-    String path;
+    String path = "test-path";
 
     boolean applied;
 
@@ -50,6 +49,8 @@ class TestTask implements Task {
 
     boolean isconfigureInteractivelyCalled;
 
+    boolean merged;
+
     @Override
     public String getPath() {
         return path;
@@ -58,6 +59,11 @@ class TestTask implements Task {
     @Override
     public void deserialize(Element root) {
         configured = true;
+    }
+
+    @Override
+    public void merge(Task other) {
+        merged = true;
     }
 
     @Override
@@ -85,6 +91,29 @@ class TestTask implements Task {
     @Override
     public void apply(InputStream source, OutputStream destination) {
         applied = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        int result = getPath().hashCode();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object other) {
+        boolean result = false;
+        if (other instanceof TestTask) {
+            TestTask otherTask = (TestTask) other;
+            result = getPath().equals(otherTask.getPath());
+        }
+
+        return result;
     }
 
 };
