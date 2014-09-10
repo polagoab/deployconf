@@ -52,7 +52,7 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
     /**
      * {@inheritDoc}
      *
-     * @throws IOException
+     * @throws IOException indicating processing failure
      */
     @Override
     public String configure(String name, String description,
