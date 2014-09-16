@@ -9,7 +9,7 @@ environment.
 
 System requirements for development
 ===================================
-* Java SE 1.7(7.0) or later (http://java.sun.com/)
+* Java SE JDK 1.7(7.0) or later (http://java.sun.com/)
 * Maven 3.0 or later (http://maven.apache.org/)
 
 Installation instructions
