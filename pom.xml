@@ -99,7 +99,7 @@
           <target>${jdkVersion}</target>
           <!-- workaround for https://jira.codehaus.org/browse/MCOMPILER-209 -->
           <useIncrementalCompilation>false</useIncrementalCompilation>
-        </configuration>
+        </configuration>  
       </plugin>
 
       <plugin>
