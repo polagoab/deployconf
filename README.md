@@ -1,16 +1,13 @@
-#===========================================================================
-# Copyright (C) 2013-2014 Polago AB
-# All rights reserved.
-#===========================================================================
+# Deployconf
 
-This directory contains the source code for deployconf, a Command Line Tool
+This repository contains the source code for deployconf, a Command Line Tool
 used by Deployers to configure java artifcacts for the actual deployment
 environment.
 
 System requirements for development
 ===================================
 * Java SE JDK 1.7(7.0) or later (http://java.sun.com/)
-* Maven 3.0 or later (http://maven.apache.org/)
+* Maven 3.1 or later (http://maven.apache.org/)
 
 Installation instructions
 =========================
