@@ -273,12 +273,14 @@ public class DeployConfRunner {
             System.exit(instance.run(argList.get(0), argList.get(1)));
         } catch (ParseException e) {
             logger.error("Command Line Parse Error: " + e.getMessage(), e);
+            System.exit(1);
         } catch (Exception e) {
             String msg = "Internal Error: " + e.toString();
             if (!debugEnabled) {
                 msg += "\n(use the -d option to print stacktraces)";
             }
             logger.error(msg, e);
+            System.exit(2);
         }
     }
 
