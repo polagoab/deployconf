@@ -43,7 +43,7 @@
   <developers>
     <developer>
       <name>Per Landberg</name>
-      <email>per.landberg@polago.se</email>
+      <url>https://github.com/perlan</url>
       <organization>Polago AB</organization>
       <organizationUrl>http://www.polago.com/</organizationUrl>
     </developer>
@@ -381,6 +381,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
+        <configuration>
+          <showAvatarImages>false</showAvatarImages>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -516,7 +519,7 @@
           </reportPlugins>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
