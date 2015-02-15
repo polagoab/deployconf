@@ -106,7 +106,8 @@ public class PropertiesTask extends AbstractTask {
                 p.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
                 p.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
+                p.getValue()));
 
             node.addContent(e);
         }
