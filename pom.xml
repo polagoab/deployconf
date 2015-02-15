@@ -50,8 +50,8 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:polagoab/deployconf.git</connection>
-    <developerConnection>scm:git:git@github.com:polagoab/deployconf.git</developerConnection>
+    <connection>scm:git:https://github.com/polagoab/deployconf.git</connection>
+    <developerConnection>scm:git:https://github.com/polagoab/deployconf.git</developerConnection>
     <url>https://github.com/polagoab/deployconf</url>
   </scm>
 
