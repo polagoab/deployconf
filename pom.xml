@@ -13,7 +13,7 @@
 
   <properties>
     <jdkVersion>1.7</jdkVersion>
-    <mavenVersion>3.1</mavenVersion>
+    <mavenVersion>3.0.1</mavenVersion>
     <surefireVersion>2.18.1</surefireVersion>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <copyrightYear>2013-2015</copyrightYear>
