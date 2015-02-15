@@ -5,7 +5,7 @@
   <artifactId>deployconf</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>deployconf</name>
+  <name>Deployconf</name>
   <url>http://www.polago.org/deployconf</url>
   <description>
     Command Line Tool used by Deployers to configure java artifacts for the actual deployment environment
