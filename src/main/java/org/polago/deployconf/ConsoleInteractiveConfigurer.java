@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -25,7 +25,9 @@
 package org.polago.deployconf;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 
 import jline.console.ConsoleReader;
 
@@ -46,7 +48,9 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
     public ConsoleInteractiveConfigurer() throws IOException {
         reader = new ConsoleReader();
         reader.setBellEnabled(false);
-        writer = new PrintWriter(System.out, true);
+        writer =
+            new PrintWriter(new OutputStreamWriter(System.out,
+                Charset.defaultCharset()));
     }
 
     /**

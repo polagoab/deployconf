@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -515,8 +515,11 @@ public class DeployConfRunner {
         Path file = getDeploymentConfigPath(config.getName());
         logger.info("Saving Deployment Configuration to '" + file + "'");
         FileOutputStream os = new FileOutputStream(file.toFile());
-        config.save(os);
-        os.close();
+        try {
+            config.save(os);
+        } finally {
+            os.close();
+        }
     }
 
     /**
