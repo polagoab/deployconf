@@ -75,16 +75,16 @@
     </developer>
   </developers>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/polagoab/deployconf/issues</url>
+  </issueManagement>
+
   <scm>
     <connection>scm:git:https://github.com/polagoab/deployconf.git</connection>
     <developerConnection>scm:git:https://github.com/polagoab/deployconf.git</developerConnection>
     <url>https://github.com/polagoab/deployconf</url>
   </scm>
-
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/polagoab/deployconf/issues</url>
-  </issueManagement>
 
   <distributionManagement>
     <site>
