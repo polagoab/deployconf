@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- - Copyright 2014 Polago AB.
+ - Copyright 2014-2015 Polago AB.
  -
  - Licensed under the Apache License, Version 2.0 (the "License");
  - you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
   <bannerLeft>
     <name>${project.organization.name}</name>
     <src>images/polago.png</src>
-    <href>${project.organization.url}</href>
+    <href>http://www.polago.org/</href>
   </bannerLeft>
 
   <skin>
@@ -27,10 +27,19 @@
     <artifactId>maven-fluido-skin</artifactId>
     <version>1.3.1</version>
   </skin>
-  
+
   <publishDate format="yyyy-MM-dd" />
 
   <body>
+    <breadcrumbs>
+      <item name="Polago Open Source" href="http://www.polago.org/" />
+      <item name="${project.name}" href="http://www.polago.org/${project.artifactId}" />
+    </breadcrumbs>
+
+    <links>
+      <item name="Polago.com" href="http://www.polago.com/" />
+    </links>
+
     <menu name="Overview">
       <item name="Introduction" href="index.html" />
       <item name="Developer Usage" href="developer-usage.html" />
