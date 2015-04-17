@@ -1,8 +1,9 @@
 Introduction
 ============
 
-Deploying software is a processes with at least two participating roles. 
-The Developer and Deployer.
+Deployconf is a Command Line Tool used to configure Java artifacts for the actual deployment environment. It is 
+designed to be part of the deployment process to both improve the configuration experience and prevent common 
+mistakes.
 
 The Developer
 -------------
