@@ -42,6 +42,7 @@
     <mavenVersion>3.0.1</mavenVersion>
     <surefireVersion>2.18.1</surefireVersion>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <copyrightYear>2013-2015</copyrightYear>
     <copyrightMessage>Copyright (C) ${copyrightYear} Polago AB</copyrightMessage>
     <mainClass>org.polago.deployconf.DeployConfRunner</mainClass>
@@ -485,8 +486,6 @@
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <locales>en</locales>
-          <outputEncoding>UTF-8</outputEncoding>
-          <inputEncoding>ISO-8859-1</inputEncoding>
           <reportPlugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
