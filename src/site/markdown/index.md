@@ -1,11 +1,9 @@
-Introduction
-============
+# Introduction
 
 Deployconf is a Command Line Tool used to configure Java artifacts for the actual deployment environment. It is designed
 to be part of the deployment process to both improve the configuration experience and prevent common mistakes.
 
-The Developer
--------------
+## The Developer
  
 As a Developer, you do your best to deliver your project on time and on budget, meeting and preferable exceeding your
 customer's expectation.
@@ -30,8 +28,7 @@ that you actually forget to update your documentation.
 What you really want is a configuration tool that detects missing configuration properties and alerts the Deployer
 before causing system downtime.
 
-The Deployer
-------------
+## The Deployer
 
 As a Deployer, receiving a new distribution from your developers, the standard procedure is to extract the distribution
 to a temporary directory and run a homegrown script that tries to ensure that you correctly configure and applies
@@ -51,8 +48,7 @@ Since the software is a web application in the form of a war-file, it would also
 merged into the actual war-file since it would allow you to deploy the same war-file to the application server cluster,
 using the provided tools, without having to manually distribute the configuration changes to all nodes.
 
-DeployConf
-----------
+## DeployConf
 
 Deployconf is an attempt to ease the burden for both Developers and Deployers.  The Developer provides a
 self-documenting deployment descriptor that describes all configuration properties necessary for the application, along
@@ -73,4 +69,3 @@ local repository with the correct information.
 
 In the interactive mode, deployconf asks the Deployer for the required information and then updates the local
 repository.
-
