@@ -42,21 +42,21 @@ The *path* attribute identifies the path of the properties file in the artifact.
 
 `name`(required)
 
-: the Java Property Name. It's also used as configuration property name when running deployconf in interactive mode.
+: the Java Property Name. It's also used as configuration property name when running deployconf in *interactive* mode.
 
 `description`(required)
 
-: The configuration property description. This is displayed when running deployconf in interactive mode.
+: The configuration property description. This is displayed when running deployconf in *interactive* mode.
 
 `default`(optional)
 
-: The default value to used for the configuration property. This is used when running deployconf in interactive mode.
+: The default value to used for the configuration property. This is used when running deployconf in *interactive* mode.
 
 `value`(optional)
 
 : The initial value for the configuration property. If the property has a value in the deployment template it will be
 used *as is* in the deployment config. This means that you can provide properties that normally is hidden unless
-deployconf is running in force-interactive mode.
+deployconf is running in *force-interactive* mode.
 
 ## Filter Task
 
@@ -81,7 +81,7 @@ The *path* attribute identifies the path of the file in the artifact. It should 
 
 `name`(required)
 
-: the configuration property name used when running deployconf in interactive mode
+: the configuration property name used when running deployconf in *interactive* mode
 
 `regex`(required)
 
@@ -89,15 +89,15 @@ The *path* attribute identifies the path of the file in the artifact. It should 
 
 `description`(required)
 
-: The configuration property description. This is displayed when running deployconf in interactive mode.
+: The configuration property description. This is displayed when running deployconf in *interactive* mode.
 
 `default`(optional)
 
-: The default value to used for the configuration  property. This is used when running deployconf in interactive mode.
+: The default value to used for the configuration  property. This is used when running deployconf in *interactive* mode.
 
 `value`(optional)
 
 : The initial value for the configuration property. If the property has a value in the deployment template it will be
 used *as is* in the deployment config. This means that you can provide properties that normally is hidden unless
-deployconf is running in force-interactive mode.
+deployconf is running in *force-interactive* mode.
 
