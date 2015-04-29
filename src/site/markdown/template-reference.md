@@ -3,7 +3,7 @@
 The Deployment Template is an XML-file describing each configuration properties that should be applied to the artifact
 before deployment. 
 
-It's basic structure is:
+The basic structure is:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
