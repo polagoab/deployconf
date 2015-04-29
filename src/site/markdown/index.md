@@ -51,16 +51,16 @@ using the provided tools, without having to manually distribute the configuratio
 ## DeployConf
 
 Deployconf is an attempt to ease the burden for both Developers and Deployers.  The Developer provides a
-self-documenting deployment descriptor that describes all configuration properties necessary for the application, along
-with default values, if any. The descriptor is embedded in the artifact.
+self-documenting deployment template that describes all configuration properties necessary for the application, along
+with default values, if any. The template is embedded in the artifact.
 
-The descriptor also contains rules for how the configuration property value should be applied to the generated artifact,
-supporting Java properties files as well as regex-style substitutions for any types of files.
+The deployment template also contains rules for how the configuration property value should be applied to the generated
+artifact, supporting Java properties files as well as regex-style substitutions for any types of files.
 
 The Deployer, when preparing the artifact for deployment, runs the deployconf utility with the artifact as input. The
-input is processed together with previous configuration from a local repository to generate a new artifact as output
-with embedded configuration as described in the deployment descriptor.  The new artifact is then ready for
-deployment. As long as the deployment descriptor is unchanged from the previous release, the output is automatically
+input is processed together with previous deployment configuration from a local repository to generate a new artifact as
+output with embedded configuration as described in the deployment template.  The new artifact is then ready for
+deployment. As long as the deployment template is unchanged from the previous release, the output is automatically
 configured and ready for deployment.
 
 Deployconf may be run either in interactive or non-interactive mode.  In the default non-interactive mode, deployconf

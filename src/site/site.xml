@@ -77,7 +77,7 @@
       <item name="Introduction" href="index.html" />
       <item name="Developer Usage" href="developer-usage.html" />
       <item name="Deployer Usage" href="deployer-usage.html" />
-      <item name="Deployment Descriptor Reference" href="descriptor-reference.html" />
+      <item name="Deployment Template Reference" href="template-reference.html" />
       <item name="Release Notes" href="${scm.url}/releases" />
       <item name="Download" href="download.html" />
     </menu>
