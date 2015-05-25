@@ -45,8 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeploymentConfig {
 
-    private static Logger logger = LoggerFactory
-        .getLogger(DeploymentConfig.class);
+    private static Logger logger = LoggerFactory.getLogger(DeploymentConfig.class);
 
     private static final int BUF_SIZE = 1024;
 
@@ -85,14 +84,11 @@ public class DeploymentConfig {
      * For each non-configured Task, ask the user to configure the task.
      *
      * @param configurer the IntercativeConfigurer to use
-     * @param forceInteractive if true, all tasks will be considered not
-     * configured
-     * @return true if the user successfully configured all non-configured
-     * Tasks
+     * @param forceInteractive if true, all tasks will be considered not configured
+     * @return true if the user successfully configured all non-configured Tasks
      * @throws Exception indicating processing failure
      */
-    public boolean interactiveMerge(InteractiveConfigurer configurer,
-        boolean forceInteractive) throws Exception {
+    public boolean interactiveMerge(InteractiveConfigurer configurer, boolean forceInteractive) throws Exception {
 
         if (forceInteractive) {
             logger.debug("Configure all Tasks interactively");
@@ -106,8 +102,7 @@ public class DeploymentConfig {
 
         for (Task t : tasks) {
             if (forceInteractive || !t.isConfigured()) {
-                boolean tr =
-                    t.configureInteractively(configurer, forceInteractive);
+                boolean tr = t.configureInteractively(configurer, forceInteractive);
                 if (tr == false) {
                     result = false;
                 }
@@ -132,8 +127,7 @@ public class DeploymentConfig {
      * Merge the template configuration into this instance.
      *
      * @param template the template configuration to merge
-     * @return true if the merge was successful, ie all configurations has a
-     * value.
+     * @return true if the merge was successful, ie all configurations has a value.
      */
     public boolean merge(DeploymentConfig template) {
 
@@ -222,8 +216,7 @@ public class DeploymentConfig {
      * @param ignorePath a zip path to ignore
      * @throws Exception indicating IO error
      */
-    public void apply(InputStream srcStream, OutputStream destStream,
-        String ignorePath) throws Exception {
+    public void apply(InputStream srcStream, OutputStream destStream, String ignorePath) throws Exception {
 
         ZipInputStream srcZipStream = new ZipInputStream(srcStream);
         ZipOutputStream destZipStream = new ZipOutputStream(destStream);
@@ -282,8 +275,7 @@ public class DeploymentConfig {
      * @param dest the destination ZipOutputStream
      * @throws IOException indicating IO error
      */
-    private void copyZipEntry(ZipEntry e, ZipInputStream src,
-        ZipOutputStream dest) throws IOException {
+    private void copyZipEntry(ZipEntry e, ZipInputStream src, ZipOutputStream dest) throws IOException {
 
         logger.debug("Copying Zip Entry: " + e);
 
@@ -304,8 +296,8 @@ public class DeploymentConfig {
      * @param zipDest the ZipOutputStream file to use
      * @throws Exception indicating processing error
      */
-    private void applyZipEntry(ZipEntry e, List<Task> taskList,
-        ZipInputStream zipSrc, ZipOutputStream zipDest) throws Exception {
+    private void applyZipEntry(ZipEntry e, List<Task> taskList, ZipInputStream zipSrc, ZipOutputStream zipDest)
+        throws Exception {
 
         logger.info("Applying deployment config to Zip Entry: " + e);
         for (Task t : taskList) {
@@ -314,8 +306,7 @@ public class DeploymentConfig {
     }
 
     /**
-     * Create a Map with the path as key and a list of Tasks as value from the
-     * list of Tasks.
+     * Create a Map with the path as key and a list of Tasks as value from the list of Tasks.
      *
      * @return a Map of available tasks for each path
      */

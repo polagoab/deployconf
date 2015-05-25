@@ -39,8 +39,7 @@ public final class ProjectProperties {
 
     private static final String KEY_VERSION = "project.version";
 
-    private static final String KEY_COPYRIGHT_MESSAGE =
-        "project.copyright.message";
+    private static final String KEY_COPYRIGHT_MESSAGE = "project.copyright.message";
 
     private static final String KEY_HELP_HEADER = "project.help.header";
 
@@ -54,9 +53,7 @@ public final class ProjectProperties {
      * @throws IOException indicating IO Error
      */
     private ProjectProperties() throws IOException {
-        InputStream in =
-            Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(RESOURCE);
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(RESOURCE);
         properties = new Properties();
         properties.load(in);
         in.close();

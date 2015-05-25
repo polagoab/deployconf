@@ -60,8 +60,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class DeployConfRunner {
 
-    private static Logger logger = LoggerFactory
-        .getLogger(DeployConfRunner.class);
+    private static Logger logger = LoggerFactory.getLogger(DeployConfRunner.class);
 
     /**
      * Available RunModes.
@@ -76,29 +75,26 @@ public class DeployConfRunner {
     };
 
     /**
-     * The Environment Variable used to set the local repository for storing
-     * config files. This may be overridden by command line options.
+     * The Environment Variable used to set the local repository for storing config files. This may be overridden by
+     * command line options.
      */
     private static final String ENV_DEPLOYCONF_REPO = "DEPLOYCONF_REPO";
 
     /**
-     * The default local repository relative the user's HOME directory for
-     * storing config files. This may be overridden by command line options.
+     * The default local repository relative the user's HOME directory for storing config files. This may be overridden
+     * by command line options.
      */
     private static final String DEFAULT_DEPLOYCONF_REPO = "/.deployconf_repo";
 
     /**
      * The default deployment template path to use.
      */
-    private static final String DEFAULT_TEMPLATE_PATH =
-        "META-INF/deployment-template.xml";
+    private static final String DEFAULT_TEMPLATE_PATH = "META-INF/deployment-template.xml";
 
     /**
-     * The deployment config file suffix to use when creating deploymentConfig
-     * paths.
+     * The deployment config file suffix to use when creating deploymentConfig paths.
      */
-    protected static final String DEPLOYMENT_CONFIG_SUFFIX =
-        "deployment-config.xml";
+    protected static final String DEPLOYMENT_CONFIG_SUFFIX = "deployment-config.xml";
 
     /**
      * The RunMode to use.
@@ -116,8 +112,7 @@ public class DeployConfRunner {
     private Path deploymentConfigFile = null;
 
     /**
-     * The local repository for storing deployment config files. Null means
-     * current directory.
+     * The local repository for storing deployment config files. Null means current directory.
      */
     private String repositoryDirectory = null;
 
@@ -138,49 +133,38 @@ public class DeployConfRunner {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option help =
-            new Option("h", "help", false, "Display usage information");
+        Option help = new Option("h", "help", false, "Display usage information");
         options.addOption(help);
 
-        Option version =
-            new Option("v", "version", false,
-                "Display version information and exit");
+        Option version = new Option("v", "version", false, "Display version information and exit");
         options.addOption(version);
 
-        Option interactive =
-            new Option("i", "interactive", false, "Run in interactive mode");
+        Option interactive = new Option("i", "interactive", false, "Run in interactive mode");
         options.addOption(interactive);
 
         Option forceInteractive =
-            new Option("I", "force-interactive", false,
-                "Run in interactive mode and configure all tasks");
+            new Option("I", "force-interactive", false, "Run in interactive mode and configure all tasks");
         options.addOption(forceInteractive);
 
-        Option quiet =
-            new Option("q", "quiet", false, "Suppress most messages");
+        Option quiet = new Option("q", "quiet", false, "Suppress most messages");
         options.addOption(quiet);
 
-        Option debug =
-            new Option("d", "debug", false, "Print Debug Information");
+        Option debug = new Option("d", "debug", false, "Print Debug Information");
         options.addOption(debug);
 
         boolean debugEnabled = false;
 
-        Option repoDir =
-            new Option("r", "repo", true,
-                "Repository directory to use for storing deployment configs");
+        Option repoDir = new Option("r", "repo", true, "Repository directory to use for storing deployment configs");
         options.addOption(repoDir);
 
         Option configFile =
-            new Option("f", "deployment-config-file", true,
-                "File to use for storing the deployment config");
+            new Option("f", "deployment-config-file", true, "File to use for storing the deployment config");
         options.addOption(configFile);
 
         Option templatePath =
             new Option("t", "deployment-template-path", true,
-                "Path to use for locating the deployment template in the "
-                    + "<INPUT> file. Default is '" + DEFAULT_TEMPLATE_PATH
-                    + "'");
+                "Path to use for locating the deployment template in the " + "<INPUT> file. Default is '"
+                    + DEFAULT_TEMPLATE_PATH + "'");
         options.addOption(templatePath);
 
         CommandLineParser parser = new GnuParser();
@@ -199,8 +183,7 @@ public class DeployConfRunner {
 
             if (cmd.hasOption(help.getOpt())) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp(projectProperties.getName()
-                    + " [OPTION]... <INPUT> <OUTPUT>",
+                formatter.printHelp(projectProperties.getName() + " [OPTION]... <INPUT> <OUTPUT>",
                     projectProperties.getHelpHeader(), options, "");
                 System.exit(0);
             }
@@ -222,39 +205,32 @@ public class DeployConfRunner {
 
             DeployConfRunner instance = new DeployConfRunner(mode);
 
-            String envRepoDir =
-                instance.getRepositoryDirectoryFromEnvironment();
+            String envRepoDir = instance.getRepositoryDirectoryFromEnvironment();
 
             if (cmd.hasOption(repoDir.getOpt())) {
                 String rd = cmd.getOptionValue(repoDir.getOpt());
                 logger.debug("Using repository directory: {}", rd);
                 instance.setRepositoryDirectory(rd);
             } else if (envRepoDir != null) {
-                logger.debug(
-                    "Using repository directory from environment {}: {}",
-                    ENV_DEPLOYCONF_REPO, envRepoDir);
+                logger.debug("Using repository directory from environment {}: {}", ENV_DEPLOYCONF_REPO, envRepoDir);
                 instance.setRepositoryDirectory(envRepoDir);
             } else {
                 String rd = getDefaultRepository();
                 instance.setRepositoryDirectory(rd);
                 logger.debug("Using default repository directory: {}", rd);
             }
-            Path repo =
-                FileSystems.getDefault().getPath(
-                    instance.getRepositoryDirectory());
+            Path repo = FileSystems.getDefault().getPath(instance.getRepositoryDirectory());
             if (!Files.exists(repo)) {
                 Files.createDirectories(repo);
             } else if (!Files.isDirectory(repo)) {
-                logger.error("Specified repository is not a directory: {}",
-                    repo);
+                logger.error("Specified repository is not a directory: {}", repo);
                 System.exit(1);
             }
 
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
                 logger.debug("Using explicit deployment file: {}", f);
-                instance.setDeploymentConfigPath(FileSystems.getDefault()
-                    .getPath(f));
+                instance.setDeploymentConfigPath(FileSystems.getDefault().getPath(f));
             }
 
             if (cmd.hasOption(templatePath.getOpt())) {
@@ -266,8 +242,7 @@ public class DeployConfRunner {
             @SuppressWarnings("unchecked")
             List<String> argList = cmd.getArgList();
             if (argList.size() != 2) {
-                System.out.println("usage: " + projectProperties.getName()
-                    + " <INPUT> <OUTPUT>");
+                System.out.println("usage: " + projectProperties.getName() + " <INPUT> <OUTPUT>");
                 System.exit(1);
             }
             System.exit(instance.run(argList.get(0), argList.get(1)));
@@ -299,15 +274,13 @@ public class DeployConfRunner {
      * @param config the log configuration to use
      */
     private static void setLogConfig(String config) {
-        LoggerContext loggerContext =
-            (LoggerContext) LoggerFactory.getILoggerFactory();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
             loggerContext.reset();
-            configurator.doConfigure(Thread.currentThread()
-                .getContextClassLoader().getResource(config));
+            configurator.doConfigure(Thread.currentThread().getContextClassLoader().getResource(config));
         } catch (JoranException e) {
             logger.warn("Error setting log config: " + config, e);
         }
@@ -341,22 +314,17 @@ public class DeployConfRunner {
             apply(config, source, destination);
         } else {
             // Needs manual merge
-            boolean interactive =
-                runMode == RunMode.INTERACTIVE
-                    || runMode == RunMode.FORCE_INTERACTIVE;
+            boolean interactive = runMode == RunMode.INTERACTIVE || runMode == RunMode.FORCE_INTERACTIVE;
             if (interactive
-                && config.interactiveMerge(newInteractiveConfigurer(),
-                    runMode == RunMode.FORCE_INTERACTIVE)) {
+                && config.interactiveMerge(newInteractiveConfigurer(), runMode == RunMode.FORCE_INTERACTIVE)) {
                 save(config);
                 apply(config, source, destination);
             } else {
                 save(config);
                 System.err.println("Deployment Configuration is incomplete");
-                System.err.println("Rerun in interactive mode "
-                    + "by using the '-i' option");
+                System.err.println("Rerun in interactive mode " + "by using the '-i' option");
                 System.err.println(" or");
-                System.err.println("Edit '" + repoFile
-                    + "' and make sure that each "
+                System.err.println("Edit '" + repoFile + "' and make sure that each "
                     + "deployment property has a valid value");
                 result = 2;
             }
@@ -395,9 +363,8 @@ public class DeployConfRunner {
     /**
      * Gets the Path to use for storing the DeploymentConfig.
      * <p>
-     * Unless an explicit deployment config File is set, the File is created in
-     * the configured repository and based on the config name. If no repository
-     * is set, the current working directory is used.
+     * Unless an explicit deployment config File is set, the File is created in the configured repository and based on
+     * the config name. If no repository is set, the current working directory is used.
      *
      * @param name the DeploymentConfig name to use
      * @return the current value of the deploymentConfig property
@@ -413,8 +380,7 @@ public class DeployConfRunner {
         } else {
             FileSystem fs = FileSystems.getDefault();
             if (name != null) {
-                result =
-                    fs.getPath(dir, name + "-" + DEPLOYMENT_CONFIG_SUFFIX);
+                result = fs.getPath(dir, name + "-" + DEPLOYMENT_CONFIG_SUFFIX);
             } else {
                 result = fs.getPath(dir, DEPLOYMENT_CONFIG_SUFFIX);
             }
@@ -447,8 +413,7 @@ public class DeployConfRunner {
      * @return a InteractiveConfigurer instance.
      * @throws IOException indicating failure
      */
-    protected InteractiveConfigurer newInteractiveConfigurer()
-        throws IOException {
+    protected InteractiveConfigurer newInteractiveConfigurer() throws IOException {
         return new ConsoleInteractiveConfigurer();
     }
 
@@ -472,16 +437,14 @@ public class DeployConfRunner {
     }
 
     /**
-     * Apply the given DeploymentConfig to the source and create the
-     * destination.
+     * Apply the given DeploymentConfig to the source and create the destination.
      *
      * @param config the DeploymentConfig to apply
      * @param source the input file
      * @param destination the destination file
      * @throws Exception indicating processing error
      */
-    private void apply(DeploymentConfig config, String source,
-        String destination) throws Exception {
+    private void apply(DeploymentConfig config, String source, String destination) throws Exception {
 
         FileSystem fs = FileSystems.getDefault();
         Path sourceFile = fs.getPath(source);
@@ -529,16 +492,14 @@ public class DeployConfRunner {
      * @return a DeploymentConfig representation of the ReadableByteChannel
      * @throws Exception indicating error
      */
-    private DeploymentConfig getDeploymentConfigFromZip(String source)
-        throws Exception {
+    private DeploymentConfig getDeploymentConfigFromZip(String source) throws Exception {
 
         ZipFile zipFile = new ZipFile(source);
         ZipEntry entry = zipFile.getEntry(deploymentTemplatePath);
         if (entry == null) {
             zipFile.close();
-            throw new IllegalArgumentException(
-                "No deployment template file found in file '" + source + "': "
-                    + deploymentTemplatePath);
+            throw new IllegalArgumentException("No deployment template file found in file '" + source + "': "
+                + deploymentTemplatePath);
         }
         InputStream is = zipFile.getInputStream(entry);
 
@@ -557,11 +518,9 @@ public class DeployConfRunner {
      * @return a DeploymentConfig representation of the ReadableByteChannel
      * @throws Exception indicating error
      */
-    private DeploymentConfig getDeploymentConfigFromPath(Path path)
-        throws Exception {
+    private DeploymentConfig getDeploymentConfigFromPath(Path path) throws Exception {
 
-        ReadableByteChannel ch =
-            FileChannel.open(path, StandardOpenOption.READ);
+        ReadableByteChannel ch = FileChannel.open(path, StandardOpenOption.READ);
         InputStream is = Channels.newInputStream(ch);
 
         DeploymentReader reader = new DeploymentReader(is);

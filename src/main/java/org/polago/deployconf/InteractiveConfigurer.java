@@ -38,12 +38,10 @@ public interface InteractiveConfigurer {
      * @param name the name of the item to be configured
      * @param description the item description
      * @param defaultValue the item default value
-     * @return the configured value or null indicating that the item wasn't
-     * configured
+     * @return the configured value or null indicating that the item wasn't configured
      * @throws IOException indicating IO failure
      */
-    String configure(String name, String description, String defaultValue)
-        throws IOException;
+    String configure(String name, String description, String defaultValue) throws IOException;
 
     /**
      * Gets the PrintWriter to use when interacting with a user.

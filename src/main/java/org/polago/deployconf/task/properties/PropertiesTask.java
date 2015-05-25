@@ -44,8 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PropertiesTask extends AbstractTask {
 
-    private static Logger logger = LoggerFactory
-        .getLogger(PropertiesTask.class);
+    private static Logger logger = LoggerFactory.getLogger(PropertiesTask.class);
 
     /**
      * Task element name in config file.
@@ -78,13 +77,11 @@ public class PropertiesTask extends AbstractTask {
         for (Element e : node.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
             if (name.length() == 0) {
-                throw new IllegalStateException(
-                    "Property name element does not exists");
+                throw new IllegalStateException("Property name element does not exists");
             }
             String description = e.getChildTextTrim(DOM_ELEMENT_DESCRIPTION);
             if (description.length() == 0) {
-                throw new IllegalStateException(
-                    "Property description element does not exists");
+                throw new IllegalStateException("Property description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
             String value = e.getChildText(DOM_ELEMENT_VALUE);
@@ -102,12 +99,9 @@ public class PropertiesTask extends AbstractTask {
         for (Property p : properties) {
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
-            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION,
-                p.getDescription()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
-                p.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
-                p.getValue()));
+            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, p.getDescription()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, p.getDefaultValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
 
             node.addContent(e);
         }
@@ -175,8 +169,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer,
-        boolean force) throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
         boolean result = true;
 
@@ -204,8 +197,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination)
-        throws Exception {
+    public void apply(InputStream source, OutputStream destination) throws Exception {
 
         OutputStreamWriter out = new OutputStreamWriter(destination, ENCODING);
         BufferedWriter writer = new BufferedWriter(out);
@@ -241,8 +233,7 @@ public class PropertiesTask extends AbstractTask {
      * @return true if the property was configured
      * @throws IOException indicating IO failure
      */
-    private boolean configurePropertyInteractively(Property p,
-        InteractiveConfigurer configurer) throws IOException {
+    private boolean configurePropertyInteractively(Property p, InteractiveConfigurer configurer) throws IOException {
 
         boolean result = false;
 
@@ -253,12 +244,9 @@ public class PropertiesTask extends AbstractTask {
             defaultValue = p.getDefaultValue();
         }
 
-        String value =
-            configurer
-                .configure(p.getName(), p.getDescription(), defaultValue);
+        String value = configurer.configure(p.getName(), p.getDescription(), defaultValue);
 
-        logger.debug("Configure interactively result for '{}': {}",
-            p.getName(), value);
+        logger.debug("Configure interactively result for '{}': {}", p.getName(), value);
 
         if (value != null) {
             p.setValue(value);

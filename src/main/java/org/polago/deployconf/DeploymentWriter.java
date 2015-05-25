@@ -48,8 +48,7 @@ public class DeploymentWriter {
     /**
      * Public Constructor.
      *
-     * @param outputStream the OutputStream to use. The stream is not closed by
-     * this class.
+     * @param outputStream the OutputStream to use. The stream is not closed by this class.
      */
     public DeploymentWriter(OutputStream outputStream) {
         this.outputStream = outputStream;

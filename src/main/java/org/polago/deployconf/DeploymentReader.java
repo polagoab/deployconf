@@ -44,8 +44,7 @@ import org.slf4j.LoggerFactory;
 public class DeploymentReader {
 
     @SuppressWarnings("unused")
-    private static Logger logger = LoggerFactory
-        .getLogger(DeploymentReader.class);
+    private static Logger logger = LoggerFactory.getLogger(DeploymentReader.class);
 
     private static final String ATTR_NAME = "name";
 
@@ -56,8 +55,7 @@ public class DeploymentReader {
     /**
      * Public Constructor.
      *
-     * @param inputStream the stream to read from. The stream is not closed by
-     * this class.
+     * @param inputStream the stream to read from. The stream is not closed by this class.
      */
     public DeploymentReader(InputStream inputStream) {
         if (inputStream == null) {
@@ -66,8 +64,7 @@ public class DeploymentReader {
         this.inputStream = inputStream;
 
         handlerMapping = new HashMap<String, Class<? extends Task>>();
-        handlerMapping.put(PropertiesTask.DOM_ELEMENT_TASK,
-            PropertiesTask.class);
+        handlerMapping.put(PropertiesTask.DOM_ELEMENT_TASK, PropertiesTask.class);
         handlerMapping.put(FilterTask.DOM_ELEMENT_TASK, FilterTask.class);
     }
 
@@ -105,8 +102,7 @@ public class DeploymentReader {
     private Task getTaskFromElement(Element e) throws Exception {
         Class<? extends Task> cls = handlerMapping.get(e.getName());
         if (cls == null) {
-            throw new IllegalStateException(
-                "No Task Handler found for element: " + e.getName());
+            throw new IllegalStateException("No Task Handler found for element: " + e.getName());
         }
         Task t = cls.newInstance();
         t.deserialize(e);

@@ -87,24 +87,20 @@ public class FilterTask extends AbstractTask {
         for (Element e : root.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
             if (name.length() == 0) {
-                throw new IllegalStateException(
-                    "Filter name element does not exists");
+                throw new IllegalStateException("Filter name element does not exists");
             }
             String regex = e.getChildTextTrim(DOM_ELEMENT_REGEX);
             if (regex.length() == 0) {
-                throw new IllegalStateException(
-                    "Filter regex element does not exists");
+                throw new IllegalStateException("Filter regex element does not exists");
             }
             String description = e.getChildTextTrim(DOM_ELEMENT_DESCRIPTION);
             if (description.length() == 0) {
-                throw new IllegalStateException(
-                    "Filter description element does not exists");
+                throw new IllegalStateException("Filter description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
             String value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
 
-            FilterToken t =
-                new FilterToken(name, regex, description, defaultValue, value);
+            FilterToken t = new FilterToken(name, regex, description, defaultValue, value);
             tokens.add(t);
         }
     }
@@ -119,14 +115,10 @@ public class FilterTask extends AbstractTask {
         for (FilterToken t : tokens) {
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, t.getName()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex()
-                .toString()));
-            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION,
-                t.getDescription()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT,
-                t.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE,
-                t.getValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex().toString()));
+            e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, t.getDescription()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, t.getDefaultValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
 
             node.addContent(e);
         }
@@ -204,8 +196,7 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer,
-        boolean force) throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
         boolean result = true;
 
@@ -233,14 +224,12 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination)
-        throws Exception {
+    public void apply(InputStream source, OutputStream destination) throws Exception {
 
         InputStreamReader in = new InputStreamReader(source, getEncoding());
         BufferedReader reader = new BufferedReader(in);
 
-        OutputStreamWriter out =
-            new OutputStreamWriter(destination, getEncoding());
+        OutputStreamWriter out = new OutputStreamWriter(destination, getEncoding());
         BufferedWriter writer = new BufferedWriter(out);
 
         String line = reader.readLine();
@@ -276,8 +265,7 @@ public class FilterTask extends AbstractTask {
      * @return true if the token was configured
      * @throws IOException indicating IO failure
      */
-    private boolean configureTokenInteractively(FilterToken t,
-        InteractiveConfigurer configurer) throws IOException {
+    private boolean configureTokenInteractively(FilterToken t, InteractiveConfigurer configurer) throws IOException {
 
         boolean result = false;
 
@@ -288,11 +276,8 @@ public class FilterTask extends AbstractTask {
             defaultValue = t.getDefaultValue();
         }
 
-        String value =
-            configurer
-                .configure(t.getName(), t.getDescription(), defaultValue);
-        logger.debug("Configure interactively result for '{}({})': {}",
-            t.getName(), t.getRegex().toString(), value);
+        String value = configurer.configure(t.getName(), t.getDescription(), defaultValue);
+        logger.debug("Configure interactively result for '{}({})': {}", t.getName(), t.getRegex().toString(), value);
         if (value != null) {
             t.setValue(value);
             result = true;

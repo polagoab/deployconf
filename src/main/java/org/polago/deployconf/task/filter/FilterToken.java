@@ -50,8 +50,7 @@ public class FilterToken {
      * @param defaultValue the token default value
      * @param value the token value
      */
-    public FilterToken(String name, String regex, String description,
-        String defaultValue, String value) {
+    public FilterToken(String name, String regex, String description, String defaultValue, String value) {
 
         this.name = name;
         this.regex = Pattern.compile(regex);

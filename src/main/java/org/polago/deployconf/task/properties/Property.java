@@ -24,7 +24,6 @@
 
 package org.polago.deployconf.task.properties;
 
-
 /**
  * A single Property value in a Properties Task.
  */
@@ -45,8 +44,7 @@ public class Property {
      * @param defaultValue the property default value
      * @param value the property value
      */
-    public Property(String name, String description, String defaultValue,
-        String value) {
+    public Property(String name, String description, String defaultValue, String value) {
         this.name = name;
         this.description = description;
         this.defaultValue = defaultValue;
