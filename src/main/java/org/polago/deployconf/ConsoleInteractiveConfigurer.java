@@ -48,9 +48,7 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
     public ConsoleInteractiveConfigurer() throws IOException {
         reader = new ConsoleReader();
         reader.setBellEnabled(false);
-        writer =
-            new PrintWriter(new OutputStreamWriter(System.out,
-                Charset.defaultCharset()));
+        writer = new PrintWriter(new OutputStreamWriter(System.out, Charset.defaultCharset()), true);
     }
 
     /**
@@ -59,8 +57,7 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
      * @throws IOException indicating processing failure
      */
     @Override
-    public String configure(String name, String description,
-        String defaultValue) throws IOException {
+    public String configure(String name, String description, String defaultValue) throws IOException {
 
         String value = null;
 
