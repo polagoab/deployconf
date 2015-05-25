@@ -30,7 +30,7 @@
   <groupId>org.polago.deployconf</groupId>
   <artifactId>deployconf</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>Deployconf</name>
   <url>http://www.polago.org/deployconf</url>
   <description>
