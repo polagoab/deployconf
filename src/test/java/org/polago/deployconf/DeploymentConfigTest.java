@@ -184,11 +184,8 @@ public class DeploymentConfigTest {
         Path destFile = Files.createTempFile("output", ".zip");
 
         try {
-            TestZipOutputStream os =
-                new TestZipOutputStream(Files.newOutputStream(srcFile));
-            InputStream is =
-                getClass().getClassLoader().getResourceAsStream(
-                    "simple-test/" + zipPath);
+            TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
+            InputStream is = getClass().getClassLoader().getResourceAsStream("simple-test/" + zipPath);
             assertNotNull(is);
             os.addStream(is, zipPath);
             os.close();
@@ -216,11 +213,8 @@ public class DeploymentConfigTest {
         Path destFile = Files.createTempFile("output", ".zip");
 
         try {
-            TestZipOutputStream os =
-                new TestZipOutputStream(Files.newOutputStream(srcFile));
-            InputStream is =
-                getClass().getClassLoader().getResourceAsStream(
-                    "simple-test/" + zipPath);
+            TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
+            InputStream is = getClass().getClassLoader().getResourceAsStream("simple-test/" + zipPath);
             assertNotNull(is);
             os.addStream(is, zipPath);
             os.close();
@@ -249,16 +243,11 @@ public class DeploymentConfigTest {
         Path destFile = Files.createTempFile("output", ".zip");
 
         try {
-            TestZipOutputStream os =
-                new TestZipOutputStream(Files.newOutputStream(srcFile));
-            InputStream is =
-                getClass().getClassLoader().getResourceAsStream(
-                    "simple-test/" + zipPath);
+            TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
+            InputStream is = getClass().getClassLoader().getResourceAsStream("simple-test/" + zipPath);
             assertNotNull(is);
             os.addStream(is, zipPath);
-            is =
-                getClass().getClassLoader().getResourceAsStream(
-                    "simple-test/" + ignorePath);
+            is = getClass().getClassLoader().getResourceAsStream("simple-test/" + ignorePath);
             os.addStream(is, ignorePath);
             os.close();
             InputStream src = Files.newInputStream(srcFile);

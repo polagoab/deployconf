@@ -34,7 +34,7 @@ import org.polago.deployconf.DeploymentConfig;
 import org.polago.deployconf.DeploymentReader;
 
 /**
- *  Tests the {@link DeploymentReader} class.
+ * Tests the {@link DeploymentReader} class.
  */
 public class DeploymentReaderTest {
 
@@ -62,9 +62,7 @@ public class DeploymentReaderTest {
 
     @Test
     public void testEmptyStream() throws Exception {
-        InputStream is =
-            getClass().getClassLoader().getResourceAsStream(
-                "empty-deployment-config.xml");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("empty-deployment-config.xml");
         assertNotNull(is);
 
         DeploymentReader reader = new DeploymentReader(is);
@@ -74,12 +72,9 @@ public class DeploymentReaderTest {
         assertNull(config.getName());
     }
 
-
     @Test
     public void testSimpleStream() throws Exception {
-        InputStream is =
-            getClass().getClassLoader().getResourceAsStream(
-                "simple-deployment-config.xml");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("simple-deployment-config.xml");
         assertNotNull(is);
 
         DeploymentReader reader = new DeploymentReader(is);

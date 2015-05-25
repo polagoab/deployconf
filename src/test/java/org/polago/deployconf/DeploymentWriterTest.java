@@ -51,8 +51,7 @@ public class DeploymentWriterTest {
 
         writer.persist(deploymentConfig);
 
-        ByteArrayInputStream is =
-            new ByteArrayInputStream(os.toByteArray().clone());
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray().clone());
         SAXBuilder builder = new SAXBuilder();
         Document d = builder.build(is);
 
@@ -73,14 +72,12 @@ public class DeploymentWriterTest {
 
         writer.persist(deploymentConfig);
 
-        ByteArrayInputStream is =
-            new ByteArrayInputStream(os.toByteArray().clone());
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray().clone());
         SAXBuilder builder = new SAXBuilder();
         Document d = builder.build(is);
 
         assertEquals(DeploymentWriter.DOM_ROOT, d.getRootElement().getName());
-        assertEquals(name,
-            d.getRootElement().getAttributeValue(DeploymentWriter.ATTR_NAME));
+        assertEquals(name, d.getRootElement().getAttributeValue(DeploymentWriter.ATTR_NAME));
         assertNotNull(d.getRootElement().getChild(task.getSerializedName()));
     }
 

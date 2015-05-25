@@ -54,8 +54,7 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public boolean configureInteractively(
-            InteractiveConfigurer configurer, boolean force) {
+        public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
             return true;
         }
 
@@ -76,9 +75,7 @@ public class AbstractTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        InputStream is =
-            getClass().getClassLoader().getResourceAsStream(
-                "simple-deployment-config.xml");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("simple-deployment-config.xml");
         assertNotNull(is);
 
         SAXBuilder builder = new SAXBuilder();

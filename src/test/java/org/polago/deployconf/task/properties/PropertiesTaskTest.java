@@ -45,9 +45,7 @@ public class PropertiesTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        InputStream is =
-            getClass().getClassLoader().getResourceAsStream(
-                "simple-deployment-config.xml");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("simple-deployment-config.xml");
         assertNotNull(is);
 
         SAXBuilder builder = new SAXBuilder();
@@ -101,8 +99,7 @@ public class PropertiesTaskTest {
         String path = "test-path";
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
-        Property p1 =
-            new Property("test-property", "test-descr", "test-default", null);
+        Property p1 = new Property("test-property", "test-descr", "test-default", null);
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -120,17 +117,14 @@ public class PropertiesTaskTest {
         String path = "test-path";
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
-        Property p1 =
-            new Property("test-property", "test1-descr", "test1-default", null);
+        Property p1 = new Property("test-property", "test1-descr", "test1-default", null);
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
 
         PropertiesTask task2 = new PropertiesTask();
         task2.setPath(path);
-        Property p2 =
-            new Property("test-property", "test2-descr", "test2-default",
-                "test-value");
+        Property p2 = new Property("test-property", "test2-descr", "test2-default", "test-value");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -151,17 +145,14 @@ public class PropertiesTaskTest {
         String path = "test-path";
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
-        Property p1 =
-            new Property("test1-property", "test1-descr", "test1-default", null);
+        Property p1 = new Property("test1-property", "test1-descr", "test1-default", null);
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
 
         PropertiesTask task2 = new PropertiesTask();
         task2.setPath(path);
-        Property p2 =
-            new Property("test2-property", "test2-descr", "test2-default",
-                "test-value");
+        Property p2 = new Property("test2-property", "test2-descr", "test2-default", "test-value");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -181,29 +172,23 @@ public class PropertiesTaskTest {
     public void testSerialize() throws Exception {
         PropertiesTask task = new PropertiesTask();
         task.setPath("test-path");
-        Property p =
-            new Property("test-name", "test-description",
-                "test-default-value", "test-value");
+        Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
         task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals("<properties path=\"test-path\">"
-            + "<property><name>test-name</name>"
+        assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>"
-            + "<default>test-default-value</default><value>test-value</value>"
-            + "</property></properties>", outputter.outputString(node)
-            .replaceAll("[\\n\\r]*", ""));
+            + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>", outputter
+            .outputString(node).replaceAll("[\\n\\r]*", ""));
     }
 
     @Test
     public void testApplyWithDescription() throws Exception {
         PropertiesTask task = new PropertiesTask();
-        Property p =
-            new Property("test-property", "test-description", null,
-                "test-value");
+        Property p = new Property("test-property", "test-description", null, "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
@@ -233,9 +218,7 @@ public class PropertiesTaskTest {
 
         PropertiesTask task = new PropertiesTask();
 
-        Property p =
-            new Property("test-property", "test-description", "default-value",
-                null);
+        Property p = new Property("test-property", "test-description", "default-value", null);
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
@@ -257,9 +240,7 @@ public class PropertiesTaskTest {
 
         PropertiesTask task = new PropertiesTask();
 
-        Property p =
-            new Property("test-property", "test-description", "default-value",
-                null);
+        Property p = new Property("test-property", "test-description", "default-value", null);
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
@@ -281,9 +262,7 @@ public class PropertiesTaskTest {
 
         PropertiesTask task = new PropertiesTask();
 
-        Property p =
-            new Property("test-property", "test-description", "default-value",
-                "test-value");
+        Property p = new Property("test-property", "test-description", "default-value", "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);

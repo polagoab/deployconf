@@ -43,8 +43,7 @@ public class TestInteractiveConfigurer implements InteractiveConfigurer {
      * {@inheritDoc}
      */
     @Override
-    public String configure(String name, String description,
-        String defaultValue) {
+    public String configure(String name, String description, String defaultValue) {
 
         isCalled = true;
         return value;

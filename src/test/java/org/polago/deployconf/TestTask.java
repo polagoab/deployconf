@@ -72,8 +72,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer,
-        boolean force) {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
         isconfigureInteractivelyCalled = true;
         return interactive;
     }

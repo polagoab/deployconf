@@ -40,8 +40,7 @@ public class TestZipOutputStream extends ZipOutputStream {
         super(outputStream);
     }
 
-    public void addStream(InputStream stream, String zipPath)
-        throws IOException {
+    public void addStream(InputStream stream, String zipPath) throws IOException {
         ZipEntry e = new ZipEntry(zipPath);
         putNextEntry(e);
         writeStream(stream);
