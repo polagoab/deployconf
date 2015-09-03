@@ -162,9 +162,8 @@ public class DeployConfRunner {
         options.addOption(configFile);
 
         Option templatePath =
-            new Option("t", "deployment-template-path", true,
-                "Path to use for locating the deployment template in the " + "<INPUT> file. Default is '"
-                    + DEFAULT_TEMPLATE_PATH + "'");
+            new Option("t", "deployment-template-path", true, "Path to use for locating the deployment template in the "
+                + "<INPUT> file. Default is '" + DEFAULT_TEMPLATE_PATH + "'");
         options.addOption(templatePath);
 
         CommandLineParser parser = new GnuParser();
@@ -324,8 +323,8 @@ public class DeployConfRunner {
                 System.err.println("Deployment Configuration is incomplete");
                 System.err.println("Rerun in interactive mode " + "by using the '-i' option");
                 System.err.println(" or");
-                System.err.println("Edit '" + repoFile + "' and make sure that each "
-                    + "deployment property has a valid value");
+                System.err.println(
+                    "Edit '" + repoFile + "' and make sure that each " + "deployment property has a valid value");
                 result = 2;
             }
         }
@@ -498,8 +497,8 @@ public class DeployConfRunner {
         ZipEntry entry = zipFile.getEntry(deploymentTemplatePath);
         if (entry == null) {
             zipFile.close();
-            throw new IllegalArgumentException("No deployment template file found in file '" + source + "': "
-                + deploymentTemplatePath);
+            throw new IllegalArgumentException(
+                "No deployment template file found in file '" + source + "': " + deploymentTemplatePath);
         }
         InputStream is = zipFile.getInputStream(entry);
 

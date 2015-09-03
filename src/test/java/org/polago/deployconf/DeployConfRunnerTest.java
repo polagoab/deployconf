@@ -105,9 +105,8 @@ public class DeployConfRunnerTest {
             TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
             String zipPrefix = "simple-test/";
             String zipExpectedPrefix = "simple-test-expected/";
-            String[] zipFiles =
-                {"deploy.properties", "logging.xml", "plain.properties", "META-INF/deployment-template.xml",
-                    "META-INF/MANIFEST.MF"};
+            String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties",
+                "META-INF/deployment-template.xml", "META-INF/MANIFEST.MF"};
             for (String r : zipFiles) {
                 InputStream is = getClass().getClassLoader().getResourceAsStream(zipPrefix + r);
                 assertNotNull("Unable to load resource: " + zipPrefix + r, is);
@@ -155,8 +154,8 @@ public class DeployConfRunnerTest {
 
         DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
         DeploymentConfig config = new DeploymentConfig();
-        assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX, runner.getDeploymentConfigPath(config.getName())
-            .toString());
+        assertEquals(DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX,
+            runner.getDeploymentConfigPath(config.getName()).toString());
     }
 
     @Test
@@ -218,9 +217,8 @@ public class DeployConfRunnerTest {
         Path repoDir = Files.createTempDirectory("repodir");
         try {
             runner.setRepositoryDirectory(repoDir.toString());
-            Path expected =
-                FileSystems.getDefault().getPath(repoDir.toString(),
-                    name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
+            Path expected = FileSystems.getDefault().getPath(repoDir.toString(),
+                name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected, runner.getDeploymentConfigPath(config.getName()));
         } finally {
             Files.delete(repoDir);
