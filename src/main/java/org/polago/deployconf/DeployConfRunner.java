@@ -35,6 +35,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -48,6 +49,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.FileSystemConfigGroupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,6 +233,8 @@ public class DeployConfRunner {
                 logger.error("Specified repository is not a directory: {}", repo);
                 System.exit(1);
             }
+
+            instance.setGroupManager(new FileSystemConfigGroupManager(Paths.get(getDefaultRepository())));
 
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
