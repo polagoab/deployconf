@@ -366,7 +366,7 @@ public class DeployConfRunner {
      * the config name. If no repository is set, the current working directory is used.
      *
      * @param name the DeploymentConfig name to use
-     * @return the current value of the deploymentConfig property
+     * @return the Path to the DeploymentConfig
      */
     public Path getDeploymentConfigPath(String name) {
         Path result = deploymentConfigFile;
