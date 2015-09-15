@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -32,6 +32,7 @@ import java.util.Map;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.Task;
 import org.polago.deployconf.task.filter.FilterTask;
 import org.polago.deployconf.task.properties.PropertiesTask;
@@ -52,16 +53,20 @@ public class DeploymentReader {
 
     private final Map<String, Class<? extends Task>> handlerMapping;
 
+    private final ConfigGroupManager groupManager;
+
     /**
      * Public Constructor.
      *
      * @param inputStream the stream to read from. The stream is not closed by this class.
+     * @param groupManager the Configuration Group Manager to use
      */
-    public DeploymentReader(InputStream inputStream) {
+    public DeploymentReader(InputStream inputStream, ConfigGroupManager groupManager) {
         if (inputStream == null) {
             throw new IllegalArgumentException("inputStream is null");
         }
         this.inputStream = inputStream;
+        this.groupManager = groupManager;
 
         handlerMapping = new HashMap<String, Class<? extends Task>>();
         handlerMapping.put(PropertiesTask.DOM_ELEMENT_TASK, PropertiesTask.class);
@@ -105,8 +110,11 @@ public class DeploymentReader {
             throw new IllegalStateException("No Task Handler found for element: " + e.getName());
         }
         Task t = cls.newInstance();
+        t.setGroupManager(groupManager);
         t.deserialize(e);
 
         return t;
     }
+
+
 }
