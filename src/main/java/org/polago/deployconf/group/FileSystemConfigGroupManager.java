@@ -44,7 +44,7 @@ public class FileSystemConfigGroupManager implements ConfigGroupManager {
      *
      * @param dir the directory use for storing config groups.
      */
-    FileSystemConfigGroupManager(Path dir) {
+    public FileSystemConfigGroupManager(Path dir) {
         if (dir == null) {
             throw new IllegalArgumentException("dir is null");
         }
