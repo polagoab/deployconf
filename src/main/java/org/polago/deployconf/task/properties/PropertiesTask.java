@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -84,8 +84,22 @@ public class PropertiesTask extends AbstractTask {
                 throw new IllegalStateException("Property description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
-            String value = e.getChildText(DOM_ELEMENT_VALUE);
+
+            String group = e.getAttributeValue(DOM_ATTRIBUTE_GROUP);
+            String value = null;
+
+            if (group != null) {
+                value = getGroupManager().lookupGroup(group).getProperty(name);
+            } else {
+                value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+            }
+
             Property p = new Property(name, description, defaultValue, value);
+
+            if (group != null) {
+                p.setGroup(group);
+            }
+
             properties.add(p);
         }
     }
@@ -101,7 +115,14 @@ public class PropertiesTask extends AbstractTask {
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, p.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, p.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
+
+            String group = p.getGroup();
+            if (group != null) {
+                getGroupManager().lookupGroup(group).setProperty(p.getName(), p.getValue());
+                e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
+            } else {
+                e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
+            }
 
             node.addContent(e);
         }

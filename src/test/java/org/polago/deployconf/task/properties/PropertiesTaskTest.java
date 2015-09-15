@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -37,6 +37,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 import org.polago.deployconf.TestInteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroupManager;
 
 /**
  * Tests the {@link PropertiesTask} class.
@@ -60,7 +62,35 @@ public class PropertiesTaskTest {
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
             }
+        }
+    }
 
+    @Test
+    public void testDeserializeWithGroup() throws Exception {
+        String expected = "testserver";
+        String name = "ldap.server";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        groupManager.lookupGroup(group).setProperty(name, expected);
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("properties".equals(e.getName())) {
+                PropertiesTask task = new PropertiesTask();
+                task.setGroupManager(groupManager);
+                task.deserialize(e);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getProperties());
+                assertEquals(1, task.getProperties().size());
+                assertEquals(expected, task.getProperties().iterator().next().getValue());
+                assertEquals(group, task.getProperties().iterator().next().getGroup());
+            }
         }
     }
 
@@ -179,10 +209,33 @@ public class PropertiesTaskTest {
         Element node = new Element("properties");
         task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
-            + "<description><![CDATA[test-description]]></description>"
-            + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>", outputter
-            .outputString(node).replaceAll("[\\n\\r]*", ""));
+        assertEquals(
+            "<properties path=\"test-path\">" + "<property><name>test-name</name>"
+                + "<description><![CDATA[test-description]]></description>"
+                + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>",
+            outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
+    }
+
+    @Test
+    public void testSerializeWithGroup() throws Exception {
+        PropertiesTask task = new PropertiesTask();
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        task.setGroupManager(groupManager);
+
+        task.setPath("test-path");
+        Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
+        p.setGroup(group);
+
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+        Element node = new Element("properties");
+        task.serialize(node);
+        XMLOutputter outputter = new XMLOutputter();
+        assertEquals("<properties path=\"test-path\">" + "<property group=\"" + group + "\"><name>test-name</name>"
+            + "<description><![CDATA[test-description]]></description>" + "<default>test-default-value</default>"
+            + "</property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -98,9 +98,22 @@ public class FilterTask extends AbstractTask {
                 throw new IllegalStateException("Filter description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
-            String value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+
+            String group = e.getAttributeValue(DOM_ATTRIBUTE_GROUP);
+            String value = null;
+
+            if (group != null) {
+                value = getGroupManager().lookupGroup(group).getProperty(name);
+            } else {
+                value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+            }
 
             FilterToken t = new FilterToken(name, regex, description, defaultValue, value);
+
+            if (group != null) {
+                t.setGroup(group);
+            }
+
             tokens.add(t);
         }
     }
@@ -118,7 +131,14 @@ public class FilterTask extends AbstractTask {
             e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex().toString()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, t.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, t.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
+
+            String group = t.getGroup();
+            if (group != null) {
+                getGroupManager().lookupGroup(group).setProperty(t.getName(), t.getValue());
+                e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
+            } else {
+                e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
+            }
 
             node.addContent(e);
         }
