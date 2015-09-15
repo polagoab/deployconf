@@ -24,6 +24,8 @@
 
 package org.polago.deployconf.group;
 
+import java.io.IOException;
+
 /**
  * Describes a manager for Configuration groups.
  */
@@ -34,6 +36,7 @@ public interface ConfigGroupManager {
      *
      * @param name the group name to lookup
      * @return the corresponding ConfigGroup instance
+     * @throws IOException indicating failure to lookup group
      */
-    ConfigGroup lookupGroup(String name);
+    ConfigGroup lookupGroup(String name) throws IOException;
 }

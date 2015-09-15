@@ -24,6 +24,8 @@
 
 package org.polago.deployconf.group;
 
+import java.io.IOException;
+
 /**
  * Describes a configuration group used to share common configuration properties between multiple artifacts.
  */
@@ -41,6 +43,7 @@ public interface ConfigGroup {
      *
      * @param name the property name
      * @param value the property value
+     * @throws IOException indicating IO error when storing a property
      */
-    void setProperty(String name, String value);
+    void setProperty(String name, String value) throws IOException;
 }

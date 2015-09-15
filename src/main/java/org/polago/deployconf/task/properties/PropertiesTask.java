@@ -72,7 +72,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element node) {
+    public void deserialize(Element node) throws IOException {
         super.deserialize(node);
         for (Element e : node.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
@@ -108,7 +108,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
+    public void serialize(Element node) throws IOException {
         super.serialize(node);
         for (Property p : properties) {
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);

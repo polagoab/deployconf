@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jdom2.Element;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.Task;
 
 /**
@@ -50,6 +51,8 @@ class TestTask implements Task {
     boolean isconfigureInteractivelyCalled;
 
     boolean merged;
+
+    ConfigGroupManager groupManager;
 
     @Override
     public String getPath() {
@@ -113,6 +116,14 @@ class TestTask implements Task {
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setGroupManager(ConfigGroupManager groupManager) {
+        this.groupManager = groupManager;
     }
 
 };

@@ -78,7 +78,7 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) {
+    public void deserialize(Element root) throws IOException {
         super.deserialize(root);
         String enc = root.getAttributeValue(ATTRIBUTE_ENCODING);
         if (enc != null) {
@@ -122,7 +122,7 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
+    public void serialize(Element node) throws IOException {
         super.serialize(node);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {

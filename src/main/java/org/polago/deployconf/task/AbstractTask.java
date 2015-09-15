@@ -24,6 +24,8 @@
 
 package org.polago.deployconf.task;
 
+import java.io.IOException;
+
 import org.jdom2.CDATA;
 import org.jdom2.Element;
 import org.jdom2.Text;
@@ -81,6 +83,7 @@ public abstract class AbstractTask implements Task {
      *
      * @param groupManager the new property value
      */
+    @Override
     public void setGroupManager(ConfigGroupManager groupManager) {
         this.groupManager = groupManager;
     }
@@ -89,7 +92,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) {
+    public void deserialize(Element root) throws IOException {
         String attribute = root.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
             throw new IllegalStateException("path attribute is required");
@@ -101,7 +104,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
+    public void serialize(Element node) throws IOException {
         node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
     }
 
