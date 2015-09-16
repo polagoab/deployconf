@@ -251,8 +251,9 @@ public class DeployConfRunnerTest {
                 repoDir.resolve("testgroup-config-group.properties"));
             TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
             String zipPrefix = "config-group-test/";
-            String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties",
-                "META-INF/deployment-template.xml", "META-INF/MANIFEST.MF"};
+            String zipExpectedPrefix = "config-group-test/expected/";
+            String[] zipFiles =
+                {"deploy.properties", "logging.xml", "plain.properties", "META-INF/deployment-template.xml"};
             for (String r : zipFiles) {
                 InputStream is = getClass().getClassLoader().getResourceAsStream(zipPrefix + r);
                 assertNotNull("Unable to load resource: " + zipPrefix + r, is);
@@ -263,6 +264,15 @@ public class DeployConfRunnerTest {
             int status = runner.run(srcFile.toString(), destFile.toString());
             assertEquals(0, status);
             assertTrue(Files.exists(destFile));
+
+            ZipFile zipDest = new ZipFile(destFile.toString());
+            for (String r : Arrays.copyOf(zipFiles, zipFiles.length - 1)) {
+                InputStream is = getClass().getClassLoader().getResourceAsStream(zipExpectedPrefix + r);
+                assertNotNull(zipExpectedPrefix + r, is);
+                assertEqualStreamContent(zipExpectedPrefix + r, is, zipDest.getInputStream(new ZipEntry(r)));
+            }
+            assertNull(zipDest.getEntry(zipFiles[3]));
+            zipDest.close();
 
         } finally {
             Files.delete(srcFile);
