@@ -37,6 +37,8 @@ import java.util.Properties;
  */
 public class FileSystemConfigGroup implements ConfigGroup {
 
+    private static final String SUFFIX_CONFIG_GROUP = "-config-group.properties";
+
     private final Path path;
 
     private final Properties properties;
@@ -49,13 +51,13 @@ public class FileSystemConfigGroup implements ConfigGroup {
      * @throws IOException indicating IO error
      */
     public FileSystemConfigGroup(String name, Path dir) throws IOException {
-        path = dir.resolve(name + "-config-group.xml");
+        path = dir.resolve(name + SUFFIX_CONFIG_GROUP);
         properties = new Properties();
 
         if (Files.exists(path)) {
             InputStream is = Files.newInputStream(path);
             try {
-                properties.loadFromXML(is);
+                properties.load(is);
             } finally {
                 is.close();
             }
@@ -81,7 +83,7 @@ public class FileSystemConfigGroup implements ConfigGroup {
             properties.setProperty(name, value);
             OutputStream os = Files.newOutputStream(path, StandardOpenOption.CREATE);
             try {
-                properties.storeToXML(os, null);
+                properties.store(os, null);
             } finally {
                 os.close();
             }
