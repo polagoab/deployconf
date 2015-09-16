@@ -506,7 +506,7 @@ public class DeployConfRunner {
         logger.info("Saving Deployment Configuration to '" + file + "'");
         FileOutputStream os = new FileOutputStream(file.toFile());
         try {
-            config.save(os);
+            config.save(os, groupManager);
         } finally {
             os.close();
         }
