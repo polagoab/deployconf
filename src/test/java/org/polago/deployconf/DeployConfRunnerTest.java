@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -40,6 +40,7 @@ import java.util.zip.ZipFile;
 
 import org.junit.Test;
 import org.polago.deployconf.DeployConfRunner.RunMode;
+import org.polago.deployconf.group.FileSystemConfigGroupManager;
 
 /**
  * Tests the {@link DeployConfRunner} class.
@@ -221,6 +222,49 @@ public class DeployConfRunnerTest {
                 name + "-" + DeployConfRunner.DEPLOYMENT_CONFIG_SUFFIX);
             assertEquals(expected, runner.getDeploymentConfigPath(config.getName()));
         } finally {
+            Files.delete(repoDir);
+        }
+    }
+
+    @Test
+    public void testRunWithoutExistingDeploymentConfigAndConfigGroup() throws Exception {
+        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
+        Path srcFile = Files.createTempFile("input", ".zip");
+        Path destFile = Files.createTempFile("output", ".zip");
+        Path configFile = Files.createTempFile("config", ".xml");
+        Path repoDir = Files.createTempDirectory("repodir");
+
+        runner.setDeploymentConfigPath(configFile);
+        runner.setRepositoryDirectory(repoDir.toString());
+        runner.setGroupManager(new FileSystemConfigGroupManager(repoDir));
+
+        Files.delete(configFile);
+        Files.delete(destFile);
+        assertFalse(Files.exists(configFile));
+
+        try {
+            TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
+            String zipPrefix = "simple-test/";
+            String zipExpectedPrefix = "config-group-test/";
+            String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties",
+                "META-INF/deployment-template.xml", "META-INF/MANIFEST.MF"};
+            for (String r : zipFiles) {
+                InputStream is = getClass().getClassLoader().getResourceAsStream(zipPrefix + r);
+                assertNotNull("Unable to load resource: " + zipPrefix + r, is);
+                os.addStream(is, r);
+            }
+
+            os.close();
+            int status = runner.run(srcFile.toString(), destFile.toString());
+            assertEquals(2, status);
+            assertFalse(Files.exists(destFile));
+            assertTrue(Files.exists(configFile));
+            InputStream destConfigStream = Files.newInputStream(configFile);
+            InputStream srcConfigStream = getClass().getClassLoader().getResourceAsStream(zipPrefix + zipFiles[3]);
+            assertEqualStreamContent(zipExpectedPrefix + zipFiles[3], srcConfigStream, destConfigStream);
+        } finally {
+            Files.delete(srcFile);
+            Files.delete(configFile);
             Files.delete(repoDir);
         }
     }

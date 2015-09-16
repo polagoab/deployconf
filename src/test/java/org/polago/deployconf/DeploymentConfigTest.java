@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -166,7 +166,7 @@ public class DeploymentConfigTest {
         Path file = Files.createTempFile("test", ".xml");
         try {
             OutputStream os = Files.newOutputStream(file);
-            config.save(os);
+            config.save(os, null);
             assertTrue(Files.size(file) > 0);
         } finally {
             Files.delete(file);
