@@ -91,7 +91,9 @@ public class PropertiesTask extends AbstractTask {
 
             if (group != null) {
                 value = groupManager.lookupGroup(group).getProperty(name);
-            } else {
+            }
+
+            if (value == null) {
                 value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
             }
 

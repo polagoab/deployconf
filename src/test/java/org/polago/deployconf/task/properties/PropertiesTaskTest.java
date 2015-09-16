@@ -94,6 +94,32 @@ public class PropertiesTaskTest {
     }
 
     @Test
+    public void testDeserializeWithGroupAndNoGroupValue() throws Exception {
+        String expected = "ldap://localhost";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("properties".equals(e.getName())) {
+                PropertiesTask task = new PropertiesTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getProperties());
+                assertEquals(1, task.getProperties().size());
+                assertEquals(expected, task.getProperties().iterator().next().getValue());
+                assertEquals(group, task.getProperties().iterator().next().getGroup());
+            }
+        }
+    }
+
+    @Test
     public void testIsConfigured() throws Exception {
         PropertiesTask task = new PropertiesTask();
         Property p = new Property("test-property", null, null, "test-value");

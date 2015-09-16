@@ -96,6 +96,33 @@ public class FilterTaskTest {
     }
 
     @Test
+    public void testDeserializeWithGroupAndNoGroupValue() throws Exception {
+        String expected = "/var/log";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("filter".equals(e.getName())) {
+                FilterTask task = new FilterTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getTokens());
+                assertEquals(1, task.getTokens().size());
+                assertEquals(expected, task.getTokens().iterator().next().getValue());
+                assertEquals(group, task.getTokens().iterator().next().getGroup());
+            }
+        }
+    }
+
+
+    @Test
     public void testIsConfigured() throws Exception {
         FilterTask task = new FilterTask();
         FilterToken t = new FilterToken("test-name", "test-token", null, null, "test-value");
