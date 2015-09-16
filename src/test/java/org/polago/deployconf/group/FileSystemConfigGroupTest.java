@@ -67,4 +67,8 @@ public class FileSystemConfigGroupTest {
         assertNull(group.getProperty(NON_EXISTING_NAME));
     }
 
+    @Test
+    public void testSetNullValueProperty() throws IOException {
+        group.setProperty(NON_EXISTING_NAME, null);
+    }
 }
