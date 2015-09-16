@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -72,8 +73,8 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element node) throws IOException {
-        super.deserialize(node);
+    public void deserialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.deserialize(node, groupManager);
         for (Element e : node.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
             if (name.length() == 0) {
@@ -89,7 +90,7 @@ public class PropertiesTask extends AbstractTask {
             String value = null;
 
             if (group != null) {
-                value = getGroupManager().lookupGroup(group).getProperty(name);
+                value = groupManager.lookupGroup(group).getProperty(name);
             } else {
                 value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
             }
@@ -108,8 +109,8 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) throws IOException {
-        super.serialize(node);
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.serialize(node, groupManager);
         for (Property p : properties) {
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
@@ -118,7 +119,7 @@ public class PropertiesTask extends AbstractTask {
 
             String group = p.getGroup();
             if (group != null) {
-                getGroupManager().lookupGroup(group).setProperty(p.getName(), p.getValue());
+                groupManager.lookupGroup(group).setProperty(p.getName(), p.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));

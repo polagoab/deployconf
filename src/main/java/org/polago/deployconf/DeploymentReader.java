@@ -110,8 +110,7 @@ public class DeploymentReader {
             throw new IllegalStateException("No Task Handler found for element: " + e.getName());
         }
         Task t = cls.newInstance();
-        t.setGroupManager(groupManager);
-        t.deserialize(e);
+        t.deserialize(e, groupManager);
 
         return t;
     }

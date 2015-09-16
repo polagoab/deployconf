@@ -60,7 +60,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void deserialize(Element root) {
+    public void deserialize(Element root, ConfigGroupManager groupManager) {
         configured = true;
     }
 
@@ -81,7 +81,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void serialize(Element node) {
+    public void serialize(Element node, ConfigGroupManager groupManager) {
         serialized = true;
     }
 
@@ -116,14 +116,6 @@ class TestTask implements Task {
         }
 
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setGroupManager(ConfigGroupManager groupManager) {
-        this.groupManager = groupManager;
     }
 
 };

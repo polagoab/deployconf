@@ -58,7 +58,7 @@ public class FilterTaskTest {
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
                 FilterTask task = new FilterTask();
-                task.deserialize(e);
+                task.deserialize(e, null);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -85,8 +85,7 @@ public class FilterTaskTest {
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
                 FilterTask task = new FilterTask();
-                task.setGroupManager(groupManager);
-                task.deserialize(e);
+                task.deserialize(e, groupManager);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -212,7 +211,7 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node);
+        task.serialize(node, null);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals(
             "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
@@ -226,7 +225,6 @@ public class FilterTaskTest {
         FilterTask task = new FilterTask();
         String group = "testgroup";
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
-        task.setGroupManager(groupManager);
 
         task.setPath("test-path");
         FilterToken t =
@@ -237,7 +235,7 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node);
+        task.serialize(node, groupManager);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token group=\"" + group
             + "\"><name>test-name</name><regex>test-regex</regex>"

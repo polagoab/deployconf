@@ -57,7 +57,7 @@ public class PropertiesTaskTest {
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
                 PropertiesTask task = new PropertiesTask();
-                task.deserialize(e);
+                task.deserialize(e, null);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -83,8 +83,7 @@ public class PropertiesTaskTest {
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
                 PropertiesTask task = new PropertiesTask();
-                task.setGroupManager(groupManager);
-                task.deserialize(e);
+                task.deserialize(e, groupManager);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -207,7 +206,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node);
+        task.serialize(node, null);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals(
             "<properties path=\"test-path\">" + "<property><name>test-name</name>"
@@ -221,7 +220,6 @@ public class PropertiesTaskTest {
         PropertiesTask task = new PropertiesTask();
         String group = "testgroup";
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
-        task.setGroupManager(groupManager);
 
         task.setPath("test-path");
         Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
@@ -231,7 +229,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node);
+        task.serialize(node, groupManager);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">" + "<property group=\"" + group + "\"><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>" + "<default>test-default-value</default>"

@@ -35,7 +35,6 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import org.polago.deployconf.InteractiveConfigurer;
-import org.polago.deployconf.group.ConfigGroupManager;
 
 /**
  * Tests the {@link AbstractTask} class.
@@ -72,11 +71,6 @@ public class AbstractTaskTest {
 
         }
 
-        @Override
-        public void setGroupManager(ConfigGroupManager groupManager) {
-
-        }
-
     };
 
     @Test
@@ -89,7 +83,7 @@ public class AbstractTaskTest {
         List<Element> tasks = d.getRootElement().getChildren();
 
         TestAbstractTask task = new TestAbstractTask();
-        task.deserialize(tasks.get(0));
+        task.deserialize(tasks.get(0), null);
         assertNotNull(task.getPath());
     }
 

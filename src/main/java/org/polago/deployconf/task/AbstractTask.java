@@ -48,8 +48,6 @@ public abstract class AbstractTask implements Task {
 
     private String path;
 
-    private ConfigGroupManager groupManager;
-
     /**
      * Gets the path property value.
      *
@@ -70,29 +68,10 @@ public abstract class AbstractTask implements Task {
     }
 
     /**
-     * Gets the groupManager property value.
-     *
-     * @return the current value of the groupManager property
-     */
-    public ConfigGroupManager getGroupManager() {
-        return groupManager;
-    }
-
-    /**
-     * Sets the groupManager property.
-     *
-     * @param groupManager the new property value
-     */
-    @Override
-    public void setGroupManager(ConfigGroupManager groupManager) {
-        this.groupManager = groupManager;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) throws IOException {
+    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
         String attribute = root.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
             throw new IllegalStateException("path attribute is required");
@@ -104,7 +83,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) throws IOException {
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
         node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
     }
 

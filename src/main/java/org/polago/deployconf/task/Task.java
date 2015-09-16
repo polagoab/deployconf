@@ -55,9 +55,10 @@ public interface Task {
      * Load the task from a list of JDOM Elements.
      *
      * @param node the JDOM Element to use for configuring this instance
+     * @param groupManager the ConfigGroupManager to use
      * @throws IOException indicating IO Error
      */
-    void deserialize(Element node) throws IOException;
+    void deserialize(Element node, ConfigGroupManager groupManager) throws IOException;
 
     /**
      * Merge another Task with this one.
@@ -87,9 +88,10 @@ public interface Task {
      * Serialize this Task to a JDOM Element.
      *
      * @param node the JDOM Element to serialize to
+     * @param groupManager the ConfigGroupManager to use
      * @throws IOException indicating IO Error
      */
-    void serialize(Element node) throws IOException;
+    void serialize(Element node, ConfigGroupManager groupManager) throws IOException;
 
     /**
      * Apply this Task by copying source to destination.
@@ -100,10 +102,4 @@ public interface Task {
      */
     void apply(InputStream source, OutputStream destination) throws Exception;
 
-    /**
-     * Sets the ConfigGroupManager to use.
-     *
-     * @param groupManager the ConfigGroupManager to use
-     */
-    void setGroupManager(ConfigGroupManager groupManager);
 }

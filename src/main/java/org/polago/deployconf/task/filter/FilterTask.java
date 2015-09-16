@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -78,8 +79,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) throws IOException {
-        super.deserialize(root);
+    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
+        super.deserialize(root, groupManager);
         String enc = root.getAttributeValue(ATTRIBUTE_ENCODING);
         if (enc != null) {
             encoding = enc;
@@ -103,7 +104,7 @@ public class FilterTask extends AbstractTask {
             String value = null;
 
             if (group != null) {
-                value = getGroupManager().lookupGroup(group).getProperty(name);
+                value = groupManager.lookupGroup(group).getProperty(name);
             } else {
                 value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
             }
@@ -122,8 +123,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) throws IOException {
-        super.serialize(node);
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.serialize(node, groupManager);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
@@ -134,7 +135,7 @@ public class FilterTask extends AbstractTask {
 
             String group = t.getGroup();
             if (group != null) {
-                getGroupManager().lookupGroup(group).setProperty(t.getName(), t.getValue());
+                groupManager.lookupGroup(group).setProperty(t.getName(), t.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
