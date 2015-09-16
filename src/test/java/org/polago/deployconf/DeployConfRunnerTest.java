@@ -227,7 +227,7 @@ public class DeployConfRunnerTest {
     }
 
     @Test
-    public void testRunWithoutExistingDeploymentConfigAndConfigGroup() throws Exception {
+    public void testRunWithConfigGroup() throws Exception {
         DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
         Path srcFile = Files.createTempFile("input", ".zip");
         Path destFile = Files.createTempFile("output", ".zip");
@@ -243,9 +243,14 @@ public class DeployConfRunnerTest {
         assertFalse(Files.exists(configFile));
 
         try {
+            Files.copy(
+                getClass().getClassLoader().getResourceAsStream("config-group-test/META-INF/deployment-template.xml"),
+                configFile);
+            Files.copy(
+                getClass().getClassLoader().getResourceAsStream("config-group-test/testgroup-config-group.properties"),
+                repoDir.resolve("testgroup-config-group.properties"));
             TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
-            String zipPrefix = "simple-test/";
-            String zipExpectedPrefix = "config-group-test/";
+            String zipPrefix = "config-group-test/";
             String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties",
                 "META-INF/deployment-template.xml", "META-INF/MANIFEST.MF"};
             for (String r : zipFiles) {
@@ -256,16 +261,12 @@ public class DeployConfRunnerTest {
 
             os.close();
             int status = runner.run(srcFile.toString(), destFile.toString());
-            assertEquals(2, status);
-            assertFalse(Files.exists(destFile));
-            assertTrue(Files.exists(configFile));
-            InputStream destConfigStream = Files.newInputStream(configFile);
-            InputStream srcConfigStream = getClass().getClassLoader().getResourceAsStream(zipPrefix + zipFiles[3]);
-            assertEqualStreamContent(zipExpectedPrefix + zipFiles[3], srcConfigStream, destConfigStream);
+            assertEquals(0, status);
+            assertTrue(Files.exists(destFile));
+
         } finally {
             Files.delete(srcFile);
-            Files.delete(configFile);
-            Files.delete(repoDir);
+            // Files.delete(repoDir);
         }
     }
 

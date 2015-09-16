@@ -6,7 +6,7 @@
       <name>ldap.server</name>
       <description>Help text here</description>
       <default>ldap://${hostname}/</default>
-      <value></value>
+      <value>ldap://localhost</value>
     </property>
   </properties>
   <filter path="/WEB-INF/web.xml">
@@ -15,7 +15,7 @@
       <regex>@LOG_DIR@</regex>
       <description>Help text here</description>
       <default>${pwd}/logs</default>
-      <value></value>
+      <value>/var/log</value>
     </token>
   </filter>
 </deployconf>
