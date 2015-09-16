@@ -75,14 +75,17 @@ public class FileSystemConfigGroup implements ConfigGroup {
      */
     @Override
     public void setProperty(String name, String value) throws IOException {
-        properties.setProperty(name, value);
-        OutputStream os = Files.newOutputStream(path, StandardOpenOption.CREATE);
-        try {
-            properties.storeToXML(os, null);
-        } finally {
-            os.close();
+        if (value == null) {
+            properties.remove(name);
+        } else {
+            properties.setProperty(name, value);
+            OutputStream os = Files.newOutputStream(path, StandardOpenOption.CREATE);
+            try {
+                properties.storeToXML(os, null);
+            } finally {
+                os.close();
+            }
         }
-
     }
 
 }
