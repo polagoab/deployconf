@@ -158,6 +158,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test-regex", "test-descr", "test-default", null);
+        t1.setGroup("test-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -168,6 +169,14 @@ public class FilterTaskTest {
 
         assertEquals(task1, task2); // compare paths
         assertEquals(task1.getTokens(), task2.getTokens());
+        FilterToken t = task2.getTokens().iterator().next();
+        assertEquals("test-token", t.getName());
+        assertEquals("test-regex", t.getRegex().toString());
+        assertEquals("test-descr", t.getDescription());
+        assertEquals("test-default", t.getDefaultValue());
+        assertNull(t.getValue());
+        assertEquals("test-group", t.getGroup());
+
     }
 
     @Test
@@ -176,6 +185,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test1-regex", "test1-descr", "test1-default", null);
+        t1.setGroup("test1-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -183,6 +193,7 @@ public class FilterTaskTest {
         FilterTask task2 = new FilterTask();
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test-token", "test2-regex", "test2-descr", "test2-default", "test-value");
+        t2.setGroup("test2-group");
         HashSet<FilterToken> list2 = new HashSet<FilterToken>();
         list2.add(t2);
         task2.setTokens(list2);
@@ -197,6 +208,7 @@ public class FilterTaskTest {
         assertEquals("test1-descr", t.getDescription());
         assertEquals("test1-default", t.getDefaultValue());
         assertEquals("test-value", t.getValue());
+        assertEquals("test1-group", t.getGroup());
     }
 
     @Test
@@ -205,6 +217,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test1-token", "test1-regex", "test1-descr", "test1-default", null);
+        t1.setGroup("test1-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -212,6 +225,7 @@ public class FilterTaskTest {
         FilterTask task2 = new FilterTask();
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test2-token", "test2-regex", "test2-descr", "test2-default", "test-value");
+        t2.setGroup("test2-group");
         HashSet<FilterToken> list2 = new HashSet<FilterToken>();
         list2.add(t2);
         task2.setTokens(list2);
@@ -226,6 +240,7 @@ public class FilterTaskTest {
         assertEquals("test1-descr", t.getDescription());
         assertEquals("test1-default", t.getDefaultValue());
         assertNull(t.getValue());
+        assertEquals("test1-group", t.getGroup());
     }
 
     @Test

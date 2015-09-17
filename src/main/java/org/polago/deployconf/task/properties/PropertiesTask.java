@@ -165,6 +165,7 @@ public class PropertiesTask extends AbstractTask {
                         exists = true;
                         p.setDescription(op.getDescription());
                         p.setDefaultValue(op.getDefaultValue());
+                        p.setGroup(op.getGroup());
                         break;
                     }
                 }

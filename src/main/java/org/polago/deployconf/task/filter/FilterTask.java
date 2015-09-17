@@ -191,6 +191,7 @@ public class FilterTask extends AbstractTask {
                         t.setRegex(ot.getRegex());
                         t.setDescription(ot.getDescription());
                         t.setDefaultValue(ot.getDefaultValue());
+                        t.setGroup(ot.getGroup());
                         break;
                     }
                 }
