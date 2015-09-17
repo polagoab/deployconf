@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployconf name="simple">
+  <properties path="deploy.properties">
+    <property group="testgroup">
+      <name>config.dir</name>
+      <description><![CDATA[Description line 1
+        Description line 2]]></description>
+      <default>/etc</default>
+      <value></value>
+    </property>
+  </properties>
+  <filter path="logging.xml" encoding="UTF-8">
+    <token group="testgroup">
+      <name>config.dir</name>
+      <regex>@LOGDIR@</regex>
+      <description><![CDATA[Log Directory]]></description>
+      <default>${pwd}/logs</default>
+      <value></value>
+    </token>
+  </filter>
+</deployconf>

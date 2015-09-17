@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -83,7 +83,7 @@ public class AbstractTaskTest {
         List<Element> tasks = d.getRootElement().getChildren();
 
         TestAbstractTask task = new TestAbstractTask();
-        task.deserialize(tasks.get(0));
+        task.deserialize(tasks.get(0), null);
         assertNotNull(task.getPath());
     }
 

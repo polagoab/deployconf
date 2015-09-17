@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -72,8 +73,8 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element node) {
-        super.deserialize(node);
+    public void deserialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.deserialize(node, groupManager);
         for (Element e : node.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
             if (name.length() == 0) {
@@ -84,8 +85,24 @@ public class PropertiesTask extends AbstractTask {
                 throw new IllegalStateException("Property description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
-            String value = e.getChildText(DOM_ELEMENT_VALUE);
+
+            String group = e.getAttributeValue(DOM_ATTRIBUTE_GROUP);
+            String value = null;
+
+            if (group != null) {
+                value = groupManager.lookupGroup(group).getProperty(name);
+            }
+
+            if (value == null) {
+                value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+            }
+
             Property p = new Property(name, description, defaultValue, value);
+
+            if (group != null) {
+                p.setGroup(group);
+            }
+
             properties.add(p);
         }
     }
@@ -94,14 +111,21 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
-        super.serialize(node);
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.serialize(node, groupManager);
         for (Property p : properties) {
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, p.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, p.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
+
+            String group = p.getGroup();
+            if (group != null) {
+                groupManager.lookupGroup(group).setProperty(p.getName(), p.getValue());
+                e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
+            } else {
+                e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
+            }
 
             node.addContent(e);
         }
@@ -141,6 +165,7 @@ public class PropertiesTask extends AbstractTask {
                         exists = true;
                         p.setDescription(op.getDescription());
                         p.setDefaultValue(op.getDefaultValue());
+                        p.setGroup(op.getGroup());
                         break;
                     }
                 }

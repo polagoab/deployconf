@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -36,6 +36,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,10 +202,11 @@ public class DeploymentConfig {
      * Save this DeploymentConfig to persistent storage.
      *
      * @param outputStream the stream to save this DeploymentConfig into
+     * @param groupManager the Configuration Group Manager to use
      * @throws IOException indicating failure
      */
-    public void save(OutputStream outputStream) throws IOException {
-        DeploymentWriter writer = new DeploymentWriter(outputStream);
+    public void save(OutputStream outputStream, ConfigGroupManager groupManager) throws IOException {
+        DeploymentWriter writer = new DeploymentWriter(outputStream, groupManager);
         writer.persist(this);
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -32,8 +32,6 @@ import java.io.ByteArrayOutputStream;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
-import org.polago.deployconf.DeploymentConfig;
-import org.polago.deployconf.DeploymentWriter;
 
 /**
  * Tests the {@link DeploymentWriter} class.
@@ -47,7 +45,7 @@ public class DeploymentWriterTest {
         deploymentConfig.addTask(task);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DeploymentWriter writer = new DeploymentWriter(os);
+        DeploymentWriter writer = new DeploymentWriter(os, null);
 
         writer.persist(deploymentConfig);
 
@@ -68,7 +66,7 @@ public class DeploymentWriterTest {
         deploymentConfig.setName(name);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DeploymentWriter writer = new DeploymentWriter(os);
+        DeploymentWriter writer = new DeploymentWriter(os, null);
 
         writer.persist(deploymentConfig);
 

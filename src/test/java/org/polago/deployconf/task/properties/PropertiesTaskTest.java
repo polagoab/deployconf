@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -37,6 +37,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 import org.polago.deployconf.TestInteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroupManager;
 
 /**
  * Tests the {@link PropertiesTask} class.
@@ -55,12 +57,65 @@ public class PropertiesTaskTest {
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
                 PropertiesTask task = new PropertiesTask();
-                task.deserialize(e);
+                task.deserialize(e, null);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
             }
+        }
+    }
 
+    @Test
+    public void testDeserializeWithGroup() throws Exception {
+        String expected = "testserver";
+        String name = "ldap.server";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        groupManager.lookupGroup(group).setProperty(name, expected);
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("properties".equals(e.getName())) {
+                PropertiesTask task = new PropertiesTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getProperties());
+                assertEquals(1, task.getProperties().size());
+                assertEquals(expected, task.getProperties().iterator().next().getValue());
+                assertEquals(group, task.getProperties().iterator().next().getGroup());
+            }
+        }
+    }
+
+    @Test
+    public void testDeserializeWithGroupAndNoGroupValue() throws Exception {
+        String expected = "ldap://localhost";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("properties".equals(e.getName())) {
+                PropertiesTask task = new PropertiesTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getProperties());
+                assertEquals(1, task.getProperties().size());
+                assertEquals(expected, task.getProperties().iterator().next().getValue());
+                assertEquals(group, task.getProperties().iterator().next().getGroup());
+            }
         }
     }
 
@@ -100,6 +155,7 @@ public class PropertiesTaskTest {
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
         Property p1 = new Property("test-property", "test-descr", "test-default", null);
+        p1.setGroup("test-group");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -109,7 +165,12 @@ public class PropertiesTaskTest {
         task2.merge(task1);
 
         assertEquals(task1, task2); // compare paths
-        assertEquals(task1.getProperties(), task2.getProperties());
+        Property p = task2.getProperties().iterator().next();
+        assertEquals("test-property", p.getName());
+        assertEquals("test-descr", p.getDescription());
+        assertEquals("test-default", p.getDefaultValue());
+        assertNull(p.getValue());
+        assertEquals("test-group", p.getGroup());
     }
 
     @Test
@@ -118,6 +179,7 @@ public class PropertiesTaskTest {
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
         Property p1 = new Property("test-property", "test1-descr", "test1-default", null);
+        p1.setGroup("test1-group");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -125,6 +187,7 @@ public class PropertiesTaskTest {
         PropertiesTask task2 = new PropertiesTask();
         task2.setPath(path);
         Property p2 = new Property("test-property", "test2-descr", "test2-default", "test-value");
+        p2.setGroup("test-group2");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -138,6 +201,7 @@ public class PropertiesTaskTest {
         assertEquals("test1-descr", p.getDescription());
         assertEquals("test1-default", p.getDefaultValue());
         assertEquals("test-value", p.getValue());
+        assertEquals("test1-group", p.getGroup());
     }
 
     @Test
@@ -146,6 +210,7 @@ public class PropertiesTaskTest {
         PropertiesTask task1 = new PropertiesTask();
         task1.setPath(path);
         Property p1 = new Property("test1-property", "test1-descr", "test1-default", null);
+        p1.setGroup("test1-group");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -153,6 +218,7 @@ public class PropertiesTaskTest {
         PropertiesTask task2 = new PropertiesTask();
         task2.setPath(path);
         Property p2 = new Property("test2-property", "test2-descr", "test2-default", "test-value");
+        p2.setGroup("test2-group");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -166,6 +232,7 @@ public class PropertiesTaskTest {
         assertEquals("test1-descr", p.getDescription());
         assertEquals("test1-default", p.getDefaultValue());
         assertNull(p.getValue());
+        assertEquals("test1-group", p.getGroup());
     }
 
     @Test
@@ -177,12 +244,34 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node);
+        task.serialize(node, null);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
-            + "<description><![CDATA[test-description]]></description>"
-            + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>", outputter
-            .outputString(node).replaceAll("[\\n\\r]*", ""));
+        assertEquals(
+            "<properties path=\"test-path\">" + "<property><name>test-name</name>"
+                + "<description><![CDATA[test-description]]></description>"
+                + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>",
+            outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
+    }
+
+    @Test
+    public void testSerializeWithGroup() throws Exception {
+        PropertiesTask task = new PropertiesTask();
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        task.setPath("test-path");
+        Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
+        p.setGroup(group);
+
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+        Element node = new Element("properties");
+        task.serialize(node, groupManager);
+        XMLOutputter outputter = new XMLOutputter();
+        assertEquals("<properties path=\"test-path\">" + "<property group=\"" + group + "\"><name>test-name</name>"
+            + "<description><![CDATA[test-description]]></description>" + "<default>test-default-value</default>"
+            + "</property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
     }
 
     @Test

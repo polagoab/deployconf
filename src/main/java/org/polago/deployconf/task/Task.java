@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -24,11 +24,13 @@
 
 package org.polago.deployconf.task;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
 
 /**
  * Describes a deployment task.
@@ -53,8 +55,10 @@ public interface Task {
      * Load the task from a list of JDOM Elements.
      *
      * @param node the JDOM Element to use for configuring this instance
+     * @param groupManager the ConfigGroupManager to use
+     * @throws IOException indicating IO Error
      */
-    void deserialize(Element node);
+    void deserialize(Element node, ConfigGroupManager groupManager) throws IOException;
 
     /**
      * Merge another Task with this one.
@@ -84,8 +88,10 @@ public interface Task {
      * Serialize this Task to a JDOM Element.
      *
      * @param node the JDOM Element to serialize to
+     * @param groupManager the ConfigGroupManager to use
+     * @throws IOException indicating IO Error
      */
-    void serialize(Element node);
+    void serialize(Element node, ConfigGroupManager groupManager) throws IOException;
 
     /**
      * Apply this Task by copying source to destination.

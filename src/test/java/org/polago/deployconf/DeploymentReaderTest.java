@@ -30,8 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.junit.Test;
-import org.polago.deployconf.DeploymentConfig;
-import org.polago.deployconf.DeploymentReader;
 
 /**
  * Tests the {@link DeploymentReader} class.
@@ -41,7 +39,7 @@ public class DeploymentReaderTest {
     @Test
     public void testNullStream() {
         try {
-            new DeploymentReader(null);
+            new DeploymentReader(null,null);
             fail();
         } catch (Exception e) {
             // OK
@@ -51,7 +49,7 @@ public class DeploymentReaderTest {
     @Test
     public void testInvalidStream() {
         ByteArrayInputStream is = new ByteArrayInputStream("".getBytes());
-        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentReader reader = new DeploymentReader(is, null);
         try {
             reader.parse();
             fail();
@@ -65,7 +63,7 @@ public class DeploymentReaderTest {
         InputStream is = getClass().getClassLoader().getResourceAsStream("empty-deployment-config.xml");
         assertNotNull(is);
 
-        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentReader reader = new DeploymentReader(is, null);
         DeploymentConfig config = reader.parse();
         assertNotNull(config);
         assertTrue(config.isEmpty());
@@ -77,7 +75,7 @@ public class DeploymentReaderTest {
         InputStream is = getClass().getClassLoader().getResourceAsStream("simple-deployment-config.xml");
         assertNotNull(is);
 
-        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentReader reader = new DeploymentReader(is, null);
         DeploymentConfig config = reader.parse();
         assertNotNull(config);
         assertTrue(!config.isEmpty());

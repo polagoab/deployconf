@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -38,6 +38,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.junit.Test;
 import org.polago.deployconf.TestInteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroupManager;
 
 /**
  * Tests the {@link FilterTask} class.
@@ -56,7 +58,7 @@ public class FilterTaskTest {
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
                 FilterTask task = new FilterTask();
-                task.deserialize(e);
+                task.deserialize(e, null);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -64,6 +66,61 @@ public class FilterTaskTest {
 
         }
     }
+
+    @Test
+    public void testDeserializeWithGroup() throws Exception {
+        String expected = "testdir";
+        String name = "LogDir";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        groupManager.lookupGroup(group).setProperty(name, expected);
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("filter".equals(e.getName())) {
+                FilterTask task = new FilterTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getTokens());
+                assertEquals(1, task.getTokens().size());
+                assertEquals(expected, task.getTokens().iterator().next().getValue());
+                assertEquals(group, task.getTokens().iterator().next().getGroup());
+            }
+        }
+    }
+
+    @Test
+    public void testDeserializeWithGroupAndNoGroupValue() throws Exception {
+        String expected = "/var/log";
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("testgroup-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("filter".equals(e.getName())) {
+                FilterTask task = new FilterTask();
+                task.deserialize(e, groupManager);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getTokens());
+                assertEquals(1, task.getTokens().size());
+                assertEquals(expected, task.getTokens().iterator().next().getValue());
+                assertEquals(group, task.getTokens().iterator().next().getGroup());
+            }
+        }
+    }
+
 
     @Test
     public void testIsConfigured() throws Exception {
@@ -101,6 +158,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test-regex", "test-descr", "test-default", null);
+        t1.setGroup("test-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -111,6 +169,14 @@ public class FilterTaskTest {
 
         assertEquals(task1, task2); // compare paths
         assertEquals(task1.getTokens(), task2.getTokens());
+        FilterToken t = task2.getTokens().iterator().next();
+        assertEquals("test-token", t.getName());
+        assertEquals("test-regex", t.getRegex().toString());
+        assertEquals("test-descr", t.getDescription());
+        assertEquals("test-default", t.getDefaultValue());
+        assertNull(t.getValue());
+        assertEquals("test-group", t.getGroup());
+
     }
 
     @Test
@@ -119,6 +185,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test1-regex", "test1-descr", "test1-default", null);
+        t1.setGroup("test1-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -126,6 +193,7 @@ public class FilterTaskTest {
         FilterTask task2 = new FilterTask();
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test-token", "test2-regex", "test2-descr", "test2-default", "test-value");
+        t2.setGroup("test2-group");
         HashSet<FilterToken> list2 = new HashSet<FilterToken>();
         list2.add(t2);
         task2.setTokens(list2);
@@ -140,6 +208,7 @@ public class FilterTaskTest {
         assertEquals("test1-descr", t.getDescription());
         assertEquals("test1-default", t.getDefaultValue());
         assertEquals("test-value", t.getValue());
+        assertEquals("test1-group", t.getGroup());
     }
 
     @Test
@@ -148,6 +217,7 @@ public class FilterTaskTest {
         FilterTask task1 = new FilterTask();
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test1-token", "test1-regex", "test1-descr", "test1-default", null);
+        t1.setGroup("test1-group");
         HashSet<FilterToken> list1 = new HashSet<FilterToken>();
         list1.add(t1);
         task1.setTokens(list1);
@@ -155,6 +225,7 @@ public class FilterTaskTest {
         FilterTask task2 = new FilterTask();
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test2-token", "test2-regex", "test2-descr", "test2-default", "test-value");
+        t2.setGroup("test2-group");
         HashSet<FilterToken> list2 = new HashSet<FilterToken>();
         list2.add(t2);
         task2.setTokens(list2);
@@ -169,6 +240,7 @@ public class FilterTaskTest {
         assertEquals("test1-descr", t.getDescription());
         assertEquals("test1-default", t.getDefaultValue());
         assertNull(t.getValue());
+        assertEquals("test1-group", t.getGroup());
     }
 
     @Test
@@ -181,13 +253,36 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node);
+        task.serialize(node, null);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">"
-            + "<token><name>test-name</name><regex>test-regex</regex>"
-            + "<description><![CDATA[test-description]]></description>"
-            + "<default>test-default-value</default><value>test-value</value>" + "</token></filter>",
+        assertEquals(
+            "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
+                + "<description><![CDATA[test-description]]></description>"
+                + "<default>test-default-value</default><value>test-value</value>" + "</token></filter>",
             outputter.outputString(node));
+    }
+
+    @Test
+    public void testSerializeWithGroup() throws Exception {
+        FilterTask task = new FilterTask();
+        String group = "testgroup";
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        task.setPath("test-path");
+        FilterToken t =
+            new FilterToken("test-name", "test-regex", "test-description", "test-default-value", "test-value");
+        t.setGroup(group);
+
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(t);
+        task.setTokens(list);
+        Element node = new Element("filter");
+        task.serialize(node, groupManager);
+        XMLOutputter outputter = new XMLOutputter();
+        assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token group=\"" + group
+            + "\"><name>test-name</name><regex>test-regex</regex>"
+            + "<description><![CDATA[test-description]]></description>"
+            + "<default>test-default-value</default></token></filter>", outputter.outputString(node));
     }
 
     @Test
