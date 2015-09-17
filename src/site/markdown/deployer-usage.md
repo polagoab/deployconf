@@ -35,7 +35,7 @@ You may also run deployconf in *force-interactive* mode:
 java -jar deployconf.jar -I INPUT OUTPUT
 ```
 
-In force-interactive mode, deployconf will prompt for all configuration properties using the existsing properties as
+In force-interactive mode, deployconf will prompt for all configuration properties using the existing properties as
 default value.
 
 
