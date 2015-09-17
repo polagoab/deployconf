@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -78,8 +79,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) {
-        super.deserialize(root);
+    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
+        super.deserialize(root, groupManager);
         String enc = root.getAttributeValue(ATTRIBUTE_ENCODING);
         if (enc != null) {
             encoding = enc;
@@ -98,9 +99,24 @@ public class FilterTask extends AbstractTask {
                 throw new IllegalStateException("Filter description element does not exists");
             }
             String defaultValue = e.getChildTextTrim(DOM_ELEMENT_DEFAULT);
-            String value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+
+            String group = e.getAttributeValue(DOM_ATTRIBUTE_GROUP);
+            String value = null;
+
+            if (group != null) {
+                value = groupManager.lookupGroup(group).getProperty(name);
+            }
+
+            if (value == null) {
+                value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+            }
 
             FilterToken t = new FilterToken(name, regex, description, defaultValue, value);
+
+            if (group != null) {
+                t.setGroup(group);
+            }
+
             tokens.add(t);
         }
     }
@@ -109,8 +125,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
-        super.serialize(node);
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        super.serialize(node, groupManager);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
@@ -118,7 +134,14 @@ public class FilterTask extends AbstractTask {
             e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex().toString()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, t.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, t.getDefaultValue()));
-            e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
+
+            String group = t.getGroup();
+            if (group != null) {
+                groupManager.lookupGroup(group).setProperty(t.getName(), t.getValue());
+                e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
+            } else {
+                e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
+            }
 
             node.addContent(e);
         }
@@ -168,6 +191,7 @@ public class FilterTask extends AbstractTask {
                         t.setRegex(ot.getRegex());
                         t.setDescription(ot.getDescription());
                         t.setDefaultValue(ot.getDefaultValue());
+                        t.setGroup(ot.getGroup());
                         break;
                     }
                 }

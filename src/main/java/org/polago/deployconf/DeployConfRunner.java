@@ -35,6 +35,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -47,6 +48,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.FileSystemConfigGroupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +118,11 @@ public class DeployConfRunner {
      * The local repository for storing deployment config files. Null means current directory.
      */
     private String repositoryDirectory = null;
+
+    /**
+     * The Configuration Group Manager to use.
+     */
+    private ConfigGroupManager groupManager;
 
     /**
      * Public Constructor.
@@ -225,6 +233,8 @@ public class DeployConfRunner {
                 logger.error("Specified repository is not a directory: {}", repo);
                 System.exit(1);
             }
+
+            instance.setGroupManager(new FileSystemConfigGroupManager(Paths.get(instance.getRepositoryDirectory())));
 
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
@@ -366,7 +376,7 @@ public class DeployConfRunner {
      * the config name. If no repository is set, the current working directory is used.
      *
      * @param name the DeploymentConfig name to use
-     * @return the current value of the deploymentConfig property
+     * @return the Path to the DeploymentConfig
      */
     public Path getDeploymentConfigPath(String name) {
         Path result = deploymentConfigFile;
@@ -404,6 +414,24 @@ public class DeployConfRunner {
      */
     public void setRepositoryDirectory(String repositoryDirectory) {
         this.repositoryDirectory = repositoryDirectory;
+    }
+
+    /**
+     * Gets the groupManager property value.
+     *
+     * @return the current value of the groupManager property
+     */
+    public ConfigGroupManager getGroupManager() {
+        return groupManager;
+    }
+
+    /**
+     * Sets the groupManager property.
+     *
+     * @param groupManager the new property value
+     */
+    public void setGroupManager(ConfigGroupManager groupManager) {
+        this.groupManager = groupManager;
     }
 
     /**
@@ -478,7 +506,7 @@ public class DeployConfRunner {
         logger.info("Saving Deployment Configuration to '" + file + "'");
         FileOutputStream os = new FileOutputStream(file.toFile());
         try {
-            config.save(os);
+            config.save(os, groupManager);
         } finally {
             os.close();
         }
@@ -502,7 +530,7 @@ public class DeployConfRunner {
         }
         InputStream is = zipFile.getInputStream(entry);
 
-        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentReader reader = new DeploymentReader(is, groupManager);
         DeploymentConfig result = reader.parse();
         is.close();
         zipFile.close();
@@ -522,7 +550,7 @@ public class DeployConfRunner {
         ReadableByteChannel ch = FileChannel.open(path, StandardOpenOption.READ);
         InputStream is = Channels.newInputStream(ch);
 
-        DeploymentReader reader = new DeploymentReader(is);
+        DeploymentReader reader = new DeploymentReader(is, getGroupManager());
         DeploymentConfig result = reader.parse();
         ch.close();
 

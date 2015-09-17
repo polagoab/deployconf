@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -24,16 +24,21 @@
 
 package org.polago.deployconf.task;
 
+import java.io.IOException;
+
 import org.jdom2.CDATA;
 import org.jdom2.Element;
 import org.jdom2.Text;
+import org.polago.deployconf.group.ConfigGroupManager;
 
 /**
  * Common implementation of a deployment Task.
  */
 public abstract class AbstractTask implements Task {
 
-    private static final String PATH = "path";
+    private static final String DOM_ATTRIBUTE_PATH = "path";
+
+    protected static final String DOM_ATTRIBUTE_GROUP = "group";
 
     protected static final String DOM_ELEMENT_DESCRIPTION = "description";
 
@@ -66,8 +71,8 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root) {
-        String attribute = root.getAttributeValue(PATH);
+    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
+        String attribute = root.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
             throw new IllegalStateException("path attribute is required");
         }
@@ -78,8 +83,8 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node) {
-        node.setAttribute(PATH, getPath());
+    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+        node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
     }
 
     /**

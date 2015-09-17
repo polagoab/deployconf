@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Polago AB
+ * Copyright (c) 2013-2015 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jdom2.Element;
+import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.Task;
 
 /**
@@ -51,13 +52,15 @@ class TestTask implements Task {
 
     boolean merged;
 
+    ConfigGroupManager groupManager;
+
     @Override
     public String getPath() {
         return path;
     }
 
     @Override
-    public void deserialize(Element root) {
+    public void deserialize(Element root, ConfigGroupManager groupManager) {
         configured = true;
     }
 
@@ -78,7 +81,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void serialize(Element node) {
+    public void serialize(Element node, ConfigGroupManager groupManager) {
         serialized = true;
     }
 

@@ -1,6 +1,6 @@
 /**
  * <p>
- * Provides classes for defineing and implementing a deployconf Task.
+ * Provides classes for defining and implementing a deployconf Task.
  * </p>
  */
 
