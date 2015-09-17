@@ -234,7 +234,7 @@ public class DeployConfRunner {
                 System.exit(1);
             }
 
-            instance.setGroupManager(new FileSystemConfigGroupManager(Paths.get(getDefaultRepository())));
+            instance.setGroupManager(new FileSystemConfigGroupManager(Paths.get(instance.getRepositoryDirectory())));
 
             if (cmd.hasOption(configFile.getOpt())) {
                 String f = cmd.getOptionValue(configFile.getOpt());
