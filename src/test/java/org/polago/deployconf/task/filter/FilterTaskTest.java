@@ -297,9 +297,31 @@ public class FilterTaskTest {
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(in, out);
+        task.apply(in, out, null);
 
         assertEquals("test-value\n", out.toString());
+    }
+
+    @Test
+    public void testApplyWithExpandingConfigGroup() throws Exception {
+        String group = "test-group";
+        FilterTask task = new FilterTask();
+        FilterToken t = new FilterToken("test-name", "d..a", null, null, "${test-property}");
+        t.setGroup(group);
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        groupManager.lookupGroup(group).setProperty("test-property", "expanded-value");
+
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(t);
+        task.setTokens(list);
+
+        String data = "test-data";
+        ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        task.apply(in, out, groupManager);
+
+        assertEquals("test-expanded-value\n", out.toString());
     }
 
     @Test

@@ -54,6 +54,8 @@ public class DeploymentConfig {
 
     private String name;
 
+    private ConfigGroupManager groupManager;
+
     /**
      * Public Constructor.
      */
@@ -77,6 +79,24 @@ public class DeploymentConfig {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Gets the groupManager property value.
+     *
+     * @return the current value of the groupManager property
+     */
+    public ConfigGroupManager getGroupManager() {
+        return groupManager;
+    }
+
+    /**
+     * Sets the groupManager property.
+     *
+     * @param groupManager the new property value
+     */
+    public void setGroupManager(ConfigGroupManager groupManager) {
+        this.groupManager = groupManager;
     }
 
     /**
@@ -202,10 +222,9 @@ public class DeploymentConfig {
      * Save this DeploymentConfig to persistent storage.
      *
      * @param outputStream the stream to save this DeploymentConfig into
-     * @param groupManager the Configuration Group Manager to use
      * @throws IOException indicating failure
      */
-    public void save(OutputStream outputStream, ConfigGroupManager groupManager) throws IOException {
+    public void save(OutputStream outputStream) throws IOException {
         DeploymentWriter writer = new DeploymentWriter(outputStream, groupManager);
         writer.persist(this);
     }
@@ -303,7 +322,7 @@ public class DeploymentConfig {
 
         logger.info("Applying deployment config to Zip Entry: " + e);
         for (Task t : taskList) {
-            t.apply(zipSrc, zipDest);
+            t.apply(zipSrc, zipDest, groupManager);
         }
     }
 

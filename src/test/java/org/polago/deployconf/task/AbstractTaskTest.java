@@ -24,8 +24,9 @@
 
 package org.polago.deployconf.task;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -35,6 +36,9 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroup;
+import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroup;
 
 /**
  * Tests the {@link AbstractTask} class.
@@ -67,7 +71,7 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public void apply(InputStream source, OutputStream destination) {
+        public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) {
 
         }
 
@@ -87,4 +91,36 @@ public class AbstractTaskTest {
         assertNotNull(task.getPath());
     }
 
+    @Test
+    public void testExpandNull() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertNull(task.expandPropertyExpression(null, null));
+    }
+
+    @Test
+    public void testExpandWithNoExpression() {
+        String expected = "text";
+        TestAbstractTask task = new TestAbstractTask();
+        assertEquals(expected, task.expandPropertyExpression(expected, null));
+    }
+
+    @Test
+    public void testExpandWithNonExistingExpression() throws IOException {
+        String expected = "prefix-${text}-suffix";
+        TestAbstractTask task = new TestAbstractTask();
+        ConfigGroup group = new InMemoryConfigGroup();
+        group.setProperty("othertext", "expanded-test-value");
+
+        assertEquals(expected, task.expandPropertyExpression(expected, group));
+    }
+
+    @Test
+    public void testExpandWithExistingExpression() throws IOException {
+        String expected = "prefix-${text}-suffix";
+        TestAbstractTask task = new TestAbstractTask();
+        ConfigGroup group = new InMemoryConfigGroup();
+        group.setProperty("text", "expanded-test-value");
+
+        assertEquals("prefix-expanded-test-value-suffix", task.expandPropertyExpression(expected, group));
+    }
 }

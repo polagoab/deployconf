@@ -25,10 +25,13 @@
 package org.polago.deployconf.task;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jdom2.CDATA;
 import org.jdom2.Element;
 import org.jdom2.Text;
+import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
 
 /**
@@ -36,7 +39,10 @@ import org.polago.deployconf.group.ConfigGroupManager;
  */
 public abstract class AbstractTask implements Task {
 
-    private static final String DOM_ATTRIBUTE_PATH = "path";
+    // Matches a property expression like ${propertyName}
+    private static final Pattern EXPANSION_PATTERN = Pattern.compile("(\\$\\{([^}]+?)\\})");
+
+    protected static final String DOM_ATTRIBUTE_PATH = "path";
 
     protected static final String DOM_ATTRIBUTE_GROUP = "group";
 
@@ -85,6 +91,34 @@ public abstract class AbstractTask implements Task {
     @Override
     public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
         node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
+    }
+
+    /**
+     * Replace matching properties from the given groupManager in the given text.
+     *
+     * @param text the text to expand
+     * @param group the ConfigGroup to use as source for expanding property expressions
+     * @return the expanded value, if possible
+     */
+    protected String expandPropertyExpression(String text, ConfigGroup group) {
+        String result = text;
+
+        if (text != null) {
+            Matcher matcher = EXPANSION_PATTERN.matcher(text);
+            StringBuffer expanded = new StringBuffer(text.length());
+            while (matcher.find()) {
+                String name = matcher.group(2);
+                String value = group.getProperty(name);
+                if (value == null) {
+                    value = matcher.group(0);
+                }
+                matcher.appendReplacement(expanded, Matcher.quoteReplacement(value));
+            }
+            matcher.appendTail(expanded);
+            result = expanded.toString();
+        }
+
+        return result;
     }
 
     /**

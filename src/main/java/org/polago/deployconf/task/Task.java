@@ -98,8 +98,9 @@ public interface Task {
      *
      * @param source the Input stream
      * @param destination the Output stream
+     * @param groupManager the ConfigGroupManager to use
      * @throws Exception indicating processing failure
      */
-    void apply(InputStream source, OutputStream destination) throws Exception;
+    void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception;
 
 }

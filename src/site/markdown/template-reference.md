@@ -38,12 +38,12 @@ The properties task looks like:
 ```
 
 The *path* attribute identifies the path of the properties file in the artifact. It should match the path displayed
-using the `jar tvf` command. The *group* attribute, if present, will bind the property to a
+using the `jar tvf` command. The *group* attribute, if present, will bind the token to a
 [Configuration Group](#Configuration_Groups).
 
 `name`(required)
 
-: the Java Property Name. It's also used as configuration property name when running deployconf in *interactive* mode.
+: The Java Property Name. It's also used as configuration property name when running deployconf in *interactive* mode.
 
 `description`(required)
 
@@ -55,9 +55,10 @@ using the `jar tvf` command. The *group* attribute, if present, will bind the pr
 
 `value`(optional)
 
-: The initial value for the configuration property. If the property has a value in the deployment template it will be
-used *as is* in the deployment config. This means that you can provide properties that normally is hidden unless
-deployconf is running in *force-interactive* mode.
+: The value of the configuration property. If the property is part of a configuration group, property expressions
+referring to other properties ion the same group will be expanded when the value is used. If the property has a value in
+the deployment template it will be used *as is* in the deployment config. This means that you can provide properties
+that normally is hidden unless deployconf is running in *force-interactive* mode.
 
 ## Filter Task
 
@@ -83,7 +84,7 @@ tf` command. The *group* attribute, if present, will bind the property to a
 
 `name`(required)
 
-: the configuration property name used when running deployconf in *interactive* mode
+: The configuration property name used when running deployconf in *interactive* mode
 
 `regex`(required)
 
@@ -99,9 +100,10 @@ tf` command. The *group* attribute, if present, will bind the property to a
 
 `value`(optional)
 
-: The initial value for the configuration property. If the property has a value in the deployment template it will be
-used *as is* in the deployment config. This means that you can provide properties that normally is hidden unless
-deployconf is running in *force-interactive* mode.
+: The value for the configuration property. If the token is part of a configuration group, property expressions
+referring to other properties in the same group will be expanded when the value is used. If the property has a value in
+the deployment template it will be used *as is* in the deployment config. This means that you can provide tokens
+that normally is hidden unless deployconf is running in *force-interactive* mode.
 
 ## Configuration Groups
 
@@ -112,5 +114,5 @@ itself.
 This means that the configuration value may be reused in another property or token with the same name that belongs to
 the same configuration group and thus allows for reusing the same value in multiple properties and tokens. This
 mechanism works both in the same deployment template and between different artifacts using it's own template, allowing
-for sharing values between a group of artifacts. The group itself is stored in the deployconf's repository as a
+for sharing values between a group of artifacts. The group itself is stored in the deployconf repository as a
 standard Java Properties file.

@@ -222,7 +222,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination) throws Exception {
+    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
 
         OutputStreamWriter out = new OutputStreamWriter(destination, ENCODING);
         BufferedWriter writer = new BufferedWriter(out);
@@ -244,7 +244,13 @@ public class PropertiesTask extends AbstractTask {
             }
             writer.append(p.getName());
             writer.append("=");
-            writer.append(p.getValue());
+
+            String value = p.getValue();
+            if (groupManager != null) {
+                value = expandPropertyExpression(value, groupManager.lookupGroup(p.getGroup()));
+            }
+
+            writer.append(value);
             writer.newLine();
         }
         writer.flush();
