@@ -248,7 +248,7 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination) throws Exception {
+    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
 
         InputStreamReader in = new InputStreamReader(source, getEncoding());
         BufferedReader reader = new BufferedReader(in);
@@ -258,7 +258,7 @@ public class FilterTask extends AbstractTask {
 
         String line = reader.readLine();
         while (line != null) {
-            line = filterLine(line);
+            line = filterLine(line, groupManager);
             writer.write(line);
             line = reader.readLine();
             writer.newLine();
@@ -270,12 +270,18 @@ public class FilterTask extends AbstractTask {
      * Filter the given line.
      *
      * @param line the line to process
+     * @param groupManager the ConfigGroupManager to use
      * @return the filtered line
+     * @throws IOException indicating IO Error
      */
-    private String filterLine(String line) {
-        for (FilterToken token : getTokens()) {
-            Matcher matcher = token.getRegex().matcher(line);
-            line = matcher.replaceAll(token.getValue());
+    private String filterLine(String line, ConfigGroupManager groupManager) throws IOException {
+        for (FilterToken t : getTokens()) {
+            Matcher matcher = t.getRegex().matcher(line);
+            String value = t.getValue();
+            if (groupManager != null) {
+                value = expandPropertyExpression(value, groupManager.lookupGroup(t.getGroup()));
+            }
+            line = matcher.replaceAll(value);
         }
 
         return line;

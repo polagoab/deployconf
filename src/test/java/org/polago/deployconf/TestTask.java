@@ -91,7 +91,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void apply(InputStream source, OutputStream destination) {
+    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) {
         applied = true;
     }
 

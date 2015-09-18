@@ -85,6 +85,7 @@ public class DeploymentReader {
         String name = d.getRootElement().getAttributeValue(ATTR_NAME);
         List<Element> tasks = d.getRootElement().getChildren();
         DeploymentConfig result = new DeploymentConfig();
+        result.setGroupManager(groupManager);
 
         if (name != null) {
             result.setName(name);

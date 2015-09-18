@@ -283,7 +283,7 @@ public class PropertiesTaskTest {
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out);
+        task.apply(null, out, null);
         assertTrue(out.toString().contains("test-property=test-value"));
         assertTrue(out.toString().contains("# test-description"));
     }
@@ -297,8 +297,26 @@ public class PropertiesTaskTest {
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out);
+        task.apply(null, out, null);
         assertEquals("\ntest-property=test-value\n", out.toString());
+    }
+
+    @Test
+    public void testApplyWithExpandingConfigGroupProperty() throws Exception {
+        String group = "test-group";
+        PropertiesTask task = new PropertiesTask();
+        Property p = new Property("test-property", "test-description", null, "${test-name}/other");
+        p.setGroup(group);
+        ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+        groupManager.lookupGroup(group).setProperty("test-name", "epxanded-test-value");
+
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        task.apply(null, out, groupManager);
+        assertTrue(out.toString().contains("test-property=epxanded-test-value/other"));
     }
 
     @Test

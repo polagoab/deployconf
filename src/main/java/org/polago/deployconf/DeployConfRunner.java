@@ -315,6 +315,7 @@ public class DeployConfRunner {
         } else {
             logger.info("Creating new Deployment Config: " + repoFile);
             config = new DeploymentConfig();
+            config.setGroupManager(groupManager);
         }
 
         logger.debug("Running in mode: {}", runMode);
@@ -506,7 +507,7 @@ public class DeployConfRunner {
         logger.info("Saving Deployment Configuration to '" + file + "'");
         FileOutputStream os = new FileOutputStream(file.toFile());
         try {
-            config.save(os, groupManager);
+            config.save(os);
         } finally {
             os.close();
         }

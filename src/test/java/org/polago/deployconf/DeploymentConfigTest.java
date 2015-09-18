@@ -184,7 +184,7 @@ public class DeploymentConfigTest {
 
         OutputStream os = Files.newOutputStream(file);
         try {
-            config.save(os, null);
+            config.save(os);
         } finally {
             os.close();
         }
