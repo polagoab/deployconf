@@ -38,8 +38,9 @@ The properties task looks like:
 ```
 
 The *path* attribute identifies the path of the properties file in the artifact. It should match the path displayed
-using the `jar tvf` command. The *group* attribute, if present, will bind the token to a
-[Configuration Group](#Configuration_Groups).
+using the `jar tvf` command. The *group* attribute, if present, will bind the property to a
+[Configuration Group](#Configuration_Groups). Note that the path attribute may be omitted to provide a properties task
+that is used to define properties in configuration groups that are only used in property expressions
 
 `name`(required)
 
@@ -79,7 +80,7 @@ The Filter Task looks like:
 ```
   
 The *path* attribute identifies the path of the file in the artifact. It should match the path displayed using the `jar
-tf` command. The *group* attribute, if present, will bind the property to a
+tf` command. The *group* attribute, if present, will bind the token to a
 [Configuration Group](#Configuration_Groups).
 
 `name`(required)
