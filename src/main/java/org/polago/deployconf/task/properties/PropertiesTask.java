@@ -59,6 +59,8 @@ public class PropertiesTask extends AbstractTask {
     // Properties files are always using ISO-8859-1
     private static final String ENCODING = "ISO-8859-1";
 
+    private static final String PATH_IGONRE = PropertiesTask.class.getCanonicalName() + "_NO_PATH";;
+
     private Set<Property> properties;
 
     /**
@@ -74,7 +76,12 @@ public class PropertiesTask extends AbstractTask {
      */
     @Override
     public void deserialize(Element node, ConfigGroupManager groupManager) throws IOException {
-        super.deserialize(node, groupManager);
+        String attribute = node.getAttributeValue(DOM_ATTRIBUTE_PATH);
+        if (attribute == null) {
+            attribute = PATH_IGONRE;
+        }
+        setPath(attribute);
+
         for (Element e : node.getChildren()) {
             String name = e.getChildTextTrim(DOM_ELEMENT_NAME);
             if (name.length() == 0) {
@@ -112,7 +119,10 @@ public class PropertiesTask extends AbstractTask {
      */
     @Override
     public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
-        super.serialize(node, groupManager);
+        if (!PATH_IGONRE.equals(getPath())) {
+            node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
+        }
+
         for (Property p : properties) {
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
@@ -223,6 +233,11 @@ public class PropertiesTask extends AbstractTask {
      */
     @Override
     public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
+
+        if (PATH_IGONRE.equals(getPath())) {
+            // This task should never be applied
+            return;
+        }
 
         OutputStreamWriter out = new OutputStreamWriter(destination, ENCODING);
         BufferedWriter writer = new BufferedWriter(out);
