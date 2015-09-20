@@ -39,8 +39,7 @@ The properties task looks like:
 
 The *path* attribute identifies the path of the properties file in the artifact. It should match the path displayed
 using the `jar tvf` command. The *group* attribute, if present, will bind the property to a
-[Configuration Group](#Configuration_Groups). Note that the path attribute may be omitted to provide a properties task
-that is used to define properties in configuration groups that are only used in property expressions
+[Configuration Group](#Configuration_Groups). Note that the path attribute may be omitted to define properties in configuration groups that are only used in property expressions.
 
 `name`(required)
 
@@ -57,7 +56,7 @@ that is used to define properties in configuration groups that are only used in 
 `value`(optional)
 
 : The value of the configuration property. If the property is part of a configuration group, property expressions
-referring to other properties ion the same group will be expanded when the value is used. If the property has a value in
+referring to other properties in the same group will be expanded when the value is used. If the property has a value in
 the deployment template it will be used *as is* in the deployment config. This means that you can provide properties
 that normally is hidden unless deployconf is running in *force-interactive* mode.
 
