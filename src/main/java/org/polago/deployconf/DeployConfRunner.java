@@ -43,7 +43,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -174,7 +174,7 @@ public class DeployConfRunner {
                 + "<INPUT> file. Default is '" + DEFAULT_TEMPLATE_PATH + "'");
         options.addOption(templatePath);
 
-        CommandLineParser parser = new GnuParser();
+        CommandLineParser parser = new DefaultParser();
 
         try {
             CommandLine cmd = parser.parse(options, args);
@@ -248,7 +248,6 @@ public class DeployConfRunner {
                 instance.setDeploymentTemplatePath(path);
             }
 
-            @SuppressWarnings("unchecked")
             List<String> argList = cmd.getArgList();
             if (argList.size() != 2) {
                 System.out.println("usage: " + projectProperties.getName() + " <INPUT> <OUTPUT>");
