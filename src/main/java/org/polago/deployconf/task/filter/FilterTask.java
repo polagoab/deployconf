@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -72,7 +72,7 @@ public class FilterTask extends AbstractTask {
      */
     public FilterTask() {
         super();
-        tokens = new HashSet<FilterToken>();
+        tokens = new LinkedHashSet<FilterToken>();
     }
 
     /**
