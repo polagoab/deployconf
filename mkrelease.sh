@@ -120,6 +120,6 @@ mvn -Possrh clean deploy
 #
 # Publishing site
 #
-mvn site site:deploy
+mvn site-deploy
 
 echo "Please create a GitHub release info"
