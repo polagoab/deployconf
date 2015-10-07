@@ -32,7 +32,7 @@
   <packaging>jar</packaging>
   <version>1.1.1-SNAPSHOT</version>
   <name>Deployconf</name>
-  <url>http://www.polago.org/deployconf</url>
+  <url>http://www.polago.org/deployconf/</url>
   <description>
     Command Line Tool used by Deployers to configure Java artifacts for the actual deployment environment
   </description>
