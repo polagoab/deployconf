@@ -59,7 +59,7 @@ public class PropertiesTask extends AbstractTask {
     // Properties files are always using ISO-8859-1
     private static final String ENCODING = "ISO-8859-1";
 
-    private static final String PATH_IGONRE = PropertiesTask.class.getCanonicalName() + "_NO_PATH";;
+    private static final String PATH_IGNORE = PropertiesTask.class.getCanonicalName() + "_NO_PATH";;
 
     private Set<Property> properties;
 
@@ -78,7 +78,7 @@ public class PropertiesTask extends AbstractTask {
     public void deserialize(Element node, ConfigGroupManager groupManager) throws IOException {
         String attribute = node.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
-            attribute = PATH_IGONRE;
+            attribute = PATH_IGNORE;
         }
         setPath(attribute);
 
@@ -119,7 +119,7 @@ public class PropertiesTask extends AbstractTask {
      */
     @Override
     public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
-        if (!PATH_IGONRE.equals(getPath())) {
+        if (!PATH_IGNORE.equals(getPath())) {
             node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
         }
 
@@ -234,7 +234,7 @@ public class PropertiesTask extends AbstractTask {
     @Override
     public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
 
-        if (PATH_IGONRE.equals(getPath())) {
+        if (PATH_IGNORE.equals(getPath())) {
             // This task should never be applied
             return;
         }
