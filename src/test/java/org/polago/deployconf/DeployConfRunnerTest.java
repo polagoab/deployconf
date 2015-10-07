@@ -143,6 +143,52 @@ public class DeployConfRunnerTest {
     }
 
     @Test
+    public void testRunWithCompleteNonExistingDeploymentConfig() throws Exception {
+        DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);
+        Path srcFile = folder.newFile("input.zip").toPath();
+        Path destFile = folder.newFile("output.zip").toPath();
+        Path configFile = folder.newFile("config.xml").toPath();
+
+        runner.setDeploymentConfigPath(configFile);
+
+        Files.delete(configFile);
+        Files.delete(destFile);
+
+        TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
+        String zipPrefix = "simple-test/";
+        String zipExpectedPrefix = "simple-test-expected/";
+        String deploymentTemplatePath = "complete-deployment-config.xml";
+        String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties", "META-INF/MANIFEST.MF"};
+        try {
+            for (String r : zipFiles) {
+                InputStream is = getClass().getClassLoader().getResourceAsStream(zipPrefix + r);
+                assertNotNull("Unable to load resource: " + zipPrefix + r, is);
+                os.addStream(is, r);
+            }
+            InputStream is = getClass().getClassLoader().getResourceAsStream(deploymentTemplatePath);
+            assertNotNull("Unable to load resource: " + deploymentTemplatePath, is);
+            os.addStream(is, deploymentTemplatePath);
+        } finally {
+            os.close();
+        }
+
+        runner.setDeploymentTemplatePath(deploymentTemplatePath);
+        int status = runner.run(srcFile.toString(), destFile.toString());
+        assertEquals(0, status);
+        assertTrue(Files.exists(destFile));
+        assertTrue(Files.exists(configFile));
+        InputStream destConfigStream = Files.newInputStream(configFile);
+        InputStream srcConfigStream = getClass().getClassLoader().getResourceAsStream(deploymentTemplatePath);
+
+        try {
+            assertEqualStreamContent(deploymentTemplatePath, srcConfigStream, destConfigStream);
+        } finally {
+            destConfigStream.close();
+            srcConfigStream.close();
+        }
+    }
+
+    @Test
     public void testDeploymentConfigFileWithNoConfigNameAndNoRepo() throws Exception {
 
         DeployConfRunner runner = new DeployConfRunner(RunMode.NON_INTERACTIVE);

@@ -305,10 +305,12 @@ public class DeployConfRunner {
      */
     public int run(String source, String destination) throws Exception {
         int result = 0;
+
         DeploymentConfig template = getDeploymentConfigFromZip(source);
         DeploymentConfig config = null;
         Path repoFile = getDeploymentConfigPath(template.getName());
-        if (Files.exists(repoFile)) {
+        boolean repoFileExists = Files.exists(repoFile);
+        if (repoFileExists) {
             logger.info("Loading Deployment Configuration from: " + repoFile);
             config = getDeploymentConfigFromPath(repoFile);
         } else {
@@ -320,6 +322,9 @@ public class DeployConfRunner {
         logger.debug("Running in mode: {}", runMode);
 
         if (config.merge(template) && !(runMode == RunMode.FORCE_INTERACTIVE)) {
+            if (!repoFileExists) {
+                save(config);
+            }
             apply(config, source, destination);
         } else {
             // Needs manual merge

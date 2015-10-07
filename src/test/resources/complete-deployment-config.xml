@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployconf name="simple">
+  <properties path="/WEB-INF/classes/deploy.properties">
+    <property>
+      <name>ldap.server</name>
+      <description><![CDATA[Help text here]]></description>
+      <default>ldap://${hostname}/</default>
+      <value>ldap://${hostname}/</value>
+    </property>
+  </properties>
+  <filter path="/WEB-INF/web.xml" encoding="UTF-8">
+    <token>
+      <name>LogDir</name>
+      <regex>@LOG_DIR@</regex>
+      <description><![CDATA[Help text here]]></description>
+      <default>${pwd}/logs</default>
+      <value>${pwd}/logs</value>
+    </token>
+  </filter>
+</deployconf>
