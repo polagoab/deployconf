@@ -21,7 +21,7 @@ Below is an example template that declare two configuration properties:
   <filter path="WEB-INF/web.xml">
     <token>
       <name>tmpDir</name>
-      <regex>@tmpDirl@</regex>
+      <regex>@tmpDir@</regex>
       <description>The path to the temporary directory used by the application</description>
       <default>/var/tmp</default>
     </token>
@@ -53,7 +53,7 @@ configuration group:
   <filter path="WEB-INF/web.xml">
     <token group="org.polago.deployconf.shared">
       <name>tmpDir</name>
-      <regex>@tmpDirl@</regex>
+      <regex>@tmpDir@</regex>
       <description>The path to the temporary directory used by the application</description>
       <default>/var/tmp</default>
     </token>
