@@ -1,7 +1,7 @@
 # Deployment Template Reference
 
 The Deployment Template is an XML-file describing each configuration properties that should be applied to the artifact
-before deployment. 
+before deployment.
 
 The basic structure is:
 
@@ -12,9 +12,8 @@ The basic structure is:
 </deployconf>
 ```
 
-where the `name` attribute is required and used to provide a name for the deployment config in the local
-repository. The `deployconf` element contains a list of tasks that should be applied to the artifact. Currently
-supported tasks are:
+where the `name` attribute is required and used to provide a name for the deployment config in the local repository. The
+`deployconf` element contains a list of tasks that should be applied to the artifact. Currently supported tasks are:
 
 * `<properties>`
 * `<filter>`
@@ -37,10 +36,15 @@ The properties task looks like:
 </properties>
 ```
 
-The *path* attribute identifies the path of the properties file in the artifact. It should match the path displayed
-using the `jar tvf` command. The *group* attribute, if present, will bind the property to a
-[Configuration Group](#Configuration_Groups). Note that the path attribute may be omitted to define properties in
-configuration groups that are only used in property expressions.
+`path`(optional)
+
+: The *path* attribute identifies the path of the properties file in the artifact. It should match the path displayed
+using the `jar tvf` command. The path attribute may be omitted to define properties in configuration groups that are
+only used in property expressions.
+
+`group`(optional)
+
+: The *group* attribute binds the property to a [Configuration Group](#Configuration_Groups).
 
 `name`(required)
 
@@ -48,7 +52,7 @@ configuration groups that are only used in property expressions.
 
 `description`(required)
 
-: The configuration property description. This is displayed when running deployconf in *interactive* mode.
+: The configuration property description that is displayed when running deployconf in *interactive* mode.
 
 `default`(optional)
 
@@ -59,7 +63,7 @@ configuration groups that are only used in property expressions.
 : The value of the configuration property. If the property is part of a configuration group, property expressions
 referring to other properties in the same group will be expanded when the value is used. If the property has a value in
 the deployment template it will be used *as is* in the deployment config. This means that you can provide properties
-that normally is hidden unless deployconf is running in *force-interactive* mode.
+that normally are hidden unless deployconf is running in *force-interactive* mode.
 
 ## Filter Task
 
@@ -69,7 +73,7 @@ corresponding value.
 The Filter Task looks like:
 
 ```
-<filter path="...">
+<filter path="..." encoding="...">
   <token group="...">
     <name>...</name>
     <regex>...</regex>
@@ -78,10 +82,20 @@ The Filter Task looks like:
   </token>...
 </filter>
 ```
-  
-The *path* attribute identifies the path of the file in the artifact. It should match the path displayed using the `jar
-tf` command. The *group* attribute, if present, will bind the token to a
-[Configuration Group](#Configuration_Groups).
+
+`path`(required)
+
+: The *path* attribute identifies the path of the file in the artifact. It should match the path displayed using the `jar
+tf` command.
+
+`encoding`(optional)
+
+: The *encoding* attribute specifies the encoding to use when processing the given path. Default
+encoding is `UTF-8`.
+
+`group`(optional)
+
+: The *group* attribute binds the token to a [Configuration Group](#Configuration_Groups).
 
 `name`(required)
 
@@ -89,11 +103,11 @@ tf` command. The *group* attribute, if present, will bind the token to a
 
 `regex`(required)
 
-:  The regular expression in *java.util.regex.Pattern* format that is used to find token
+:  The regular expression in *java.util.regex.Pattern* format that is used to find the token
 
 `description`(required)
 
-: The configuration property description. This is displayed when running deployconf in *interactive* mode.
+: The configuration property description that is displayed when running deployconf in *interactive* mode.
 
 `default`(optional)
 
@@ -103,8 +117,8 @@ tf` command. The *group* attribute, if present, will bind the token to a
 
 : The value for the configuration property. If the token is part of a configuration group, property expressions
 referring to other properties in the same group will be expanded when the value is used. If the property has a value in
-the deployment template it will be used *as is* in the deployment config. This means that you can provide tokens
-that normally is hidden unless deployconf is running in *force-interactive* mode.
+the deployment template it will be used *as is* in the deployment config. This means that you can provide tokens that
+normally are hidden unless deployconf is running in *force-interactive* mode.
 
 ## Configuration Groups
 
@@ -115,5 +129,5 @@ itself.
 This means that the configuration value may be reused in another property or token with the same name that belongs to
 the same configuration group and thus allows for reusing the same value in multiple properties and tokens. This
 mechanism works both in the same deployment template and between different artifacts using it's own template, allowing
-for sharing values between a group of artifacts. The group itself is stored in the deployconf repository as a
-standard Java Properties file.
+for sharing values between a group of artifacts. The group itself is stored in the deployconf repository as a standard
+Java Properties file.
