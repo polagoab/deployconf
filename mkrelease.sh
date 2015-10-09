@@ -46,7 +46,7 @@ set -e
 version=$1
 tag=v$version
 
-echo "Creating a new release of project '$project' with version: $version."
+echo "Creating a new release of $project with version: $version."
 echo "Current $project version is $cur_version."
 echo
 
@@ -97,7 +97,7 @@ git commit -m "$project version $version" pom.xml
 #
 # Creating tag in Git
 #
-echo "Creating annotated tag: $project-$version" 
+echo "Creating annotated tag: $tag" 
 git tag -m "$project version $version" -a $tag
 
 #
