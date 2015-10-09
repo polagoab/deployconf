@@ -156,7 +156,6 @@ public class DeployConfRunnerTest {
 
         TestZipOutputStream os = new TestZipOutputStream(Files.newOutputStream(srcFile));
         String zipPrefix = "simple-test/";
-        String zipExpectedPrefix = "simple-test-expected/";
         String deploymentTemplatePath = "complete-deployment-config.xml";
         String[] zipFiles = {"deploy.properties", "logging.xml", "plain.properties", "META-INF/MANIFEST.MF"};
         try {
