@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -29,14 +29,17 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 
-import jline.console.ConsoleReader;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 /**
  * Interactive Configurer that ask the user for the value.
  */
 public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
 
-    private final ConsoleReader reader;
+    private final LineReader reader;
 
     private final PrintWriter writer;
 
@@ -46,8 +49,8 @@ public class ConsoleInteractiveConfigurer implements InteractiveConfigurer {
      * @throws IOException indicating processing failure
      */
     public ConsoleInteractiveConfigurer() throws IOException {
-        reader = new ConsoleReader();
-        reader.setBellEnabled(false);
+        Terminal terminal = TerminalBuilder.terminal();
+        reader = LineReaderBuilder.builder().terminal(terminal).build();
         writer = new PrintWriter(new OutputStreamWriter(System.out, Charset.defaultCharset()), true);
     }
 
