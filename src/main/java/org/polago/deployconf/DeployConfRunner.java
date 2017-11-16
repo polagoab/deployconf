@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -48,6 +48,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.UserInterruptException;
 import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.group.FileSystemConfigGroupManager;
 import org.slf4j.Logger;
@@ -256,6 +258,12 @@ public class DeployConfRunner {
             System.exit(instance.run(argList.get(0), argList.get(1)));
         } catch (ParseException e) {
             logger.error("Command Line Parse Error: " + e.getMessage(), e);
+            System.exit(1);
+        } catch (UserInterruptException e) {
+            logger.info("Intertupted by user");
+            System.exit(1);
+        } catch (EndOfFileException e) {
+            logger.info("EOF detected");
             System.exit(1);
         } catch (Exception e) {
             String msg = "Internal Error: " + e.toString();
