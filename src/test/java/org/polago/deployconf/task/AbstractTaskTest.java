@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -123,4 +123,43 @@ public class AbstractTaskTest {
 
         assertEquals("prefix-expanded-test-value-suffix", task.expandPropertyExpression(expected, group));
     }
+
+    @Test
+    public void testConditionNull() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertFalse(task.evaluateCondition(null, null));
+    }
+
+    @Test
+    public void testConditionFalse() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertFalse(task.evaluateCondition("false", null));
+    }
+
+    @Test
+    public void testConditionTrue() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertTrue(task.evaluateCondition("true", null));
+    }
+
+    @Test
+    public void testConditionEqualStrings() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertTrue(task.evaluateCondition("'v' == 'v'", null));
+    }
+
+    @Test
+    public void testConditionNonEqualStrings() {
+        TestAbstractTask task = new TestAbstractTask();
+        assertFalse(task.evaluateCondition("'v' == 's'", null));
+    }
+
+    @Test
+    public void testConditionEqualExpandedExpression() throws IOException {
+        TestAbstractTask task = new TestAbstractTask();
+        ConfigGroup group = new InMemoryConfigGroup();
+        group.setProperty("text", "expanded-test-value");
+        assertTrue(task.evaluateCondition("'expanded-test-value' == '${text}'", group));
+    }
+
 }

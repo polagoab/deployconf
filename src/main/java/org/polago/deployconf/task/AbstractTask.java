@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -28,16 +28,24 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.jdom2.CDATA;
 import org.jdom2.Element;
 import org.jdom2.Text;
 import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Common implementation of a deployment Task.
  */
 public abstract class AbstractTask implements Task {
+
+    private static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     // Matches a property expression like ${propertyName}
     private static final Pattern EXPANSION_PATTERN = Pattern.compile("(\\$\\{([^}]+?)\\})");
@@ -46,13 +54,29 @@ public abstract class AbstractTask implements Task {
 
     protected static final String DOM_ATTRIBUTE_GROUP = "group";
 
+    protected static final String DOM_ATTRIBUTE_IF = "if";
+
     protected static final String DOM_ELEMENT_DESCRIPTION = "description";
 
     protected static final String DOM_ELEMENT_DEFAULT = "default";
 
     protected static final String DOM_ELEMENT_VALUE = "value";
 
+    protected static final String DOM_ELEMENT_CONDITION = "condition";
+
     private String path;
+
+    private final ScriptEngine scriptEngine;
+
+    /**
+     * Public Constructor.
+     */
+    public AbstractTask() {
+        super();
+
+        ScriptEngineManager factory = new ScriptEngineManager();
+        scriptEngine = factory.getEngineByName("JavaScript");
+    }
 
     /**
      * Gets the path property value.
@@ -116,6 +140,30 @@ public abstract class AbstractTask implements Task {
             }
             matcher.appendTail(expanded);
             result = expanded.toString();
+        }
+
+        return result;
+    }
+
+    /**
+     * Evaluate the task condition.
+     *
+     * @param text the condition to evaluate
+     * @param group the ConfigGroup to use as source for expanding property expressions before evaluation
+     * @return the evaluation result
+     */
+    public boolean evaluateCondition(String text, ConfigGroup group) {
+        boolean result = false;
+        try {
+            if (text != null) {
+                Object resultObject = scriptEngine.eval(expandPropertyExpression(text, group));
+                if (resultObject instanceof Boolean) {
+                    Boolean boolResult = (Boolean) resultObject;
+                    return boolResult.booleanValue();
+                }
+            }
+        } catch (ScriptException e) {
+            logger.info("Unable to evaluate condition: " + text, e);
         }
 
         return result;
