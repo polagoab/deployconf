@@ -195,6 +195,7 @@ public class FilterTask extends AbstractTask {
                         t.setDescription(ot.getDescription());
                         t.setDefaultValue(ot.getDefaultValue());
                         t.setGroup(ot.getGroup());
+                        t.setCondition(ot.getCondition());
                         break;
                     }
                 }

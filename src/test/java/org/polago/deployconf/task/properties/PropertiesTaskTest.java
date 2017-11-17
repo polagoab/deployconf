@@ -177,6 +177,7 @@ public class PropertiesTaskTest {
         task1.setPath(path);
         Property p1 = new Property("test-property", "test-descr", "test-default", null);
         p1.setGroup("test-group");
+        p1.setCondition("test-condition");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -192,6 +193,7 @@ public class PropertiesTaskTest {
         assertEquals("test-default", p.getDefaultValue());
         assertNull(p.getValue());
         assertEquals("test-group", p.getGroup());
+        assertEquals("test-condition", p.getCondition());
     }
 
     @Test
@@ -201,6 +203,7 @@ public class PropertiesTaskTest {
         task1.setPath(path);
         Property p1 = new Property("test-property", "test1-descr", "test1-default", null);
         p1.setGroup("test1-group");
+        p1.setCondition("test1-condition");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -209,6 +212,7 @@ public class PropertiesTaskTest {
         task2.setPath(path);
         Property p2 = new Property("test-property", "test2-descr", "test2-default", "test-value");
         p2.setGroup("test-group2");
+        p2.setCondition("test2-condition");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -223,6 +227,7 @@ public class PropertiesTaskTest {
         assertEquals("test1-default", p.getDefaultValue());
         assertEquals("test-value", p.getValue());
         assertEquals("test1-group", p.getGroup());
+        assertEquals("test1-condition", p.getCondition());
     }
 
     @Test
@@ -232,6 +237,7 @@ public class PropertiesTaskTest {
         task1.setPath(path);
         Property p1 = new Property("test1-property", "test1-descr", "test1-default", null);
         p1.setGroup("test1-group");
+        p1.setCondition("test1-condition");
         HashSet<Property> list1 = new HashSet<Property>();
         list1.add(p1);
         task1.setProperties(list1);
@@ -240,6 +246,7 @@ public class PropertiesTaskTest {
         task2.setPath(path);
         Property p2 = new Property("test2-property", "test2-descr", "test2-default", "test-value");
         p2.setGroup("test2-group");
+        p2.setCondition("test2-condition");
         HashSet<Property> list2 = new HashSet<Property>();
         list2.add(p2);
         task2.setProperties(list2);
@@ -254,6 +261,7 @@ public class PropertiesTaskTest {
         assertEquals("test1-default", p.getDefaultValue());
         assertNull(p.getValue());
         assertEquals("test1-group", p.getGroup());
+        assertEquals("test1-condition", p.getCondition());
     }
 
     @Test
