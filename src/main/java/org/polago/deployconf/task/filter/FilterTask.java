@@ -136,6 +136,7 @@ public class FilterTask extends AbstractTask {
             e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex().toString()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, t.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, t.getDefaultValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_CONDITION, t.getCondition()));
 
             String group = t.getGroup();
             if (group != null) {

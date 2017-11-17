@@ -143,7 +143,6 @@ public class FilterTaskTest {
         }
     }
 
-
     @Test
     public void testIsConfigured() throws Exception {
         FilterTask task = new FilterTask();
@@ -280,7 +279,28 @@ public class FilterTaskTest {
         assertEquals(
             "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
                 + "<description><![CDATA[test-description]]></description>"
-                + "<default>test-default-value</default><value>test-value</value>" + "</token></filter>",
+                + "<default>test-default-value</default><condition /><value>test-value</value>" + "</token></filter>",
+            outputter.outputString(node));
+    }
+
+    @Test
+    public void testSerializeWithCondition() throws Exception {
+        FilterTask task = new FilterTask();
+        task.setPath("test-path");
+        FilterToken t =
+            new FilterToken("test-name", "test-regex", "test-description", "test-default-value", "test-value");
+        t.setCondition("true");
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(t);
+        task.setTokens(list);
+        Element node = new Element("filter");
+        task.serialize(node, null);
+        XMLOutputter outputter = new XMLOutputter();
+        assertEquals(
+            "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
+                + "<description><![CDATA[test-description]]></description>"
+                + "<default>test-default-value</default><condition>true</condition><value>test-value</value>"
+                + "</token></filter>",
             outputter.outputString(node));
     }
 
@@ -304,7 +324,7 @@ public class FilterTaskTest {
         assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token group=\"" + group
             + "\"><name>test-name</name><regex>test-regex</regex>"
             + "<description><![CDATA[test-description]]></description>"
-            + "<default>test-default-value</default></token></filter>", outputter.outputString(node));
+            + "<default>test-default-value</default><condition /></token></filter>", outputter.outputString(node));
     }
 
     @Test

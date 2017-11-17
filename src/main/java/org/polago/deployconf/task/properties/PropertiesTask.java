@@ -130,6 +130,7 @@ public class PropertiesTask extends AbstractTask {
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, p.getDescription()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_DEFAULT, p.getDefaultValue()));
+            e.addContent(createJDOMTextElement(DOM_ELEMENT_CONDITION, p.getCondition()));
 
             String group = p.getGroup();
             if (group != null) {

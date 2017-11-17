@@ -267,11 +267,28 @@ public class PropertiesTaskTest {
         Element node = new Element("properties");
         task.serialize(node, null);
         XMLOutputter outputter = new XMLOutputter();
-        assertEquals(
-            "<properties path=\"test-path\">" + "<property><name>test-name</name>"
-                + "<description><![CDATA[test-description]]></description>"
-                + "<default>test-default-value</default><value>test-value</value>" + "</property></properties>",
-            outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
+        assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
+            + "<description><![CDATA[test-description]]></description>"
+            + "<default>test-default-value</default><condition /><value>test-value</value>"
+            + "</property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
+    }
+
+    @Test
+    public void testSerializeWithCondition() throws Exception {
+        PropertiesTask task = new PropertiesTask();
+        task.setPath("test-path");
+        Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
+        p.setCondition("true");
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+        Element node = new Element("properties");
+        task.serialize(node, null);
+        XMLOutputter outputter = new XMLOutputter();
+        assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
+            + "<description><![CDATA[test-description]]></description>"
+            + "<default>test-default-value</default><condition>true</condition><value>test-value</value>"
+            + "</property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
     }
 
     @Test
@@ -292,7 +309,7 @@ public class PropertiesTaskTest {
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">" + "<property group=\"" + group + "\"><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>" + "<default>test-default-value</default>"
-            + "</property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
+            + "<condition /></property></properties>", outputter.outputString(node).replaceAll("[\\n\\r]*", ""));
     }
 
     @Test
