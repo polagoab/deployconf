@@ -5,6 +5,7 @@
       <name>ldap.server</name>
       <description><![CDATA[Help text here]]></description>
       <default>ldap://${hostname}/</default>
+      <condition></condition>
       <value>ldap://${hostname}/</value>
     </property>
   </properties>
@@ -14,6 +15,7 @@
       <regex>@LOG_DIR@</regex>
       <description><![CDATA[Help text here]]></description>
       <default>${pwd}/logs</default>
+      <condition></condition>
       <value>${pwd}/logs</value>
     </token>
   </filter>

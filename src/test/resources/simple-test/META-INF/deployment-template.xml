@@ -6,6 +6,7 @@
       <description><![CDATA[Description line 1
         Description line 2]]></description>
       <default>/etc</default>
+      <condition></condition>
       <value></value>
     </property>
   </properties>
@@ -15,6 +16,7 @@
       <regex>@LOGDIR@</regex>
       <description><![CDATA[Log Directory]]></description>
       <default>${pwd}/logs</default>
+      <condition></condition>
       <value></value>
     </token>
   </filter>

@@ -6,6 +6,7 @@
       <name>ldap.server</name>
       <description>Help text here</description>
       <default>ldap://${hostname}/</default>
+      <condition></condition>
       <value></value>
     </property>
   </properties>
@@ -15,6 +16,7 @@
       <regex>@LOG_DIR@</regex>
       <description>Help text here</description>
       <default>${pwd}/logs</default>
+      <condition></condition>
       <value></value>
     </token>
   </filter>
