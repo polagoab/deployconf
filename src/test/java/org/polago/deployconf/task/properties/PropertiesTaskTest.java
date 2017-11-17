@@ -376,7 +376,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, false);
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -398,7 +398,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, false);
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -420,10 +420,28 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, true);
+        boolean result = task.configureInteractively(configurer, true, new InMemoryConfigGroupManager());
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
         assertEquals(expected, p.getValue());
+    }
+
+    @Test
+    public void testIgnoreInteractiveConfigure() throws Exception {
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
+
+        PropertiesTask task = new PropertiesTask();
+
+        Property p = new Property("test-property", "test-description", "default-value", null);
+        p.setCondition("false");
+        HashSet<Property> list = new HashSet<Property>();
+        list.add(p);
+        task.setProperties(list);
+
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+
+        assertTrue(result);
+        assertFalse(configurer.isCalled);
     }
 }

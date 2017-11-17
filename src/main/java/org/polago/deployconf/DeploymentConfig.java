@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -123,7 +123,7 @@ public class DeploymentConfig {
 
         for (Task t : tasks) {
             if (forceInteractive || !t.isConfigured()) {
-                boolean tr = t.configureInteractively(configurer, forceInteractive);
+                boolean tr = t.configureInteractively(configurer, forceInteractive, groupManager);
                 if (tr == false) {
                     result = false;
                 }

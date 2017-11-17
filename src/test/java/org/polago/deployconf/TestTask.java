@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -75,7 +75,8 @@ class TestTask implements Task {
     }
 
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
+        ConfigGroupManager groupManager) {
         isconfigureInteractivelyCalled = true;
         return interactive;
     }

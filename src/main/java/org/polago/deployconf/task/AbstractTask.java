@@ -153,7 +153,7 @@ public abstract class AbstractTask implements Task {
      * @return the evaluation result
      */
     public boolean evaluateCondition(String text, ConfigGroup group) {
-        boolean result = false;
+        boolean result = true;
         try {
             if (text != null) {
                 Object resultObject = scriptEngine.eval(expandPropertyExpression(text, group));

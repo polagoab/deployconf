@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -79,10 +79,12 @@ public interface Task {
      *
      * @param configurer the InteractiveConfigurer to use
      * @param force if true, the Task is always configured
+     * @param groupManager the ConfigGroupManager to use
      * @return true if the task was configured
      * @throws Exception indicating processing failure
      */
-    boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception;
+    boolean configureInteractively(InteractiveConfigurer configurer, boolean force, ConfigGroupManager groupManager)
+        throws Exception;
 
     /**
      * Serialize this Task to a JDOM Element.

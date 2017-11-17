@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
+import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
@@ -224,12 +225,15 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
+        ConfigGroupManager groupManager) throws Exception {
 
         boolean result = true;
 
         for (FilterToken t : tokens) {
-            if (force || t.getValue() == null || t.getValue().length() == 0) {
+            ConfigGroup group = groupManager.lookupGroup(t.getGroup());
+            if (evaluateCondition(t.getCondition(), group)
+                && (force || t.getValue() == null || t.getValue().length() == 0)) {
                 result = configureTokenInteractively(t, configurer);
                 if (result == false) {
                     return result;

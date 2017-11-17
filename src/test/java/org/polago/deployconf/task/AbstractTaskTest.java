@@ -58,7 +58,8 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
+        public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
+            ConfigGroupManager groupManager) {
             return true;
         }
 
@@ -127,7 +128,7 @@ public class AbstractTaskTest {
     @Test
     public void testConditionNull() {
         TestAbstractTask task = new TestAbstractTask();
-        assertFalse(task.evaluateCondition(null, null));
+        assertTrue(task.evaluateCondition(null, null));
     }
 
     @Test

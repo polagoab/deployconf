@@ -385,7 +385,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, false);
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -407,7 +407,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, false);
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -429,10 +429,29 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, true);
+        boolean result = task.configureInteractively(configurer, true, new InMemoryConfigGroupManager());
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
         assertEquals(expected, p.getValue());
     }
+
+    @Test
+    public void testIgnoreInteractiveConfigure() throws Exception {
+        TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
+
+        FilterTask task = new FilterTask();
+
+        FilterToken p = new FilterToken("test-name", "test-regex", "test-description", "default-value", null);
+        p.setCondition("false");
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        list.add(p);
+        task.setTokens(list);
+
+        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+
+        assertTrue(result);
+        assertFalse(configurer.isCalled);
+    }
+
 }
