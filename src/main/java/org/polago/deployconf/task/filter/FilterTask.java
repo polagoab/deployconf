@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -116,6 +116,8 @@ public class FilterTask extends AbstractTask {
             if (group != null) {
                 t.setGroup(group);
             }
+
+            t.setCondition(e.getChildTextTrim(DOM_ELEMENT_CONDITION));
 
             tokens.add(t);
         }

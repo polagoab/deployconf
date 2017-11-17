@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -62,6 +62,28 @@ public class FilterTaskTest {
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
+            }
+
+        }
+    }
+
+    @Test
+    public void testDeserializeWithCondition() throws Exception {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("condition-deployment-config.xml");
+        assertNotNull(is);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document d = builder.build(is);
+        List<Element> tasks = d.getRootElement().getChildren();
+
+        for (Element e : tasks) {
+            if ("filter".equals(e.getName())) {
+                FilterTask task = new FilterTask();
+                task.deserialize(e, null);
+                assertNotNull(task.getPath());
+                assertNotNull(task.getTokens());
+                assertEquals(1, task.getTokens().size());
+                assertEquals("'test' == 'test'", task.getTokens().iterator().next().getCondition());
             }
 
         }
