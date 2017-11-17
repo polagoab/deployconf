@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -37,6 +37,8 @@ public class Property {
     private String defaultValue;
 
     private String group;
+
+    private String condition;
 
     /**
      * Public Constructor.
@@ -141,6 +143,24 @@ public class Property {
      */
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    /**
+     * Gets the condition property value.
+     *
+     * @return the current value of the condition property
+     */
+    public String getCondition() {
+        return condition;
+    }
+
+    /**
+     * Sets the condition property.
+     *
+     * @param condition the new property value
+     */
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     /**
