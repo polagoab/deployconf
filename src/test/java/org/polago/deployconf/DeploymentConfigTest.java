@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -46,7 +46,7 @@ public class DeploymentConfigTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void testMergeEmptyConfigAndTemplateWithNewTasks() {
+    public void testMergeEmptyConfigAndTemplateWithNewTasks() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
 
@@ -60,7 +60,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testMergeConfigAndTemplateWithSameConfiguredTasks() {
+    public void testMergeConfigAndTemplateWithSameConfiguredTasks() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
 
@@ -77,7 +77,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testMergeConfigAndTemplateWithEqualTasks() {
+    public void testMergeConfigAndTemplateWithEqualTasks() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
 
@@ -97,7 +97,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testMergeConfigAndTemplateWithSameUnConfiguredTasks() {
+    public void testMergeConfigAndTemplateWithSameUnConfiguredTasks() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
 
@@ -113,7 +113,7 @@ public class DeploymentConfigTest {
     }
 
     @Test
-    public void testMergeConfigAndTemplateWithUnConfiguredTasks() {
+    public void testMergeConfigAndTemplateWithUnConfiguredTasks() throws Exception {
         DeploymentConfig config = new DeploymentConfig();
         DeploymentConfig template = new DeploymentConfig();
 

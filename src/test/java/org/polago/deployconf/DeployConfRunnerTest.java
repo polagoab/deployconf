@@ -110,6 +110,7 @@ public class DeployConfRunnerTest {
         Path configFile = folder.newFile("config.xml").toPath();
 
         runner.setDeploymentConfigPath(configFile);
+        runner.setGroupManager(new InMemoryConfigGroupManager());
 
         Files.delete(configFile);
         Files.delete(destFile);
@@ -152,6 +153,7 @@ public class DeployConfRunnerTest {
         Path configFile = folder.newFile("config.xml").toPath();
 
         runner.setDeploymentConfigPath(configFile);
+        runner.setGroupManager(new InMemoryConfigGroupManager());
 
         Files.delete(configFile);
         Files.delete(destFile);

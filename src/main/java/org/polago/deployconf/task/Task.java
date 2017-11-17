@@ -69,8 +69,9 @@ public interface Task {
      * Determine if the Task is completely configured.
      *
      * @return true if the Task is completely configured
+     * @throws IOException indicating IO Error
      */
-    boolean isConfigured();
+    boolean isConfigured() throws IOException;
 
     /**
      * Configure the task by asking the user for inputs.

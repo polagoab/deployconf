@@ -36,7 +36,6 @@ import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
-import org.polago.deployconf.group.InMemoryConfigGroup;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -198,10 +197,12 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean isConfigured() {
+    public boolean isConfigured() throws IOException {
         for (Property p : properties) {
-            if (p.getValue() == null || p.getValue().length() == 0) {
-                return false;
+            if (evaluateCondition(p.getCondition(), getGroupManager().lookupGroup(p.getGroup()))) {
+                if (p.getValue() == null || p.getValue().length() == 0) {
+                    return false;
+                }
             }
         }
 

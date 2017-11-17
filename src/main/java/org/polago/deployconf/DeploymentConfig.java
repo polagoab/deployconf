@@ -149,8 +149,9 @@ public class DeploymentConfig {
      *
      * @param template the template configuration to merge
      * @return true if the merge was successful, ie all configurations has a value.
+     * @throws Exception indicating processing failure
      */
-    public boolean merge(DeploymentConfig template) {
+    public boolean merge(DeploymentConfig template) throws Exception {
 
         setName(template.getName());
 

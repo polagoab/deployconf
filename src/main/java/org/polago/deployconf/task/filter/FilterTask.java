@@ -213,10 +213,12 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean isConfigured() {
+    public boolean isConfigured() throws IOException {
         for (FilterToken t : tokens) {
-            if (t.getValue() == null || t.getValue().length() == 0) {
-                return false;
+            if (evaluateCondition(t.getCondition(), getGroupManager().lookupGroup(t.getGroup()))) {
+                if (t.getValue() == null || t.getValue().length() == 0) {
+                    return false;
+                }
             }
         }
 
