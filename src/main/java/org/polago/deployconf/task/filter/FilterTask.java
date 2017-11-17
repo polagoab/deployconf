@@ -284,15 +284,16 @@ public class FilterTask extends AbstractTask {
      */
     private String filterLine(String line, ConfigGroupManager groupManager) throws IOException {
         for (FilterToken t : getTokens()) {
-            Matcher matcher = t.getRegex().matcher(line);
-            String value = t.getValue();
-            if (groupManager != null) {
-                value = expandPropertyExpression(value, groupManager.lookupGroup(t.getGroup()));
+            ConfigGroup group = groupManager.lookupGroup(t.getGroup());
+            if (evaluateCondition(t.getCondition(), group)) {
+                Matcher matcher = t.getRegex().matcher(line);
+                String value = expandPropertyExpression(t.getValue(), group);
+                line = matcher.replaceAll(value);
             }
-            line = matcher.replaceAll(value);
         }
 
         return line;
+
     }
 
     /**

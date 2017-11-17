@@ -251,30 +251,33 @@ public class PropertiesTask extends AbstractTask {
         BufferedWriter writer = new BufferedWriter(out);
 
         for (Property p : getProperties()) {
-            writer.newLine();
-            String description = p.getDescription();
-            if (description != null) {
-                writer.append("#");
+            ConfigGroup group = groupManager.lookupGroup(p.getGroup());
+            if (evaluateCondition(p.getCondition(), group)) {
                 writer.newLine();
-                String[] lines = description.split("[\\r\\n]+");
-                for (String line : lines) {
-                    writer.append("# ");
-                    writer.append(line.trim());
+                String description = p.getDescription();
+                if (description != null) {
+                    writer.append("#");
+                    writer.newLine();
+                    String[] lines = description.split("[\\r\\n]+");
+                    for (String line : lines) {
+                        writer.append("# ");
+                        writer.append(line.trim());
+                        writer.newLine();
+                    }
+                    writer.append("#");
                     writer.newLine();
                 }
-                writer.append("#");
+                writer.append(p.getName());
+                writer.append("=");
+
+                String value = p.getValue();
+                if (groupManager != null) {
+                    value = expandPropertyExpression(value, group);
+                }
+
+                writer.append(value);
                 writer.newLine();
             }
-            writer.append(p.getName());
-            writer.append("=");
-
-            String value = p.getValue();
-            if (groupManager != null) {
-                value = expandPropertyExpression(value, groupManager.lookupGroup(p.getGroup()));
-            }
-
-            writer.append(value);
-            writer.newLine();
         }
         writer.flush();
     }

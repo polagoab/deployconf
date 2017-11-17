@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.polago.deployconf.DeployConfRunner.RunMode;
 import org.polago.deployconf.group.FileSystemConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroupManager;
 
 /**
  * Tests the {@link DeployConfRunner} class.
@@ -60,6 +61,7 @@ public class DeployConfRunnerTest {
         Path configFile = folder.newFile("config.xml").toPath();
 
         runner.setDeploymentConfigPath(configFile);
+        runner.setGroupManager(new InMemoryConfigGroupManager());
 
         Files.delete(destFile);
         Files.delete(configFile);

@@ -347,7 +347,7 @@ public class FilterTaskTest {
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(in, out, null);
+        task.apply(in, out, new InMemoryConfigGroupManager());
 
         assertEquals("test-value\n", out.toString());
     }
@@ -372,6 +372,24 @@ public class FilterTaskTest {
         task.apply(in, out, groupManager);
 
         assertEquals("test-expanded-value\n", out.toString());
+    }
+
+    @Test
+    public void testApplyWithCondition() throws Exception {
+        FilterTask task = new FilterTask();
+        FilterToken t = new FilterToken("test-name", "d..a", null, null, "value");
+        HashSet<FilterToken> list = new HashSet<FilterToken>();
+        t.setCondition("false");
+        list.add(t);
+        task.setTokens(list);
+
+        String data = "test-data";
+        ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        task.apply(in, out, new InMemoryConfigGroupManager());
+
+        assertEquals(data + "\n", out.toString());
     }
 
     @Test
