@@ -56,8 +56,8 @@ public class PropertiesTaskTest {
 
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
-                PropertiesTask task = new PropertiesTask();
-                task.deserialize(e, null);
+                PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -76,8 +76,8 @@ public class PropertiesTaskTest {
 
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
-                PropertiesTask task = new PropertiesTask();
-                task.deserialize(e, null);
+                PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -103,8 +103,8 @@ public class PropertiesTaskTest {
 
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
-                PropertiesTask task = new PropertiesTask();
-                task.deserialize(e, groupManager);
+                PropertiesTask task = new PropertiesTask(groupManager);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -129,8 +129,8 @@ public class PropertiesTaskTest {
 
         for (Element e : tasks) {
             if ("properties".equals(e.getName())) {
-                PropertiesTask task = new PropertiesTask();
-                task.deserialize(e, groupManager);
+                PropertiesTask task = new PropertiesTask(groupManager);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getProperties());
                 assertEquals(1, task.getProperties().size());
@@ -142,7 +142,7 @@ public class PropertiesTaskTest {
 
     @Test
     public void testIsConfigured() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", null, null, "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
@@ -152,7 +152,7 @@ public class PropertiesTaskTest {
 
     @Test
     public void testIsNotConfiguredUsingNullValue() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", null, null, null);
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
@@ -162,7 +162,7 @@ public class PropertiesTaskTest {
 
     @Test
     public void testIsNotConfiguredUsingEmptyValue() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", null, null, "");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
@@ -173,7 +173,7 @@ public class PropertiesTaskTest {
     @Test
     public void testMergeWithNewProperty() throws Exception {
         String path = "test-path";
-        PropertiesTask task1 = new PropertiesTask();
+        PropertiesTask task1 = new PropertiesTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         Property p1 = new Property("test-property", "test-descr", "test-default", null);
         p1.setGroup("test-group");
@@ -182,7 +182,7 @@ public class PropertiesTaskTest {
         list1.add(p1);
         task1.setProperties(list1);
 
-        PropertiesTask task2 = new PropertiesTask();
+        PropertiesTask task2 = new PropertiesTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         task2.merge(task1);
 
@@ -199,7 +199,7 @@ public class PropertiesTaskTest {
     @Test
     public void testMergeWithSameProperty() throws Exception {
         String path = "test-path";
-        PropertiesTask task1 = new PropertiesTask();
+        PropertiesTask task1 = new PropertiesTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         Property p1 = new Property("test-property", "test1-descr", "test1-default", null);
         p1.setGroup("test1-group");
@@ -208,7 +208,7 @@ public class PropertiesTaskTest {
         list1.add(p1);
         task1.setProperties(list1);
 
-        PropertiesTask task2 = new PropertiesTask();
+        PropertiesTask task2 = new PropertiesTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         Property p2 = new Property("test-property", "test2-descr", "test2-default", "test-value");
         p2.setGroup("test-group2");
@@ -233,7 +233,7 @@ public class PropertiesTaskTest {
     @Test
     public void testMergeWithReplacingProperty() throws Exception {
         String path = "test-path";
-        PropertiesTask task1 = new PropertiesTask();
+        PropertiesTask task1 = new PropertiesTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         Property p1 = new Property("test1-property", "test1-descr", "test1-default", null);
         p1.setGroup("test1-group");
@@ -242,7 +242,7 @@ public class PropertiesTaskTest {
         list1.add(p1);
         task1.setProperties(list1);
 
-        PropertiesTask task2 = new PropertiesTask();
+        PropertiesTask task2 = new PropertiesTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         Property p2 = new Property("test2-property", "test2-descr", "test2-default", "test-value");
         p2.setGroup("test2-group");
@@ -266,14 +266,14 @@ public class PropertiesTaskTest {
 
     @Test
     public void testSerialize() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         task.setPath("test-path");
         Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node, null);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>"
@@ -283,7 +283,7 @@ public class PropertiesTaskTest {
 
     @Test
     public void testSerializeWithCondition() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         task.setPath("test-path");
         Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
         p.setCondition("true");
@@ -291,7 +291,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node, null);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">" + "<property><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>"
@@ -301,9 +301,10 @@ public class PropertiesTaskTest {
 
     @Test
     public void testSerializeWithGroup() throws Exception {
-        PropertiesTask task = new PropertiesTask();
         String group = "testgroup";
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        PropertiesTask task = new PropertiesTask(groupManager);
 
         task.setPath("test-path");
         Property p = new Property("test-name", "test-description", "test-default-value", "test-value");
@@ -313,7 +314,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
         Element node = new Element("properties");
-        task.serialize(node, groupManager);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<properties path=\"test-path\">" + "<property group=\"" + group + "\"><name>test-name</name>"
             + "<description><![CDATA[test-description]]></description>" + "<default>test-default-value</default>"
@@ -322,52 +323,53 @@ public class PropertiesTaskTest {
 
     @Test
     public void testApplyWithDescription() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", "test-description", null, "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out, new InMemoryConfigGroupManager());
+        task.apply(null, out);
         assertTrue(out.toString().contains("test-property=test-value"));
         assertTrue(out.toString().contains("# test-description"));
     }
 
     @Test
     public void testApplyWithoutDescription() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", null, null, "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out, new InMemoryConfigGroupManager());
+        task.apply(null, out);
         assertEquals("\ntest-property=test-value\n", out.toString());
     }
 
     @Test
     public void testApplyWithExpandingConfigGroupProperty() throws Exception {
         String group = "test-group";
-        PropertiesTask task = new PropertiesTask();
-        Property p = new Property("test-property", "test-description", null, "${test-name}/other");
-        p.setGroup(group);
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
         groupManager.lookupGroup(group).setProperty("test-name", "epxanded-test-value");
+
+        PropertiesTask task = new PropertiesTask(groupManager);
+        Property p = new Property("test-property", "test-description", null, "${test-name}/other");
+        p.setGroup(group);
 
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out, groupManager);
+        task.apply(null, out);
         assertTrue(out.toString().contains("test-property=epxanded-test-value/other"));
     }
 
     @Test
     public void testApplyWithCondition() throws Exception {
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
         Property p = new Property("test-property", null, null, "test-value");
         HashSet<Property> list = new HashSet<Property>();
         p.setCondition("false");
@@ -375,7 +377,7 @@ public class PropertiesTaskTest {
         task.setProperties(list);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(null, out, new InMemoryConfigGroupManager());
+        task.apply(null, out);
         assertFalse(out.toString().contains("test-property=test-value"));
     }
 
@@ -383,14 +385,14 @@ public class PropertiesTaskTest {
     public void testIncompleteInteractiveConfigure() throws Exception {
         TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
 
         Property p = new Property("test-property", "test-description", "default-value", null);
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -405,14 +407,14 @@ public class PropertiesTaskTest {
 
         configurer.value = expected;
 
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
 
         Property p = new Property("test-property", "test-description", "default-value", null);
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -427,14 +429,14 @@ public class PropertiesTaskTest {
 
         configurer.value = expected;
 
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
 
         Property p = new Property("test-property", "test-description", "default-value", "test-value");
         HashSet<Property> list = new HashSet<Property>();
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, true, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, true);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -445,7 +447,7 @@ public class PropertiesTaskTest {
     public void testIgnoreInteractiveConfigure() throws Exception {
         TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        PropertiesTask task = new PropertiesTask();
+        PropertiesTask task = new PropertiesTask(new InMemoryConfigGroupManager());
 
         Property p = new Property("test-property", "test-description", "default-value", null);
         p.setCondition("false");
@@ -453,7 +455,7 @@ public class PropertiesTaskTest {
         list.add(p);
         task.setProperties(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertTrue(result);
         assertFalse(configurer.isCalled);

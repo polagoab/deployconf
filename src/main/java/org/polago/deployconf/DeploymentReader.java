@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-20157 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -110,8 +110,8 @@ public class DeploymentReader {
         if (cls == null) {
             throw new IllegalStateException("No Task Handler found for element: " + e.getName());
         }
-        Task t = cls.newInstance();
-        t.deserialize(e, groupManager);
+        Task t = cls.getDeclaredConstructor(ConfigGroupManager.class).newInstance(groupManager);
+        t.deserialize(e);
 
         return t;
     }

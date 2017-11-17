@@ -70,9 +70,11 @@ public class FilterTask extends AbstractTask {
 
     /**
      * Public Constructor.
+     *
+     * @param groupManager the groupManager to use
      */
-    public FilterTask() {
-        super();
+    public FilterTask(ConfigGroupManager groupManager) {
+        super(groupManager);
         tokens = new LinkedHashSet<FilterToken>();
     }
 
@@ -80,8 +82,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
-        super.deserialize(root, groupManager);
+    public void deserialize(Element root) throws IOException {
+        super.deserialize(root);
         String enc = root.getAttributeValue(ATTRIBUTE_ENCODING);
         if (enc != null) {
             encoding = enc;
@@ -105,7 +107,7 @@ public class FilterTask extends AbstractTask {
             String value = null;
 
             if (group != null) {
-                value = groupManager.lookupGroup(group).getProperty(name);
+                value = getGroupManager().lookupGroup(group).getProperty(name);
             }
 
             if (value == null) {
@@ -128,8 +130,8 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
-        super.serialize(node, groupManager);
+    public void serialize(Element node) throws IOException {
+        super.serialize(node);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
@@ -141,7 +143,7 @@ public class FilterTask extends AbstractTask {
 
             String group = t.getGroup();
             if (group != null) {
-                groupManager.lookupGroup(group).setProperty(t.getName(), t.getValue());
+                getGroupManager().lookupGroup(group).setProperty(t.getName(), t.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
@@ -225,13 +227,12 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
-        ConfigGroupManager groupManager) throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
         boolean result = true;
 
         for (FilterToken t : tokens) {
-            ConfigGroup group = groupManager.lookupGroup(t.getGroup());
+            ConfigGroup group = getGroupManager().lookupGroup(t.getGroup());
             if (evaluateCondition(t.getCondition(), group)
                 && (force || t.getValue() == null || t.getValue().length() == 0)) {
                 result = configureTokenInteractively(t, configurer);
@@ -256,7 +257,7 @@ public class FilterTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
+    public void apply(InputStream source, OutputStream destination) throws Exception {
 
         InputStreamReader in = new InputStreamReader(source, getEncoding());
         BufferedReader reader = new BufferedReader(in);
@@ -266,7 +267,7 @@ public class FilterTask extends AbstractTask {
 
         String line = reader.readLine();
         while (line != null) {
-            line = filterLine(line, groupManager);
+            line = filterLine(line);
             writer.write(line);
             line = reader.readLine();
             writer.newLine();
@@ -278,13 +279,12 @@ public class FilterTask extends AbstractTask {
      * Filter the given line.
      *
      * @param line the line to process
-     * @param groupManager the ConfigGroupManager to use
      * @return the filtered line
      * @throws IOException indicating IO Error
      */
-    private String filterLine(String line, ConfigGroupManager groupManager) throws IOException {
+    private String filterLine(String line) throws IOException {
         for (FilterToken t : getTokens()) {
-            ConfigGroup group = groupManager.lookupGroup(t.getGroup());
+            ConfigGroup group = getGroupManager().lookupGroup(t.getGroup());
             if (evaluateCondition(t.getCondition(), group)) {
                 Matcher matcher = t.getRegex().matcher(line);
                 String value = expandPropertyExpression(t.getValue(), group);

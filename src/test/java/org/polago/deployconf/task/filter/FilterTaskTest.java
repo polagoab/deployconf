@@ -57,8 +57,8 @@ public class FilterTaskTest {
 
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
-                FilterTask task = new FilterTask();
-                task.deserialize(e, null);
+                FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -78,8 +78,8 @@ public class FilterTaskTest {
 
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
-                FilterTask task = new FilterTask();
-                task.deserialize(e, null);
+                FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -106,8 +106,8 @@ public class FilterTaskTest {
 
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
-                FilterTask task = new FilterTask();
-                task.deserialize(e, groupManager);
+                FilterTask task = new FilterTask(groupManager);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -132,8 +132,8 @@ public class FilterTaskTest {
 
         for (Element e : tasks) {
             if ("filter".equals(e.getName())) {
-                FilterTask task = new FilterTask();
-                task.deserialize(e, groupManager);
+                FilterTask task = new FilterTask(groupManager);
+                task.deserialize(e);
                 assertNotNull(task.getPath());
                 assertNotNull(task.getTokens());
                 assertEquals(1, task.getTokens().size());
@@ -145,7 +145,7 @@ public class FilterTaskTest {
 
     @Test
     public void testIsConfigured() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         FilterToken t = new FilterToken("test-name", "test-token", null, null, "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -155,7 +155,7 @@ public class FilterTaskTest {
 
     @Test
     public void testIsNotConfiguredUsingNullValue() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         FilterToken t = new FilterToken("test-name", "test-token", null, null, null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -165,7 +165,7 @@ public class FilterTaskTest {
 
     @Test
     public void testIsNotConfiguredUsingEmptyValue() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         FilterToken t = new FilterToken("test-name", "test-token", null, null, "");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -176,7 +176,7 @@ public class FilterTaskTest {
     @Test
     public void testMergeWithNewFilterToken() throws Exception {
         String path = "test-path";
-        FilterTask task1 = new FilterTask();
+        FilterTask task1 = new FilterTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test-regex", "test-descr", "test-default", null);
         t1.setGroup("test-group");
@@ -185,7 +185,7 @@ public class FilterTaskTest {
         list1.add(t1);
         task1.setTokens(list1);
 
-        FilterTask task2 = new FilterTask();
+        FilterTask task2 = new FilterTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         task2.merge(task1);
 
@@ -205,7 +205,7 @@ public class FilterTaskTest {
     @Test
     public void testMergeWithSameFilterToken() throws Exception {
         String path = "test-path";
-        FilterTask task1 = new FilterTask();
+        FilterTask task1 = new FilterTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test-token", "test1-regex", "test1-descr", "test1-default", null);
         t1.setGroup("test1-group");
@@ -214,7 +214,7 @@ public class FilterTaskTest {
         list1.add(t1);
         task1.setTokens(list1);
 
-        FilterTask task2 = new FilterTask();
+        FilterTask task2 = new FilterTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test-token", "test2-regex", "test2-descr", "test2-default", "test-value");
         t2.setGroup("test2-group");
@@ -240,7 +240,7 @@ public class FilterTaskTest {
     @Test
     public void testMergeWithReplacingFilterToken() throws Exception {
         String path = "test-path";
-        FilterTask task1 = new FilterTask();
+        FilterTask task1 = new FilterTask(new InMemoryConfigGroupManager());
         task1.setPath(path);
         FilterToken t1 = new FilterToken("test1-token", "test1-regex", "test1-descr", "test1-default", null);
         t1.setGroup("test1-group");
@@ -249,7 +249,7 @@ public class FilterTaskTest {
         list1.add(t1);
         task1.setTokens(list1);
 
-        FilterTask task2 = new FilterTask();
+        FilterTask task2 = new FilterTask(new InMemoryConfigGroupManager());
         task2.setPath(path);
         FilterToken t2 = new FilterToken("test2-token", "test2-regex", "test2-descr", "test2-default", "test-value");
         t2.setGroup("test2-group");
@@ -274,7 +274,7 @@ public class FilterTaskTest {
 
     @Test
     public void testSerialize() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         task.setPath("test-path");
         FilterToken t =
             new FilterToken("test-name", "test-regex", "test-description", "test-default-value", "test-value");
@@ -282,7 +282,7 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node, null);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals(
             "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
@@ -293,7 +293,7 @@ public class FilterTaskTest {
 
     @Test
     public void testSerializeWithCondition() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         task.setPath("test-path");
         FilterToken t =
             new FilterToken("test-name", "test-regex", "test-description", "test-default-value", "test-value");
@@ -302,7 +302,7 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node, null);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals(
             "<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token><name>test-name</name><regex>test-regex</regex>"
@@ -314,9 +314,10 @@ public class FilterTaskTest {
 
     @Test
     public void testSerializeWithGroup() throws Exception {
-        FilterTask task = new FilterTask();
         String group = "testgroup";
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
+
+        FilterTask task = new FilterTask(groupManager);
 
         task.setPath("test-path");
         FilterToken t =
@@ -327,7 +328,7 @@ public class FilterTaskTest {
         list.add(t);
         task.setTokens(list);
         Element node = new Element("filter");
-        task.serialize(node, groupManager);
+        task.serialize(node);
         XMLOutputter outputter = new XMLOutputter();
         assertEquals("<filter path=\"test-path\" encoding=\"UTF-8\">" + "<token group=\"" + group
             + "\"><name>test-name</name><regex>test-regex</regex>"
@@ -337,7 +338,7 @@ public class FilterTaskTest {
 
     @Test
     public void testApply() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         FilterToken t = new FilterToken("test-name", "d..a", null, null, "value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -347,7 +348,7 @@ public class FilterTaskTest {
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(in, out, new InMemoryConfigGroupManager());
+        task.apply(in, out);
 
         assertEquals("test-value\n", out.toString());
     }
@@ -355,11 +356,12 @@ public class FilterTaskTest {
     @Test
     public void testApplyWithExpandingConfigGroup() throws Exception {
         String group = "test-group";
-        FilterTask task = new FilterTask();
-        FilterToken t = new FilterToken("test-name", "d..a", null, null, "${test-property}");
-        t.setGroup(group);
         ConfigGroupManager groupManager = new InMemoryConfigGroupManager();
         groupManager.lookupGroup(group).setProperty("test-property", "expanded-value");
+
+        FilterTask task = new FilterTask(groupManager);
+        FilterToken t = new FilterToken("test-name", "d..a", null, null, "${test-property}");
+        t.setGroup(group);
 
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(t);
@@ -369,14 +371,14 @@ public class FilterTaskTest {
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(in, out, groupManager);
+        task.apply(in, out);
 
         assertEquals("test-expanded-value\n", out.toString());
     }
 
     @Test
     public void testApplyWithCondition() throws Exception {
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
         FilterToken t = new FilterToken("test-name", "d..a", null, null, "value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         t.setCondition("false");
@@ -387,7 +389,7 @@ public class FilterTaskTest {
         ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        task.apply(in, out, new InMemoryConfigGroupManager());
+        task.apply(in, out);
 
         assertEquals(data + "\n", out.toString());
     }
@@ -396,14 +398,14 @@ public class FilterTaskTest {
     public void testIncompleteInteractiveConfigure() throws Exception {
         TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
 
         FilterToken p = new FilterToken("test-name", "test-regex", "test-description", "default-value", null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertFalse(result);
         assertTrue(configurer.isCalled);
@@ -418,14 +420,14 @@ public class FilterTaskTest {
 
         configurer.value = expected;
 
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
 
         FilterToken p = new FilterToken("test-name", "test-regex", "test-description", "default-value", null);
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -440,14 +442,14 @@ public class FilterTaskTest {
 
         configurer.value = expected;
 
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
 
         FilterToken p = new FilterToken("test-name", "test-regex", "test-description", "default-value", "test-value");
         HashSet<FilterToken> list = new HashSet<FilterToken>();
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, true, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, true);
 
         assertTrue(result);
         assertTrue(configurer.isCalled);
@@ -458,7 +460,7 @@ public class FilterTaskTest {
     public void testIgnoreInteractiveConfigure() throws Exception {
         TestInteractiveConfigurer configurer = new TestInteractiveConfigurer();
 
-        FilterTask task = new FilterTask();
+        FilterTask task = new FilterTask(new InMemoryConfigGroupManager());
 
         FilterToken p = new FilterToken("test-name", "test-regex", "test-description", "default-value", null);
         p.setCondition("false");
@@ -466,7 +468,7 @@ public class FilterTaskTest {
         list.add(p);
         task.setTokens(list);
 
-        boolean result = task.configureInteractively(configurer, false, new InMemoryConfigGroupManager());
+        boolean result = task.configureInteractively(configurer, false);
 
         assertTrue(result);
         assertFalse(configurer.isCalled);

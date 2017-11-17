@@ -30,7 +30,6 @@ import java.io.OutputStream;
 
 import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
-import org.polago.deployconf.group.ConfigGroupManager;
 
 /**
  * Describes a deployment task.
@@ -55,10 +54,9 @@ public interface Task {
      * Load the task from a list of JDOM Elements.
      *
      * @param node the JDOM Element to use for configuring this instance
-     * @param groupManager the ConfigGroupManager to use
      * @throws IOException indicating IO Error
      */
-    void deserialize(Element node, ConfigGroupManager groupManager) throws IOException;
+    void deserialize(Element node) throws IOException;
 
     /**
      * Merge another Task with this one.
@@ -79,30 +77,26 @@ public interface Task {
      *
      * @param configurer the InteractiveConfigurer to use
      * @param force if true, the Task is always configured
-     * @param groupManager the ConfigGroupManager to use
      * @return true if the task was configured
      * @throws Exception indicating processing failure
      */
-    boolean configureInteractively(InteractiveConfigurer configurer, boolean force, ConfigGroupManager groupManager)
-        throws Exception;
+    boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception;
 
     /**
      * Serialize this Task to a JDOM Element.
      *
      * @param node the JDOM Element to serialize to
-     * @param groupManager the ConfigGroupManager to use
      * @throws IOException indicating IO Error
      */
-    void serialize(Element node, ConfigGroupManager groupManager) throws IOException;
+    void serialize(Element node) throws IOException;
 
     /**
      * Apply this Task by copying source to destination.
      *
      * @param source the Input stream
      * @param destination the Output stream
-     * @param groupManager the ConfigGroupManager to use
      * @throws Exception indicating processing failure
      */
-    void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception;
+    void apply(InputStream source, OutputStream destination) throws Exception;
 
 }

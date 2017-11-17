@@ -39,6 +39,7 @@ import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.group.InMemoryConfigGroup;
+import org.polago.deployconf.group.InMemoryConfigGroupManager;
 
 /**
  * Tests the {@link AbstractTask} class.
@@ -46,6 +47,10 @@ import org.polago.deployconf.group.InMemoryConfigGroup;
 public class AbstractTaskTest {
 
     class TestAbstractTask extends AbstractTask {
+
+        public TestAbstractTask(ConfigGroupManager groupManager) {
+            super(groupManager);
+        }
 
         @Override
         public void merge(Task other) {
@@ -58,8 +63,7 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
-            ConfigGroupManager groupManager) {
+        public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
             return true;
         }
 
@@ -72,7 +76,7 @@ public class AbstractTaskTest {
         }
 
         @Override
-        public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) {
+        public void apply(InputStream source, OutputStream destination) {
 
         }
 
@@ -87,28 +91,28 @@ public class AbstractTaskTest {
         Document d = builder.build(is);
         List<Element> tasks = d.getRootElement().getChildren();
 
-        TestAbstractTask task = new TestAbstractTask();
-        task.deserialize(tasks.get(0), null);
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
+        task.deserialize(tasks.get(0));
         assertNotNull(task.getPath());
     }
 
     @Test
     public void testExpandNull() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertNull(task.expandPropertyExpression(null, null));
     }
 
     @Test
     public void testExpandWithNoExpression() {
         String expected = "text";
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertEquals(expected, task.expandPropertyExpression(expected, null));
     }
 
     @Test
     public void testExpandWithNonExistingExpression() throws IOException {
         String expected = "prefix-${text}-suffix";
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         ConfigGroup group = new InMemoryConfigGroup();
         group.setProperty("othertext", "expanded-test-value");
 
@@ -118,7 +122,7 @@ public class AbstractTaskTest {
     @Test
     public void testExpandWithExistingExpression() throws IOException {
         String expected = "prefix-${text}-suffix";
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         ConfigGroup group = new InMemoryConfigGroup();
         group.setProperty("text", "expanded-test-value");
 
@@ -127,37 +131,37 @@ public class AbstractTaskTest {
 
     @Test
     public void testConditionNull() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertTrue(task.evaluateCondition(null, null));
     }
 
     @Test
     public void testConditionFalse() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertFalse(task.evaluateCondition("false", null));
     }
 
     @Test
     public void testConditionTrue() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertTrue(task.evaluateCondition("true", null));
     }
 
     @Test
     public void testConditionEqualStrings() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertTrue(task.evaluateCondition("'v' == 'v'", null));
     }
 
     @Test
     public void testConditionNonEqualStrings() {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         assertFalse(task.evaluateCondition("'v' == 's'", null));
     }
 
     @Test
     public void testConditionEqualExpandedExpression() throws IOException {
-        TestAbstractTask task = new TestAbstractTask();
+        TestAbstractTask task = new TestAbstractTask(new InMemoryConfigGroupManager());
         ConfigGroup group = new InMemoryConfigGroup();
         group.setProperty("text", "expanded-test-value");
         assertTrue(task.evaluateCondition("'expanded-test-value' == '${text}'", group));

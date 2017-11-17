@@ -123,7 +123,7 @@ public class DeploymentConfig {
 
         for (Task t : tasks) {
             if (forceInteractive || !t.isConfigured()) {
-                boolean tr = t.configureInteractively(configurer, forceInteractive, groupManager);
+                boolean tr = t.configureInteractively(configurer, forceInteractive);
                 if (tr == false) {
                     result = false;
                 }
@@ -225,7 +225,7 @@ public class DeploymentConfig {
      * @throws IOException indicating failure
      */
     public void save(OutputStream outputStream) throws IOException {
-        DeploymentWriter writer = new DeploymentWriter(outputStream, groupManager);
+        DeploymentWriter writer = new DeploymentWriter(outputStream);
         writer.persist(this);
     }
 
@@ -322,7 +322,7 @@ public class DeploymentConfig {
 
         logger.info("Applying deployment config to Zip Entry: " + e);
         for (Task t : taskList) {
-            t.apply(zipSrc, zipDest, groupManager);
+            t.apply(zipSrc, zipDest);
         }
     }
 

@@ -60,7 +60,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void deserialize(Element root, ConfigGroupManager groupManager) {
+    public void deserialize(Element root) {
         configured = true;
     }
 
@@ -75,14 +75,13 @@ class TestTask implements Task {
     }
 
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
-        ConfigGroupManager groupManager) {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) {
         isconfigureInteractivelyCalled = true;
         return interactive;
     }
 
     @Override
-    public void serialize(Element node, ConfigGroupManager groupManager) {
+    public void serialize(Element node) {
         serialized = true;
     }
 
@@ -92,7 +91,7 @@ class TestTask implements Task {
     }
 
     @Override
-    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) {
+    public void apply(InputStream source, OutputStream destination) {
         applied = true;
     }
 

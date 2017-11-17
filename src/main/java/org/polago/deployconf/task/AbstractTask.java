@@ -68,14 +68,29 @@ public abstract class AbstractTask implements Task {
 
     private final ScriptEngine scriptEngine;
 
+    private final ConfigGroupManager groupManager;
+
     /**
      * Public Constructor.
+     *
+     * @param groupManager the groupManager to use
      */
-    public AbstractTask() {
+    public AbstractTask(ConfigGroupManager groupManager) {
         super();
+
+        this.groupManager = groupManager;
 
         ScriptEngineManager factory = new ScriptEngineManager();
         scriptEngine = factory.getEngineByName("JavaScript");
+    }
+
+    /**
+     * Gets the groupManager property value.
+     *
+     * @return the current value of the groupManager property
+     */
+    public ConfigGroupManager getGroupManager() {
+        return groupManager;
     }
 
     /**
@@ -101,7 +116,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element root, ConfigGroupManager groupManager) throws IOException {
+    public void deserialize(Element root) throws IOException {
         String attribute = root.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
             throw new IllegalStateException("path attribute is required");
@@ -113,7 +128,7 @@ public abstract class AbstractTask implements Task {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+    public void serialize(Element node) throws IOException {
         node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
     }
 

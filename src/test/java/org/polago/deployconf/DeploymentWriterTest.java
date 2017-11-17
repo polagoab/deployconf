@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -45,7 +45,7 @@ public class DeploymentWriterTest {
         deploymentConfig.addTask(task);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DeploymentWriter writer = new DeploymentWriter(os, null);
+        DeploymentWriter writer = new DeploymentWriter(os);
 
         writer.persist(deploymentConfig);
 
@@ -66,7 +66,7 @@ public class DeploymentWriterTest {
         deploymentConfig.setName(name);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DeploymentWriter writer = new DeploymentWriter(os, null);
+        DeploymentWriter writer = new DeploymentWriter(os);
 
         writer.persist(deploymentConfig);
 

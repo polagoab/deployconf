@@ -36,6 +36,7 @@ import org.jdom2.Element;
 import org.polago.deployconf.InteractiveConfigurer;
 import org.polago.deployconf.group.ConfigGroup;
 import org.polago.deployconf.group.ConfigGroupManager;
+import org.polago.deployconf.group.InMemoryConfigGroup;
 import org.polago.deployconf.task.AbstractTask;
 import org.polago.deployconf.task.Task;
 import org.slf4j.Logger;
@@ -66,9 +67,11 @@ public class PropertiesTask extends AbstractTask {
 
     /**
      * Public Constructor.
+     *
+     * @param groupManager the groupManager to use
      */
-    public PropertiesTask() {
-        super();
+    public PropertiesTask(ConfigGroupManager groupManager) {
+        super(groupManager);
         properties = new LinkedHashSet<Property>();
     }
 
@@ -76,7 +79,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void deserialize(Element node, ConfigGroupManager groupManager) throws IOException {
+    public void deserialize(Element node) throws IOException {
         String attribute = node.getAttributeValue(DOM_ATTRIBUTE_PATH);
         if (attribute == null) {
             attribute = PATH_IGNORE;
@@ -98,7 +101,7 @@ public class PropertiesTask extends AbstractTask {
             String value = null;
 
             if (group != null) {
-                value = groupManager.lookupGroup(group).getProperty(name);
+                value = getGroupManager().lookupGroup(group).getProperty(name);
             }
 
             if (value == null) {
@@ -121,7 +124,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void serialize(Element node, ConfigGroupManager groupManager) throws IOException {
+    public void serialize(Element node) throws IOException {
         if (!PATH_IGNORE.equals(getPath())) {
             node.setAttribute(DOM_ATTRIBUTE_PATH, getPath());
         }
@@ -135,7 +138,7 @@ public class PropertiesTask extends AbstractTask {
 
             String group = p.getGroup();
             if (group != null) {
-                groupManager.lookupGroup(group).setProperty(p.getName(), p.getValue());
+                getGroupManager().lookupGroup(group).setProperty(p.getName(), p.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
@@ -209,13 +212,12 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force,
-        ConfigGroupManager groupManager) throws Exception {
+    public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
         boolean result = true;
 
         for (Property p : properties) {
-            ConfigGroup group = groupManager.lookupGroup(p.getGroup());
+            ConfigGroup group = getGroupManager().lookupGroup(p.getGroup());
             if (evaluateCondition(p.getCondition(), group)
                 && (force || p.getValue() == null || p.getValue().length() == 0)) {
                 result = configurePropertyInteractively(p, configurer);
@@ -240,7 +242,7 @@ public class PropertiesTask extends AbstractTask {
      * {@inheritDoc}
      */
     @Override
-    public void apply(InputStream source, OutputStream destination, ConfigGroupManager groupManager) throws Exception {
+    public void apply(InputStream source, OutputStream destination) throws Exception {
 
         if (PATH_IGNORE.equals(getPath())) {
             // This task should never be applied
@@ -251,7 +253,7 @@ public class PropertiesTask extends AbstractTask {
         BufferedWriter writer = new BufferedWriter(out);
 
         for (Property p : getProperties()) {
-            ConfigGroup group = groupManager.lookupGroup(p.getGroup());
+            ConfigGroup group = getGroupManager().lookupGroup(p.getGroup());
             if (evaluateCondition(p.getCondition(), group)) {
                 writer.newLine();
                 String description = p.getDescription();
@@ -270,10 +272,7 @@ public class PropertiesTask extends AbstractTask {
                 writer.append(p.getName());
                 writer.append("=");
 
-                String value = p.getValue();
-                if (groupManager != null) {
-                    value = expandPropertyExpression(value, group);
-                }
+                String value = expandPropertyExpression(p.getValue(), group);
 
                 writer.append(value);
                 writer.newLine();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -32,7 +32,6 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.LineSeparator;
 import org.jdom2.output.XMLOutputter;
-import org.polago.deployconf.group.ConfigGroupManager;
 import org.polago.deployconf.task.Task;
 
 /**
@@ -46,17 +45,13 @@ public class DeploymentWriter {
 
     private final OutputStream outputStream;
 
-    private final ConfigGroupManager groupManager;
-
     /**
      * Public Constructor.
      *
      * @param outputStream the OutputStream to use. The stream is not closed by this class.
-     * @param groupManager the Configuration Group Manager to use
      */
-    public DeploymentWriter(OutputStream outputStream, ConfigGroupManager groupManager) {
+    public DeploymentWriter(OutputStream outputStream) {
         this.outputStream = outputStream;
-        this.groupManager = groupManager;
     }
 
     /**
@@ -82,7 +77,7 @@ public class DeploymentWriter {
         for (Task task : deploymentConfig.getTasks()) {
             Element node = new Element(task.getSerializedName());
             root.addContent(node);
-            task.serialize(node, groupManager);
+            task.serialize(node);
         }
 
         outputter.output(document, outputStream);
