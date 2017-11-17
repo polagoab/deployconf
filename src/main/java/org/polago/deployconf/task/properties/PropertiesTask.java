@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 Polago AB
+ * Copyright (c) 2013-2017 Polago AB
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -109,6 +109,8 @@ public class PropertiesTask extends AbstractTask {
             if (group != null) {
                 p.setGroup(group);
             }
+
+            p.setCondition(e.getChildTextTrim(DOM_ELEMENT_CONDITION));
 
             properties.add(p);
         }
