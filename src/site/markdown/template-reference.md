@@ -30,6 +30,7 @@ The properties task looks like:
   <property group="...">
     <name>...</name>
     <description>...</description>
+    <condition>...</condition>
     <default>...</default>
     <value>...</value>
   </property>...
@@ -53,6 +54,11 @@ only used in property expressions.
 `description`(required)
 
 : The configuration property description that is displayed when running deployconf in *interactive* mode.
+
+`condition`(optional)
+
+: If present, the condition is evaluated as a JavaScript expression and is used to determine if the property should
+be enabled or disabled. A disabled property is ignored when processing the deployment template.
 
 `default`(optional)
 
@@ -78,6 +84,7 @@ The Filter Task looks like:
     <name>...</name>
     <regex>...</regex>
     <description>...</description>
+    <condition>...</condition>
     <default>...</default>
   </token>...
 </filter>
@@ -108,6 +115,11 @@ encoding is `UTF-8`.
 `description`(required)
 
 : The configuration property description that is displayed when running deployconf in *interactive* mode.
+
+`condition`(optional)
+
+: If present, the condition is evaluated as a JavaScript expression and is used to determine if the token should
+be enabled or disabled. A disabled property is ignored when processing the deployment template.
 
 `default`(optional)
 
