@@ -1,6 +1,6 @@
 #!/bin/sh
 # The MIT License (MIT)
-# Copyright (c) 2015 Polago AB
+# Copyright (c) 2015-2017 Polago AB
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -27,7 +27,7 @@
 #
 
 project="deployconf"
-cur_version=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\[' | grep -v 'Download'`
+cur_version=`mvn org.apache.maven.plugins:maven-help-plugin:2.2:evaluate -Dexpression=project.version | grep -v '\[' | grep -v 'Download'`
 
 if [ $# -ne 1 ]; then
 	echo "Usage: mkrelease.sh version"
