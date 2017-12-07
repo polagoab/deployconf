@@ -120,6 +120,11 @@ mvn -Possrh clean deploy
 #
 # Publishing site
 #
-mvn site-deploy
+# Using an empty privateKeyDirectory is a workaround for https://issues.apache.org/jira/browse/WAGON-446
+#
+keydir=/tmp/keydir.$$
+mkdir -p $keydir
+mvn clean site-deploy -Dwagon.privateKeyDirectory=$keydir
+rmdir $keydir
 
 echo "Please create a GitHub release info"
