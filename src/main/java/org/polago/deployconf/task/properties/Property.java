@@ -186,4 +186,13 @@ public class Property {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Property [name=" + name + ", description=" + description + ", value=" + value + ", defaultValue="
+            + defaultValue + ", group=" + group + ", condition=" + condition + "]";
+    }
+
 }

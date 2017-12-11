@@ -119,6 +119,8 @@ public class PropertiesTask extends AbstractTask {
 
             p.setCondition(e.getChildTextTrim(DOM_ELEMENT_CONDITION));
 
+            logger.debug("Deserializing property: {}", p);
+
             properties.add(p);
         }
     }
@@ -133,6 +135,7 @@ public class PropertiesTask extends AbstractTask {
         }
 
         for (Property p : properties) {
+            logger.debug("Serializing property: {}", p);
             Element e = createJDOMElement(DOM_ELEMENT_PROPERTY);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, p.getName()));
             e.addContent(createJDOMCDATAElement(DOM_ELEMENT_DESCRIPTION, p.getDescription()));
@@ -186,10 +189,12 @@ public class PropertiesTask extends AbstractTask {
                         p.setDefaultValue(op.getDefaultValue());
                         p.setGroup(op.getGroup());
                         p.setCondition(op.getCondition());
+                        logger.debug("Merging existing Property: {}", p);
                         break;
                     }
                 }
                 if (!exists) {
+                    logger.debug("Adding new Property: {}", op);
                     properties.add(op);
                 }
             }
@@ -204,6 +209,7 @@ public class PropertiesTask extends AbstractTask {
         for (Property p : properties) {
             if (evaluateCondition(p.getCondition(), getGroupManager().lookupGroup(p.getGroup()))) {
                 if (p.getValue() == null || p.getValue().length() == 0) {
+                    logger.debug("Property is not configured: {}", p);
                     return false;
                 }
             }
@@ -279,7 +285,6 @@ public class PropertiesTask extends AbstractTask {
                 writer.append("=");
 
                 String value = expandPropertyExpression(p.getValue(), group);
-
                 writer.append(value);
                 writer.newLine();
             }
@@ -317,5 +322,14 @@ public class PropertiesTask extends AbstractTask {
 
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "PropertiesTask [path=" + getPath() + ", properties=" + properties + "]";
+    }
+
 
 }

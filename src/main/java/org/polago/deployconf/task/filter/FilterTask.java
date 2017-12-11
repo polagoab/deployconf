@@ -126,6 +126,8 @@ public class FilterTask extends AbstractTask {
 
             t.setCondition(e.getChildTextTrim(DOM_ELEMENT_CONDITION));
 
+            logger.debug("Deserializing FilterToken: {}", t);
+
             tokens.add(t);
         }
     }
@@ -138,6 +140,7 @@ public class FilterTask extends AbstractTask {
         super.serialize(node);
         node.setAttribute(ATTRIBUTE_ENCODING, getEncoding());
         for (FilterToken t : tokens) {
+            logger.debug("Serializing FilterToken: {}", t);
             Element e = createJDOMElement(DOM_ELEMENT_TOKEN);
             e.addContent(createJDOMTextElement(DOM_ELEMENT_NAME, t.getName()));
             e.addContent(createJDOMTextElement(DOM_ELEMENT_REGEX, t.getRegex().toString()));
@@ -202,10 +205,12 @@ public class FilterTask extends AbstractTask {
                         t.setDefaultValue(ot.getDefaultValue());
                         t.setGroup(ot.getGroup());
                         t.setCondition(ot.getCondition());
+                        logger.debug("Merging existing FilterToken: {}", t);
                         break;
                     }
                 }
                 if (!exists) {
+                    logger.debug("Adding new FilterToken: {}", ot);
                     tokens.add(ot);
                 }
             }
@@ -220,6 +225,7 @@ public class FilterTask extends AbstractTask {
         for (FilterToken t : tokens) {
             if (evaluateCondition(t.getCondition(), getGroupManager().lookupGroup(t.getGroup()))) {
                 if (t.getValue() == null || t.getValue().length() == 0) {
+                    logger.debug("FilterToken is not configured: {}", t);
                     return false;
                 }
             }
@@ -330,6 +336,14 @@ public class FilterTask extends AbstractTask {
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "FilterTask [path=" + getPath() + ", tokens=" + tokens + ", encoding=" + encoding + "]";
     }
 
 }

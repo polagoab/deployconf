@@ -246,6 +246,12 @@ public class DeploymentConfig {
         ZipEntry e = srcZipStream.getNextEntry();
 
         Map<String, List<Task>> taskMap = getTaskMap();
+        logger.debug("Using TaskMap: {}", taskMap);
+
+        if (e == null) {
+            logger.warn("Source input stream has no entries");
+        }
+
         boolean entryWritten = false;
         while (e != null) {
             if (e.getName().equals(ignorePath)) {

@@ -212,4 +212,13 @@ public class FilterToken {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "FilterToken [name=" + name + ", regex=" + regex + ", description=" + description + ", value=" + value
+            + ", defaultValue=" + defaultValue + ", group=" + group + ", condition=" + condition + "]";
+    }
+
 }

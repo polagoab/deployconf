@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2015 Polago AB
+* Copyright (c) 2015-2017 Polago AB
 * All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining
@@ -32,10 +32,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * ConfigGroup that uses the file system for storing.
  */
 public class FileSystemConfigGroup implements ConfigGroup {
+
+    private static Logger logger = LoggerFactory.getLogger(FileSystemConfigGroup.class);
 
     private static final String SUFFIX_CONFIG_GROUP = "-config-group.properties";
 
@@ -52,6 +57,7 @@ public class FileSystemConfigGroup implements ConfigGroup {
      */
     public FileSystemConfigGroup(String name, Path dir) throws IOException {
         path = dir.resolve(name + SUFFIX_CONFIG_GROUP);
+        logger.debug("Creating Config Group '{}' using path: {}", name, path);
         properties = new Properties();
 
         if (Files.exists(path)) {
@@ -69,7 +75,9 @@ public class FileSystemConfigGroup implements ConfigGroup {
      */
     @Override
     public String getProperty(String name) {
-        return properties.getProperty(name);
+        String value = properties.getProperty(name);
+        logger.debug("Returning property value for '{}': {}", name, value);
+        return value;
     }
 
     /**
@@ -81,6 +89,7 @@ public class FileSystemConfigGroup implements ConfigGroup {
             properties.remove(name);
         } else {
             properties.setProperty(name, value);
+            logger.debug("Storing property '{}': {}", name, value);
             OutputStream os = Files.newOutputStream(path, StandardOpenOption.CREATE);
             try {
                 properties.store(os, null);

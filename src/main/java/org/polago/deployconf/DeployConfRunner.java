@@ -495,7 +495,9 @@ public class DeployConfRunner {
 
         try {
             srcStream = Files.newInputStream(sourceFile);
+            logger.debug("Using input file: {}", sourceFile);
             destStream = Files.newOutputStream(destFile);
+            logger.debug("Using output file: {}", destFile);
             config.apply(srcStream, destStream, getDeploymentTemplatePath());
         } finally {
             if (srcStream != null) {
