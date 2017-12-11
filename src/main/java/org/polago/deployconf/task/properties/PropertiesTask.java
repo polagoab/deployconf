@@ -105,6 +105,10 @@ public class PropertiesTask extends AbstractTask {
 
             if (value == null) {
                 value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+                if (group != null && value != null) {
+                    logger.debug("Populating group {} with value of name {}: {}", group, name, value);
+                    getGroupManager().lookupGroup(group).setProperty(name, value);
+                }
             }
 
             Property p = new Property(name, description, defaultValue, value);
@@ -137,7 +141,6 @@ public class PropertiesTask extends AbstractTask {
 
             String group = p.getGroup();
             if (group != null) {
-                getGroupManager().lookupGroup(group).setProperty(p.getName(), p.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, p.getValue()));
@@ -215,20 +218,22 @@ public class PropertiesTask extends AbstractTask {
     @Override
     public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
-        boolean result = true;
+        boolean configured = true;
 
         for (Property p : properties) {
             ConfigGroup group = getGroupManager().lookupGroup(p.getGroup());
             if (evaluateCondition(p.getCondition(), group)
                 && (force || p.getValue() == null || p.getValue().length() == 0)) {
-                result = configurePropertyInteractively(p, configurer);
-                if (result == false) {
-                    return result;
+                configured = configurePropertyInteractively(p, configurer);
+                if (configured) {
+                    group.setProperty(p.getName(), p.getValue());
+                } else {
+                    return configured;
                 }
             }
         }
 
-        return result;
+        return configured;
     }
 
     /**

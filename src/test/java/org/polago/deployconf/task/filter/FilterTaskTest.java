@@ -113,6 +113,7 @@ public class FilterTaskTest {
                 assertEquals(1, task.getTokens().size());
                 assertEquals(expected, task.getTokens().iterator().next().getValue());
                 assertEquals(group, task.getTokens().iterator().next().getGroup());
+                assertEquals(expected, groupManager.lookupGroup(group).getProperty(name));
             }
         }
     }

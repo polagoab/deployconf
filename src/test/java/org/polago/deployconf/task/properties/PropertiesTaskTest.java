@@ -110,6 +110,7 @@ public class PropertiesTaskTest {
                 assertEquals(1, task.getProperties().size());
                 assertEquals(expected, task.getProperties().iterator().next().getValue());
                 assertEquals(group, task.getProperties().iterator().next().getGroup());
+                assertEquals(expected, groupManager.lookupGroup(group).getProperty(name));
             }
         }
     }

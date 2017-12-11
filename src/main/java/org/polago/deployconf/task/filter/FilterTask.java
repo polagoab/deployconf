@@ -112,6 +112,10 @@ public class FilterTask extends AbstractTask {
 
             if (value == null) {
                 value = e.getChildTextTrim(DOM_ELEMENT_VALUE);
+                if (group != null && value != null) {
+                    logger.debug("Populating group {} with value of name {}: {}", group, name, value);
+                    getGroupManager().lookupGroup(group).setProperty(name, value);
+                }
             }
 
             FilterToken t = new FilterToken(name, regex, description, defaultValue, value);
@@ -143,7 +147,6 @@ public class FilterTask extends AbstractTask {
 
             String group = t.getGroup();
             if (group != null) {
-                getGroupManager().lookupGroup(group).setProperty(t.getName(), t.getValue());
                 e.setAttribute(DOM_ATTRIBUTE_GROUP, group);
             } else {
                 e.addContent(createJDOMTextElement(DOM_ELEMENT_VALUE, t.getValue()));
@@ -231,20 +234,22 @@ public class FilterTask extends AbstractTask {
     @Override
     public boolean configureInteractively(InteractiveConfigurer configurer, boolean force) throws Exception {
 
-        boolean result = true;
+        boolean configured = true;
 
         for (FilterToken t : tokens) {
             ConfigGroup group = getGroupManager().lookupGroup(t.getGroup());
             if (evaluateCondition(t.getCondition(), group)
                 && (force || t.getValue() == null || t.getValue().length() == 0)) {
-                result = configureTokenInteractively(t, configurer);
-                if (result == false) {
-                    return result;
+                configured = configureTokenInteractively(t, configurer);
+                if (configured) {
+                    group.setProperty(t.getName(), t.getValue());
+                } else {
+                    return configured;
                 }
             }
         }
 
-        return result;
+        return configured;
     }
 
     /**
