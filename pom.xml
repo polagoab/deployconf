@@ -37,12 +37,6 @@
     Command Line Tool used by Deployers to configure Java artifacts for the actual deployment environment
   </description>
 
-
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
-
-
   <properties>
     <jdkVersion>1.7</jdkVersion>
     <mavenVersion>3.0.4</mavenVersion>
