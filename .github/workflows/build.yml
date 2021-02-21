@@ -27,6 +27,6 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Setup Maven
-      run: mvn -N --ntp -V -e -B -C io.takari:maven:wrapper -Dmaven=3.0.6
+      run: mvn -N --ntp -V -e -B -C io.takari:maven:wrapper -Dmaven=3.0.4
     - name: Build with Maven
       run: ./mvnw -V -e -B -C clean verify
