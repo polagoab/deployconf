@@ -10,3 +10,8 @@ updates:
     schedule:
       interval: "daily"
     milestone: 6
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    milestone: 6
