@@ -10,6 +10,10 @@ updates:
     schedule:
       interval: "daily"
     milestone: 6
+    ignore:
+    - dependency-name: ch.qos.logback:logback-classic
+      update-types:
+      - version-update:semver-minor
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
