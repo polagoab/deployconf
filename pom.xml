@@ -40,7 +40,7 @@
   <properties>
     <jdkVersion>1.8</jdkVersion>
     <mavenVersion>3.6.0</mavenVersion>
-    <surefireVersion>3.1.0</surefireVersion>
+    <surefireVersion>3.1.2</surefireVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <copyrightYear>2013-2021</copyrightYear>
