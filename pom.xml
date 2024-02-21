@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
- - Copyright (c) 2013-2021 Polago AB
+ - Copyright (c) 2013-2024 Polago AB
  - All rights reserved.
  - 
  - Permission is hereby granted, free of charge, to any person obtaining
@@ -39,11 +39,11 @@
 
   <properties>
     <jdkVersion>1.8</jdkVersion>
-    <mavenVersion>3.6.0</mavenVersion>
+    <mavenVersion>3.6.3</mavenVersion>
     <surefireVersion>3.2.5</surefireVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <copyrightYear>2013-2021</copyrightYear>
+    <copyrightYear>2013-2024</copyrightYear>
     <copyrightMessage>Copyright (C) ${copyrightYear} Polago AB</copyrightMessage>
     <mainClass>org.polago.deployconf.DeployConfRunner</mainClass>
   </properties>
