@@ -23,4 +23,4 @@ jobs:
     - name: Setup Maven
       run: mvn -N --ntp -V -e -B -C io.takari:maven:wrapper -Dmaven=3.6.3
     - name: Build with Maven
-      run: ./mvnw -V -e -B -C clean verify
+      run: ./mvnw -V -ntp -e -B -C clean verify
