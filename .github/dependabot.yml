@@ -23,3 +23,7 @@ updates:
   schedule:
     interval: "daily"
   milestone: 6
+  groups:
+    codeql:
+      patterns:
+      - "github/codeql-action/*"
