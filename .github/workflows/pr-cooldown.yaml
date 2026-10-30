@@ -1,0 +1,116 @@
+# Add cooldown-passed label to dependency-update PRs after the cooldown period. When the PR is updated (e.g. with a
+# newer version) the label is replaced by cooldown-updated so the cooldown restarts, and cooldown-updated is removed
+# again once the new cooldown has passed.
+name: PR Cooldown Label
+
+on:
+  schedule:
+  - cron: '0 3 * * *'
+  # pull_request_target (not pull_request) so that the GITHUB_TOKEN can write labels on Dependabot PRs. The job
+  # never checks out the PR code.
+  pull_request_target:
+    types:
+    - synchronize
+  workflow_dispatch:
+    inputs:
+      cooldown_days:
+        description: 'Number of days before adding the cooldown-passed label'
+        required: false
+        type: number
+        default: 3
+
+permissions:
+  contents: read
+
+jobs:
+  label:
+    if: github.event_name != 'pull_request_target'
+    permissions:
+      # Needed to read the PR commits (commit dates) via the GraphQL API
+      contents: read
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Ensure cooldown-passed label exists
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh label create cooldown-passed \
+          --repo ${{ github.repository }} \
+          --color 0E8A16 \
+          --description "PR has been open for the required cooldown period" \
+          2>/dev/null || true
+
+    # The cooldown is measured from the latest commit rather than the PR creation, so a PR that has been updated
+    # with a newer version has to wait out a full cooldown again. Only the latest commit is queried: gh pr list --json
+    # commits fetches every commit with its authors, which exceeds GitHub's GraphQL node limit.
+    - name: Label aged dependency PRs
+      shell: bash # -o pipefail, so a failing query fails the step instead of silently labelling nothing
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COOLDOWN_DAYS: ${{ inputs.cooldown_days || 3 }}
+      run: |
+        CUTOFF=$(date -d "-${COOLDOWN_DAYS} days" --utc +%Y-%m-%dT%H:%M:%SZ)
+        gh api graphql --paginate \
+          -f owner="${GITHUB_REPOSITORY%/*}" \
+          -f name="${GITHUB_REPOSITORY#*/}" \
+          -f label=dependency-update \
+          -f query='
+            query($owner: String!, $name: String!, $label: String!, $endCursor: String) {
+              repository(owner: $owner, name: $name) {
+                pullRequests(states: OPEN, labels: [$label], first: 100, after: $endCursor) {
+                  pageInfo { hasNextPage endCursor }
+                  nodes {
+                    number
+                    labels(first: 50) { nodes { name } }
+                    commits(last: 1) { nodes { commit { committedDate } } }
+                  }
+                }
+              }
+            }' \
+          --jq ".data.repository.pullRequests.nodes[] |
+                select(.commits.nodes[0].commit.committedDate < \"$CUTOFF\") |
+                (.labels.nodes | map(.name)) as \$labels |
+                select(\$labels | index(\"cooldown-passed\") | not) |
+                [.number, (\$labels | index(\"cooldown-updated\") != null)] | @tsv" |
+        while read -r pr updated; do
+          if [ "$updated" = "true" ]; then
+            gh pr edit "$pr" \
+              --repo ${{ github.repository }} \
+              --add-label cooldown-passed \
+              --remove-label cooldown-updated
+          else
+            gh pr edit "$pr" \
+              --repo ${{ github.repository }} \
+              --add-label cooldown-passed
+          fi
+        done
+
+  reset:
+    if: >-
+      github.event_name == 'pull_request_target' &&
+      contains(github.event.pull_request.labels.*.name, 'cooldown-passed')
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Ensure cooldown-updated label exists
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh label create cooldown-updated \
+          --repo ${{ github.repository }} \
+          --color FBCA04 \
+          --description "PR was updated after passing cooldown; the cooldown has restarted" \
+          2>/dev/null || true
+
+    - name: Replace cooldown-passed with cooldown-updated on updated PR
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh pr edit ${{ github.event.pull_request.number }} \
+          --repo ${{ github.repository }} \
+          --remove-label cooldown-passed \
+          --add-label cooldown-updated
