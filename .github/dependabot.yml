@@ -8,7 +8,6 @@ updates:
     interval: "daily"
   milestone: 6
   labels:
-  - dependencies
   - java
   - dependency-update
   ignore:
@@ -28,7 +27,6 @@ updates:
     interval: "daily"
   milestone: 6
   labels:
-  - dependencies
   - github_actions
   - dependency-update
   groups:
